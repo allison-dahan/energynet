@@ -20,6 +20,26 @@
 	<a class="skip-link screen-reader-text" href="#primary"><?php esc_html_e( 'Skip to content', 'energynet' ); ?></a>
 
 	<header id="masthead" class="site-header">
+
+		<!-- Row 1: social icons — desktop only, top-right -->
+		<div class="header__social-bar container">
+			<div class="header__social" aria-label="<?php esc_attr_e( 'Social media links', 'energynet' ); ?>">
+				<a href="#" class="header__social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+					<iconify-icon icon="ri:instagram-fill" width="28" height="28" aria-hidden="true"></iconify-icon>
+				</a>
+				<a href="#" class="header__social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+					<iconify-icon icon="uil:facebook" width="28" height="28" aria-hidden="true"></iconify-icon>
+				</a>
+				<a href="#" class="header__social-link" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+					<iconify-icon icon="ri:linkedin-fill" width="28" height="28" aria-hidden="true"></iconify-icon>
+				</a>
+				<a href="#" class="header__social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
+					<iconify-icon icon="line-md:youtube-filled" width="28" height="28" aria-hidden="true"></iconify-icon>
+				</a>
+			</div>
+		</div><!-- .header__social-bar -->
+
+		<!-- Row 2: logo left + nav right + mobile toggle -->
 		<div class="container header__inner">
 
 			<a class="header__logo" href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
@@ -35,21 +55,6 @@
 				) );
 				?>
 			</nav>
-
-			<div class="header__social" aria-label="<?php esc_attr_e( 'Social media links', 'energynet' ); ?>">
-				<a href="#" class="header__social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-					<iconify-icon icon="ri:instagram-fill" width="28" height="28" aria-hidden="true"></iconify-icon>
-				</a>
-				<a href="#" class="header__social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
-					<iconify-icon icon="uil:facebook" width="28" height="28" aria-hidden="true"></iconify-icon>
-				</a>
-				<a href="#" class="header__social-link" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
-					<iconify-icon icon="ri:linkedin-fill" width="28" height="28" aria-hidden="true"></iconify-icon>
-				</a>
-				<a href="#" class="header__social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
-					<iconify-icon icon="line-md:youtube-filled" width="28" height="28" aria-hidden="true"></iconify-icon>
-				</a>
-			</div>
 
 			<button class="header__toggle" aria-label="<?php esc_attr_e( 'Open menu', 'energynet' ); ?>" aria-expanded="false" aria-controls="header-drawer">
 				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="3" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
@@ -83,16 +88,16 @@
 
 			<div class="header__drawer-social">
 				<a href="#" class="header__social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-					<iconify-icon icon="ri:instagram-fill" width="24" height="24" aria-hidden="true"></iconify-icon>
+					<iconify-icon icon="ri:instagram-fill" width="18" height="18" aria-hidden="true"></iconify-icon>
 				</a>
 				<a href="#" class="header__social-link" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
-					<iconify-icon icon="uil:facebook" width="24" height="24" aria-hidden="true"></iconify-icon>
+					<iconify-icon icon="uil:facebook" width="18" height="18" aria-hidden="true"></iconify-icon>
 				</a>
 				<a href="#" class="header__social-link" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
-					<iconify-icon icon="ri:linkedin-fill" width="24" height="24" aria-hidden="true"></iconify-icon>
+					<iconify-icon icon="ri:linkedin-fill" width="18" height="18" aria-hidden="true"></iconify-icon>
 				</a>
 				<a href="#" class="header__social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
-					<iconify-icon icon="line-md:youtube-filled" width="24" height="24" aria-hidden="true"></iconify-icon>
+					<iconify-icon icon="line-md:youtube-filled" width="18" height="18" aria-hidden="true"></iconify-icon>
 				</a>
 			</div>
 

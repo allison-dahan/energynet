@@ -11,14 +11,44 @@
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 57%, rgba(255, 255, 255, 0) 100%);
 }
 
+// ─── Row 1: Social bar (desktop only, top-right) ──────────────────────────────
+
+.header__social-bar {
+  display: none;
+
+  @media (min-width: $bp-lg) {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 20px;
+  }
+}
+
+.header__social {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header__social-link {
+  display: flex;
+  align-items: center;
+  color: $color-primary;
+  transition: opacity 0.2s ease;
+
+  &:hover { opacity: 0.65; }
+}
+
+// ─── Row 2: Logo + Nav ────────────────────────────────────────────────────────
+
 .header__inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 100px;
+  height: 80px; // mobile
 
-  @media (max-width: #{$bp-lg - 1px}) {
-    height: 80px;
+  @media (min-width: $bp-lg) {
+    height: auto;
+    padding: 14px 0 28px;
   }
 }
 
@@ -27,17 +57,26 @@
 .header__logo {
   font-family: $font-logo;
   font-weight: $fw-black;
-  font-size: 22px;
+  font-size: 24px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: $color-primary;
   text-decoration: none;
   flex-shrink: 0;
+  line-height: 1;
+
+  @media (min-width: $bp-lg) {
+    font-size: 40px;
+  }
 
   img {
     height: 30px;
     width: auto;
     display: block;
+
+    @media (min-width: $bp-lg) {
+      height: 65px;
+    }
   }
 }
 
@@ -46,7 +85,7 @@
 .header__nav {
   display: none;
   flex: 1;
-  justify-content: center;
+  justify-content: flex-end; // right-aligned, matching Figma
 
   @media (min-width: $bp-lg) {
     display: flex;
@@ -68,6 +107,7 @@
     font-weight: $fw-medium;
     font-size: 20px;
     letter-spacing: 0.03em;
+    text-transform: uppercase;
     text-decoration: none;
     color: $color-primary;
     white-space: nowrap;
@@ -76,29 +116,7 @@
     &:hover { opacity: 0.65; }
   }
 
-  .current-menu-item > a { opacity: 0.65; }
-}
-
-// ─── Social Icons ─────────────────────────────────────────────────────────────
-
-.header__social {
-  display: none;
-  align-items: center;
-  gap: 15px;
-  flex-shrink: 0;
-
-  @media (min-width: $bp-lg) {
-    display: flex;
-  }
-}
-
-.header__social-link {
-  display: flex;
-  align-items: center;
-  color: $color-primary;
-  transition: opacity 0.2s ease;
-
-  &:hover { opacity: 0.65; }
+  .current-menu-item > a { color: $color-secondary; opacity: 1; }
 }
 
 // ─── Hamburger ────────────────────────────────────────────────────────────────
@@ -143,7 +161,6 @@
   height: 100%;
 }
 
-// Mirrors the header gradient so logo + X sit in the same visual area
 .header__drawer-top {
   display: flex;
   align-items: center;
@@ -187,7 +204,7 @@
     &.current-menu-item {
       background: $color-secondary;
 
-      a { color: $color-accent; }
+      a { color: $color-white; }
     }
   }
 
@@ -222,10 +239,6 @@
   background: $color-white;
   border-top: 1px solid rgba(87, 87, 87, 0.75);
   margin: 0 $space-6;
-
-  iconify-icon {
-    font-size: 18px;
-  }
 
   .header__social-link {
     color: $color-secondary;
