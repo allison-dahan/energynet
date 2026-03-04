@@ -1,0 +1,26 @@
+@use "./variables" as *;
+
+/* Logo */
+.logo {
+  font-family: $font-logo;
+  font-weight: $fw-black;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5 {
+  font-family: $font-heading;
+  font-weight: $fw-medium;
+}
+
+h1 { font-size: $fs-h1; }
+h2 { font-size: $fs-h2; }
+h3 { font-size: $fs-h3; }
+h4 { font-size: $fs-h4; }
+h5 { font-size: $fs-h5; }
+
+/* Body */
+body {
+  font-family: $font-body;
+  font-weight: $fw-regular;
+  font-size: $fs-body;
+}

@@ -1,0 +1,17 @@
+@use "./variables" as *;
+
+.container {
+  width: min(1200px, 100% - (2 * $space-4));
+  margin-inline: auto;
+}
+
+.section {
+  padding-block: $space-16;
+}
+
+.card {
+  background: $color-white;
+  border-radius: $radius-md;
+  box-shadow: $shadow-card;
+  padding: $space-6;
+}

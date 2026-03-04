@@ -138,14 +138,18 @@ add_action( 'widgets_init', 'energynet_widgets_init' );
  * Enqueue scripts and styles.
  */
 function energynet_scripts() {
-	wp_enqueue_style( 'energynet-style', get_stylesheet_uri(), array(), _S_VERSION );
-	wp_style_add_data( 'energynet-style', 'rtl', 'replace' );
 
-	wp_enqueue_script( 'energynet-navigation', get_template_directory_uri() . '/js/navigation.js', array(), _S_VERSION, true );
+  wp_enqueue_script(
+    'energynet-navigation',
+    get_template_directory_uri() . '/js/navigation.js',
+    array(),
+    _S_VERSION,
+    true
+  );
 
-	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
-		wp_enqueue_script( 'comment-reply' );
-	}
+  if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
+    wp_enqueue_script( 'comment-reply' );
+  }
 }
 add_action( 'wp_enqueue_scripts', 'energynet_scripts' );
 
@@ -175,4 +179,36 @@ require get_template_directory() . '/inc/customizer.php';
 if ( defined( 'JETPACK__VERSION' ) ) {
 	require get_template_directory() . '/inc/jetpack.php';
 }
+
+function energynet_enqueue_assets() {
+  $theme_dir = get_template_directory();
+  $theme_uri = get_template_directory_uri();
+
+  $css_rel = '/dist/assets/style.css';
+  $js_rel  = '/dist/assets/main.js';
+
+  $css_path = $theme_dir . $css_rel;
+  $js_path  = $theme_dir . $js_rel;
+
+  if ( file_exists( $css_path ) ) {
+    wp_enqueue_style(
+      'energynet-vite',
+      $theme_uri . $css_rel,
+      array(),
+      filemtime( $css_path ),
+      'all'
+    );
+  }
+
+  if ( file_exists( $js_path ) ) {
+    wp_enqueue_script(
+      'energynet-vite',
+      $theme_uri . $js_rel,
+      array(),
+      filemtime( $js_path ),
+      true
+    );
+  }
+}
+add_action( 'wp_enqueue_scripts', 'energynet_enqueue_assets' );
 

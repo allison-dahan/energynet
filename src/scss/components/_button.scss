@@ -1,0 +1,41 @@
+@use "../partials/variables" as *;
+@use "sass:color";
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-3 $space-6;
+  border-radius: $radius-md;
+  font-family: $font-body;
+  font-weight: $fw-medium;
+  font-size: $fs-body;
+  cursor: pointer;
+  border: none;
+  transition: 0.2s ease;
+}
+
+/* Primary */
+.btn--primary {
+  background: $color-primary;
+  color: $color-white;
+}
+
+.btn--primary:hover {
+  background: color.adjust($color-primary, $lightness: -8%);
+}
+
+/* Secondary */
+.btn--secondary {
+  background: $color-secondary;
+  color: $color-white;
+}
+
+/* Disabled */
+.btn:disabled,
+.btn--disabled {
+  background: $color-disabled-button-bg;
+  border-color: $color-disabled-button-border;
+  color: $color-black;
+  cursor: not-allowed;
+}
