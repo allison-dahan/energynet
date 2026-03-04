@@ -1,0 +1,305 @@
+@use "../partials/variables" as *;
+
+// ─── Shell ────────────────────────────────────────────────────────────────────
+
+.site-footer {
+  background: $color-secondary;
+  color: $color-white;
+}
+
+// ─── Inner: 3-column grid ─────────────────────────────────────────────────────
+
+.footer__inner {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  padding: 19px 0 0; // mobile: name starts at 19px from footer top
+
+  @media (min-width: $bp-lg) {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "brand   contact cta"
+      "legal   contact cta";
+    padding: 55px 0 60px;
+    gap: 40px 40px;
+  }
+}
+
+// ─── Col 1: Brand ─────────────────────────────────────────────────────────────
+
+.footer__brand {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 27px; // mobile: gap to CONTACT US heading
+
+  @media (min-width: $bp-lg) {
+    grid-area: brand;
+    margin-bottom: 0;
+  }
+}
+
+.footer__logo {
+  font-family: $font-heading;
+  font-weight: 700;
+  font-size: 24px;
+  color: $color-accent;
+  margin: 0; // mobile: section margin handles spacing
+  line-height: 1.3;
+  text-transform: capitalize;
+
+  @media (min-width: $bp-lg) {
+    font-size: 36px;
+    margin-bottom: $space-4; // spacing before tagline on desktop
+  }
+}
+
+.footer__tagline {
+  display: none;
+
+  @media (min-width: $bp-lg) {
+    display: block;
+    font-family: $font-body;
+    font-weight: $fw-regular;
+    font-size: $fs-body;
+    line-height: 1.25;
+    color: $color-white;
+    margin: 0 0 $space-6;
+  }
+}
+
+.footer__legal {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  @media (min-width: $bp-lg) {
+    grid-area: legal;
+    align-self: end; // push to bottom of its grid cell
+  }
+
+  a {
+    font-family: $font-body;
+    font-weight: 300;
+    font-size: $fs-small;
+    line-height: 17px;
+    color: $color-white;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+
+    &:hover { opacity: 0.75; }
+
+    @media (min-width: $bp-lg) {
+      font-weight: 700;
+    }
+
+    &:first-child {
+      @media (min-width: $bp-lg) {
+        font-size: 24px;
+        line-height: 1.3;
+        margin-bottom: 4px;
+      }
+    }
+
+    &:not(:first-child) {
+      @media (min-width: $bp-lg) {
+        font-size: $fs-body;
+        line-height: 1.25;
+      }
+    }
+  }
+}
+
+// ─── Col 2: Contact ───────────────────────────────────────────────────────────
+
+.footer__contact {
+  margin-bottom: 35px; // mobile: gap to legal links
+
+  @media (min-width: $bp-lg) {
+    grid-area: contact;
+    margin-bottom: 0;
+  }
+}
+
+.footer__contact-heading {
+  font-family: $font-heading;
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.05em;
+  color: $color-white;
+  margin: 0 0 23px; // Figma: 23px gap to Tel. section
+  text-transform: uppercase;
+
+  @media (min-width: $bp-lg) {
+    font-size: 22px;
+  }
+}
+
+.footer__contact-block {
+  margin-bottom: $space-4;
+}
+
+.footer__contact-label {
+  display: block;
+  font-family: $font-heading;
+  font-weight: 700;
+  font-size: 18px;
+  color: $color-white;
+  margin-bottom: 4px;
+}
+
+.footer__contact-block p {
+  font-family: $font-body;
+  font-weight: $fw-regular;
+  font-size: $fs-body;
+  line-height: 1.25;
+  color: $color-white;
+  margin: 0;
+}
+
+// Address blocks: desktop only
+.footer__contact-block--address {
+  display: none;
+
+  @media (min-width: $bp-lg) {
+    display: block;
+  }
+}
+
+// Tel: [icon] [Tel.] [numbers stacked] — all direct flex children
+.footer__contact-block--tel {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+
+  iconify-icon { flex-shrink: 0; margin-top: 2px; }
+
+  .footer__contact-label { flex-shrink: 0; }
+}
+
+// Email: [icon] [address]
+.footer__contact-block--email {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+
+  iconify-icon { flex-shrink: 0; margin-top: 2px; }
+}
+
+.footer__contact-block--email a {
+  font-family: $font-body;
+  font-weight: $fw-regular;
+  font-size: 15px;
+  color: $color-white;
+  text-decoration: underline;
+  transition: opacity 0.2s ease;
+
+  &:hover { opacity: 0.75; }
+}
+
+// ─── Col 3: CTA (desktop only) ────────────────────────────────────────────────
+
+.footer__cta {
+  display: none;
+
+  @media (min-width: $bp-lg) {
+    grid-area: cta;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+}
+
+.footer__cta-heading {
+  font-family: $font-body;
+  font-weight: $fw-regular;
+  font-size: 40px;
+  line-height: 1.25;
+  text-align: right;
+  color: $color-white;
+  margin: 0 0 $space-6;
+}
+
+.footer__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-3;
+  width: 233px;
+  padding: 18px $space-6;
+  background: #615237;
+  border-radius: $radius-md;
+  font-family: $font-body;
+  font-weight: 700;
+  font-size: $fs-body;
+  letter-spacing: 0.05em;
+  color: #F6FAF9;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+
+  & + & { margin-top: $space-3; }
+
+  &:hover { opacity: 0.85; }
+}
+
+.footer__follow {
+  margin-top: $space-6;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.footer__follow-label {
+  font-family: $font-body;
+  font-weight: 300;
+  font-size: 20px;
+  letter-spacing: 0.03em;
+  color: $color-white;
+  margin: 0 0 $space-2;
+}
+
+.footer__social {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.footer__social-link {
+  display: flex;
+  color: $color-white;
+  transition: opacity 0.2s ease;
+
+  &:hover { opacity: 0.7; }
+
+  &--accent { color: $color-accent; }
+}
+
+// ─── Bottom bar: mobile social + copyright ────────────────────────────────────
+
+.footer__bottom {
+  padding: 23px 0 27px; // Figma: 23px gap from legal, 27px at bottom
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    gap: 11px; // Figma: 11px between social icons and copyright
+  }
+
+  @media (min-width: $bp-lg) {
+    display: none;
+  }
+}
+
+.footer__mobile-social {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.footer__copyright {
+  font-family: $font-body;
+  font-weight: 300;
+  font-size: $fs-caption;
+  color: $color-accent;
+  margin: 0;
+}
