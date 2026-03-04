@@ -19,7 +19,7 @@
   @media (min-width: $bp-lg) {
     display: flex;
     justify-content: flex-end;
-    padding-top: 20px;
+    padding-top: 23px; // Figma: Frame 40 top: 23px
   }
 }
 
@@ -48,7 +48,7 @@
 
   @media (min-width: $bp-lg) {
     height: auto;
-    padding: 14px 0 28px;
+    padding: 18px 0 28px; // Figma: logo top 69px − social bar height ~51px = 18px
   }
 }
 
@@ -67,6 +67,9 @@
 
   @media (min-width: $bp-lg) {
     font-size: 40px;
+    min-height: 65px; // match Figma image logo height so nav aligns correctly
+    display: flex;
+    align-items: center;
   }
 
   img {
