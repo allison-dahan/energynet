@@ -72,6 +72,9 @@
 						<a href="#" class="footer__social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
 							<iconify-icon icon="line-md:youtube-filled" width="28" height="28" aria-hidden="true"></iconify-icon>
 						</a>
+						<a href="#" class="footer__social-link" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+							<iconify-icon icon="ri:linkedin-fill" width="28" height="28" aria-hidden="true"></iconify-icon>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -90,6 +93,9 @@
 					</a>
 					<a href="#" class="footer__social-link footer__social-link--accent" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
 						<iconify-icon icon="line-md:youtube-filled" width="22" height="22" aria-hidden="true"></iconify-icon>
+					</a>
+					<a href="#" class="footer__social-link footer__social-link--accent" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+						<iconify-icon icon="ri:linkedin-fill" width="22" height="22" aria-hidden="true"></iconify-icon>
 					</a>
 				</div>
 				<p class="footer__copyright">&copy; <?php bloginfo( 'name' ); ?>, Inc. <?php esc_html_e( 'All rights reserved.', 'Energynet' ); ?></p>

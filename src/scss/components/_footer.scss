@@ -118,6 +118,7 @@
   @media (min-width: $bp-lg) {
     grid-area: contact;
     margin-bottom: 0;
+    padding-top: 17px; // Figma: CONTACT US at top:72px, inner padding-top:55px → 17px offset
   }
 }
 
@@ -189,12 +190,16 @@
 .footer__contact-block--email a {
   font-family: $font-body;
   font-weight: $fw-regular;
-  font-size: 15px;
+  font-size: 15px; // mobile
   color: $color-white;
   text-decoration: underline;
   transition: opacity 0.2s ease;
 
   &:hover { opacity: 0.75; }
+
+  @media (min-width: $bp-lg) {
+    font-size: $fs-body; // Figma desktop: 16.3px ≈ 16px
+  }
 }
 
 // ─── Col 3: CTA (desktop only) ────────────────────────────────────────────────
@@ -207,6 +212,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    padding-top: 24px; // Figma: FOR MORE INFO at top:79px, inner padding-top:55px → 24px offset
   }
 }
 
@@ -217,7 +223,7 @@
   line-height: 1.25;
   text-align: right;
   color: $color-white;
-  margin: 0 0 $space-6;
+  margin: 0 0 17px; // Figma: 17px gap to first button (179px→196px)
 }
 
 .footer__btn {
@@ -237,13 +243,13 @@
   text-decoration: none;
   transition: opacity 0.2s ease;
 
-  & + & { margin-top: $space-3; }
+  & + & { margin-top: 20px; } // Figma: 20px gap between buttons (251px→271px)
 
   &:hover { opacity: 0.85; }
 }
 
 .footer__follow {
-  margin-top: $space-6;
+  margin-top: auto; // Figma: 76px gap — push to bottom of flex column naturally
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -255,7 +261,7 @@
   font-size: 20px;
   letter-spacing: 0.03em;
   color: $color-white;
-  margin: 0 0 $space-2;
+  margin: 0 0 5px; // Figma: 5px gap to social icons (427px→432px)
 }
 
 .footer__social {
