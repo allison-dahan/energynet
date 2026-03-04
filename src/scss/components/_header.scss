@@ -1,0 +1,233 @@
+@use "../partials/variables" as *;
+
+// ─── Shell ────────────────────────────────────────────────────────────────────
+
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 57%, rgba(255, 255, 255, 0) 100%);
+}
+
+.header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100px;
+
+  @media (max-width: #{$bp-lg - 1px}) {
+    height: 80px;
+  }
+}
+
+// ─── Logo ─────────────────────────────────────────────────────────────────────
+
+.header__logo {
+  font-family: $font-logo;
+  font-weight: $fw-black;
+  font-size: 22px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $color-primary;
+  text-decoration: none;
+  flex-shrink: 0;
+
+  img {
+    height: 30px;
+    width: auto;
+    display: block;
+  }
+}
+
+// ─── Desktop Nav ──────────────────────────────────────────────────────────────
+
+.header__nav {
+  display: none;
+  flex: 1;
+  justify-content: center;
+
+  @media (min-width: $bp-lg) {
+    display: flex;
+  }
+
+  ul {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li { margin: 0; }
+
+  a {
+    font-family: $font-body;
+    font-weight: $fw-medium;
+    font-size: 20px;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    color: $color-primary;
+    white-space: nowrap;
+    transition: opacity 0.2s ease;
+
+    &:hover { opacity: 0.65; }
+  }
+
+  .current-menu-item > a { opacity: 0.65; }
+}
+
+// ─── Social Icons ─────────────────────────────────────────────────────────────
+
+.header__social {
+  display: none;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
+
+  @media (min-width: $bp-lg) {
+    display: flex;
+  }
+}
+
+.header__social-link {
+  display: flex;
+  align-items: center;
+  color: $color-primary;
+  transition: opacity 0.2s ease;
+
+  &:hover { opacity: 0.65; }
+}
+
+// ─── Hamburger ────────────────────────────────────────────────────────────────
+
+.header__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $color-primary;
+  padding: 0;
+
+  @media (min-width: $bp-lg) {
+    display: none;
+  }
+}
+
+// ─── Mobile Drawer ────────────────────────────────────────────────────────────
+
+.header__drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  background: rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+
+  &.is-open {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.header__drawer-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+// Mirrors the header gradient so logo + X sit in the same visual area
+.header__drawer-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 $space-6;
+  height: 80px;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 57%, rgba(255, 255, 255, 0) 100%);
+}
+
+.header__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $color-primary;
+  padding: 0;
+}
+
+// Nav items: stacked 56px rows with separator lines (Figma: 354px × 56px each)
+.header__drawer-nav {
+  ul {
+    list-style: none;
+    margin: 0 $space-6;
+    padding: 0;
+  }
+
+  li {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $color-white;
+
+    & + li {
+      border-top: 1px solid rgba(87, 87, 87, 0.75);
+    }
+
+    &.current-menu-item {
+      background: $color-secondary;
+
+      a { color: $color-accent; }
+    }
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-family: $font-heading;
+    font-weight: $fw-medium;
+    font-size: 16px;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    color: $color-secondary;
+    text-transform: uppercase;
+    transition: opacity 0.2s ease;
+
+    &:hover { opacity: 0.7; }
+  }
+}
+
+// Social row sits inside the same white box container as nav items
+.header__drawer-social {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 13px;
+  height: 56px;
+  padding-bottom: 10px;
+  flex-shrink: 0;
+  background: $color-white;
+  border-top: 1px solid rgba(87, 87, 87, 0.75);
+  margin: 0 $space-6;
+
+  iconify-icon {
+    font-size: 18px;
+  }
+
+  .header__social-link {
+    color: $color-secondary;
+  }
+}

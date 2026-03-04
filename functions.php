@@ -209,6 +209,14 @@ function energynet_enqueue_assets() {
       true
     );
   }
+
+  wp_enqueue_script(
+    'iconify',
+    'https://cdn.jsdelivr.net/npm/iconify-icon@2/dist/iconify-icon.min.js',
+    array(),
+    null,
+    true
+  );
 }
 add_action( 'wp_enqueue_scripts', 'energynet_enqueue_assets' );
 
