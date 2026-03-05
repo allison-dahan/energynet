@@ -1,6 +1,27 @@
+// Font paths are relative to the output CSS (dist/assets/style.css).
+// public/fonts/ is copied to dist/fonts/ by Vite at build time.
+
+// ─── Acre ─────────────────────────────────────────────────────────────────────
+
 @font-face {
   font-family: "Acre";
-  src: url("/fonts/Acre-Regular.otf") format("opentype");
+  src: url("../fonts/Acre-Thin.ttf") format("truetype");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Acre";
+  src: url("../fonts/Acre-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Acre";
+  src: url("../fonts/Acre-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -8,15 +29,49 @@
 
 @font-face {
   font-family: "Acre";
-  src: url("/fonts/Acre-Medium.otf") format("opentype");
+  src: url("../fonts/Acre-Medium.ttf") format("truetype");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
+  font-family: "Acre";
+  src: url("../fonts/Acre-Semibold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Acre";
+  src: url("../fonts/Acre-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Acre";
+  src: url("../fonts/Acre-Extrabold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Acre";
+  src: url("../fonts/Acre-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+// ─── Butler ───────────────────────────────────────────────────────────────────
+
+@font-face {
   font-family: "Butler";
-  src: url("/fonts/Butler-Black.otf") format("opentype");
+  src: url("../fonts/Butler-Black.otf") format("opentype");
   font-weight: 900;
   font-style: normal;
   font-display: swap;

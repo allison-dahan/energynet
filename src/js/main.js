@@ -22,3 +22,18 @@ close?.addEventListener('click', closeMenu);
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeMenu();
 });
+
+// ─── Hero slideshow (fade transition) ─────────────────────────────────────────
+
+(function () {
+  const slides = document.querySelectorAll('[data-hero] .hero__bg');
+  if (slides.length < 2) return;
+
+  let current = 0;
+
+  setInterval(() => {
+    slides[current].classList.remove('is-active');
+    current = (current + 1) % slides.length;
+    slides[current].classList.add('is-active');
+  }, 5000);
+})();

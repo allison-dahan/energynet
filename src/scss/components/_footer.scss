@@ -41,7 +41,7 @@
 
 .footer__logo {
   font-family: $font-heading;
-  font-weight: 700;
+  font-weight: $fw-bold;
   font-size: 24px;
   color: $color-accent;
   margin: 0; // mobile: section margin handles spacing
@@ -80,7 +80,7 @@
 
   a {
     font-family: $font-body;
-    font-weight: 300;
+    font-weight: $fw-light;
     font-size: $fs-small;
     line-height: 17px;
     color: $color-white;
@@ -90,7 +90,7 @@
     &:hover { opacity: 0.75; }
 
     @media (min-width: $bp-lg) {
-      font-weight: 700;
+      font-weight: $fw-bold;
     }
 
     &:first-child {
@@ -124,7 +124,7 @@
 
 .footer__contact-heading {
   font-family: $font-heading;
-  font-weight: 700;
+  font-weight: $fw-bold;
   font-size: 20px;
   letter-spacing: 0.05em;
   color: $color-white;
@@ -143,7 +143,7 @@
 .footer__contact-label {
   display: block;
   font-family: $font-heading;
-  font-weight: 700;
+  font-weight: $fw-bold;
   font-size: 18px;
   color: $color-white;
   margin-bottom: 4px;
@@ -236,7 +236,7 @@
   background: #615237;
   border-radius: $radius-md;
   font-family: $font-body;
-  font-weight: 700;
+  font-weight: $fw-bold;
   font-size: $fs-body;
   letter-spacing: 0.05em;
   color: #F6FAF9;
@@ -257,7 +257,7 @@
 
 .footer__follow-label {
   font-family: $font-body;
-  font-weight: 300;
+  font-weight: $fw-light;
   font-size: 20px;
   letter-spacing: 0.03em;
   color: $color-white;
@@ -304,7 +304,7 @@
 
 .footer__copyright {
   font-family: $font-body;
-  font-weight: 300;
+  font-weight: $fw-light;
   font-size: $fs-caption;
   color: $color-accent;
   margin: 0;
