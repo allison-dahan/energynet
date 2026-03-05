@@ -43,7 +43,7 @@
 		<div class="container header__inner">
 
 			<a class="header__logo" href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
-				<?php bloginfo( 'name' ); ?>
+				<img src="<?php echo esc_url( get_template_directory_uri() . '/dist/images/energynet-logo.png' ); ?>" alt="<?php bloginfo( 'name' ); ?>">
 			</a>
 
 			<nav class="header__nav" aria-label="<?php esc_attr_e( 'Primary navigation', 'energynet' ); ?>">
@@ -69,7 +69,7 @@
 
 			<div class="header__drawer-top">
 				<a class="header__logo" href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
-					<?php bloginfo( 'name' ); ?>
+					<img src="<?php echo esc_url( get_template_directory_uri() . '/dist/images/energynet-logo.png' ); ?>" alt="<?php bloginfo( 'name' ); ?>">
 				</a>
 				<button class="header__close" aria-label="<?php esc_attr_e( 'Close menu', 'energynet' ); ?>">
 					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>

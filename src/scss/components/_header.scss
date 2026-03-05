@@ -67,7 +67,7 @@
 
   @media (min-width: $bp-lg) {
     font-size: 40px;
-    min-height: 65px; // match Figma image logo height so nav aligns correctly
+    min-height: 45px;
     display: flex;
     align-items: center;
   }
@@ -78,7 +78,7 @@
     display: block;
 
     @media (min-width: $bp-lg) {
-      height: 65px;
+      height: 45px;
     }
   }
 }
