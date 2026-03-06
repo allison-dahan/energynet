@@ -34,7 +34,8 @@ get_header();
 		</div>
 
 		<div class="container">
-			<p class="about-intro__text">Energynet, Inc. has evolved into a dynamic Engineering, Procurement, and Construction (EPC) partner delivering integrated solutions that power modern infrastructure and sustainable development. Built on years of industry expertise, the company now leads projects from concept to completion — combining engineering precision, strategic sourcing, and disciplined construction execution to provide reliable, future-ready results. Beyond EPC execution, Energynet continues to elevate infrastructure through premium lightning protection and grounding solutions, precision-engineered mechanical and electrical supports, advanced wire mesh cable management, and aircraft obstruction lighting systems trusted worldwide. With a multidisciplinary team of engineers, project managers, and technical specialists, Energynet delivers end-to-end solutions across grounding and earthing systems, lightning protection technologies, electrical and mechanical supports, structured cable management, and critical infrastructure applications. The company's EPC approach ensures seamless coordination, technical excellence, and operational efficiency at every stage of the project lifecycle — from design development and procurement strategy to on-site implementation and commissioning — while maintaining strong partnerships with globally recognized brands and advanced engineering solutions.</p>
+			<p class="about-intro__text">Energynet, Inc. has evolved into a dynamic Engineering, Procurement, and Construction (EPC) partner delivering integrated solutions that power modern infrastructure and sustainable development. Built on years of industry expertise, the company now leads projects from concept to completion — combining engineering precision, strategic sourcing, and disciplined construction execution to provide reliable, future-ready results. Beyond EPC execution, Energynet continues to elevate infrastructure through premium lightning protection and grounding solutions, precision-engineered mechanical and electrical supports, advanced wire mesh cable management, and aircraft obstruction lighting systems trusted worldwide.</p>
+			<p class="about-intro__text">With a multidisciplinary team of engineers, project managers, and technical specialists, Energynet delivers end-to-end solutions across grounding and earthing systems, lightning protection technologies, electrical and mechanical supports, structured cable management, and critical infrastructure applications. The company's EPC approach ensures seamless coordination, technical excellence, and operational efficiency at every stage of the project lifecycle — from design development and procurement strategy to on-site implementation and commissioning — while maintaining strong partnerships with globally recognized brands and advanced engineering solutions.</p>
 		</div>
 	</section>
 
@@ -87,18 +88,38 @@ get_header();
 	<section class="partners">
 		<div class="container">
 			<h2 class="section-heading section-heading--left">PARTNERS</h2>
-			<div class="partners__grid">
-				<div class="partner-logo">
-					<img src="<?php echo esc_url( get_template_directory_uri() . '/dist/images/about/partners/enistrut logo.png' ); ?>" alt="Enistrut">
+			<div class="partners__list">
+				<div class="partner-item">
+					<div class="partner-logo">
+						<img src="<?php echo esc_url( get_template_directory_uri() . '/dist/images/about/partners/enistrut logo.png' ); ?>" alt="Enistrut">
+					</div>
+					<div class="partner-item__card">
+						<p class="partner-item__text">ENI-STRUT is engineered to deliver reliable and efficient support solutions for modern electrical, mechanical, and infrastructure projects. Designed with strength, flexibility, and precision in mind, ENI-STRUT systems provide a versatile framework for cable management, equipment mounting, and structural support across commercial, industrial, and large-scale construction environments. Built to meet demanding project requirements, each component is manufactured for durability, ease of installation, and long-term performance in challenging site conditions.</p>
+					</div>
 				</div>
-				<div class="partner-logo">
-					<img src="<?php echo esc_url( get_template_directory_uri() . '/dist/images/about/partners/indelec-logo.png' ); ?>" alt="Indelec">
+				<div class="partner-item">
+					<div class="partner-logo">
+						<img src="<?php echo esc_url( get_template_directory_uri() . '/dist/images/about/partners/indelec-logo.png' ); ?>" alt="Indelec">
+					</div>
+					<div class="partner-item__card">
+						<p class="partner-item__text">INDELEC, founded in France and backed by more than 70 years of expertise, is globally recognized for advanced lightning protection and grounding system solutions engineered to safeguard critical infrastructure. Combining French innovation with decades of field-proven performance, INDELEC delivers integrated systems that include lightning protection technologies, earthing and grounding components, surge protection solutions, and accessories designed to ensure electrical safety and system reliability across commercial, industrial, and high-risk environments.</p>
+					</div>
 				</div>
-				<div class="partner-logo">
-					<img src="<?php echo esc_url( get_template_directory_uri() . '/dist/images/about/partners/delta box logo.png' ); ?>" alt="Delta Box">
+				<div class="partner-item">
+					<div class="partner-logo">
+						<img src="<?php echo esc_url( get_template_directory_uri() . '/dist/images/about/partners/delta box logo.png' ); ?>" alt="Delta Box">
+					</div>
+					<div class="partner-item__card">
+						<p class="partner-item__text">Delta Box, a French-engineered brand and subsidiary of the INDELEC Group, brings more than 30 years of expertise in advanced aviation safety and infrastructure solutions. Based in Douai, France, the company specializes in the design and manufacturing of aircraft warning lights, obstruction lighting systems, and related technologies developed to protect critical structures and ensure safe airspace operations worldwide.</p>
+					</div>
 				</div>
-				<div class="partner-logo">
-					<img src="<?php echo esc_url( get_template_directory_uri() . '/dist/images/about/partners/Cablofil-logo.JPG' ); ?>" alt="Cablofil">
+				<div class="partner-item">
+					<div class="partner-logo">
+						<img src="<?php echo esc_url( get_template_directory_uri() . '/dist/images/about/partners/Cablofil-logo.JPG' ); ?>" alt="Cablofil">
+					</div>
+					<div class="partner-item__card">
+						<p class="partner-item__text">Cablofil, originally developed in France and now part of the global portfolio of Legrand, represents precision-engineered cable management trusted worldwide. Designed to meet the rigorous demands of modern electrical infrastructures, its innovative wire mesh system combines structural strength with installation flexibility&mdash;supporting efficient deployment across commercial, industrial, and mission-critical environments.</p>
+					</div>
 				</div>
 			</div>
 			<div class="partners__cta">

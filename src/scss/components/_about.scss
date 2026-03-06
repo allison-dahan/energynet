@@ -12,9 +12,19 @@
   text-align: center;
   margin: 0 0 $space-8;
 
+  @media (min-width: $bp-lg) {
+    font-size: $fs-h2; // 56px
+    line-height: 70px;
+  }
+
   &--sm {
     font-size: 24px;
     line-height: 30px;
+
+    @media (min-width: $bp-lg) {
+      font-size: $fs-h2;
+      line-height: 70px;
+    }
   }
 
   &--left {
@@ -33,6 +43,10 @@
       flex: 1;
       height: 3px;
       background: $color-accent;
+
+      @media (min-width: $bp-lg) {
+        height: 5px;
+      }
     }
   }
 }
@@ -57,7 +71,10 @@
   margin: 0 0 $space-8;
 
   @media (min-width: $bp-lg) {
-    text-align: left;
+    font-size: 18px;
+    line-height: 22px;
+    text-align: justify;
+    margin: 0 0 $space-4;
   }
 }
 
@@ -74,7 +91,7 @@
   overflow: hidden;
 
   @media (min-width: $bp-lg) {
-    height: 480px;
+    height: 600px;
   }
 }
 
@@ -121,8 +138,9 @@
 
   @media (min-width: $bp-lg) {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: $space-12 $space-16;
+    grid-template-columns: repeat(4, 285px);
+    gap: $space-6;
+    justify-content: center;
   }
 }
 
@@ -131,6 +149,12 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
+
+  @media (min-width: $bp-lg) {
+    border: 3px solid $color-accent;
+    border-radius: 9px;
+    padding: $space-6;
+  }
 }
 
 .service-card__icon {
@@ -138,6 +162,11 @@
   width: auto;
   object-fit: contain;
   margin-bottom: $space-6;
+
+  @media (min-width: $bp-lg) {
+    width: 100%;
+    height: 220px;
+  }
 }
 
 .service-card__title {
@@ -148,6 +177,10 @@
   color: $color-primary;
   margin: 0 0 $space-4;
   max-width: 280px;
+
+  @media (min-width: $bp-lg) {
+    max-width: none;
+  }
 }
 
 .service-card__text {
@@ -158,6 +191,11 @@
   color: $color-secondary;
   margin: 0;
   max-width: 354px;
+
+  @media (min-width: $bp-lg) {
+    max-width: none;
+    text-align: center;
+  }
 }
 
 // ─── Experience ───────────────────────────────────────────────────────────────
@@ -167,6 +205,26 @@
   padding: $space-8 0;
   text-align: center;
   overflow: hidden;
+
+  @media (min-width: $bp-lg) {
+    overflow: visible;
+    background-clip: content-box;
+    padding-top: 29px;
+    padding-bottom: 0;
+    min-height: 553px;
+    text-align: left;
+  }
+}
+
+.experience .container {
+  @media (min-width: $bp-lg) {
+    display: flex;
+    align-items: center;
+    gap: $space-8;
+    padding-top: $space-20;
+    padding-bottom: $space-8;
+    padding-left: $space-12;
+  }
 }
 
 .experience__stat {
@@ -174,6 +232,14 @@
   flex-direction: column;
   align-items: center;
   line-height: 1;
+
+  @media (min-width: $bp-lg) {
+    order: 2;
+    flex: 1;
+    align-self: flex-start;
+    margin-top: -29px;
+    align-items: flex-start;
+  }
 }
 
 .experience__number {
@@ -184,7 +250,8 @@
   line-height: 0.9;
 
   @media (min-width: $bp-lg) {
-    font-size: 280px;
+    font-size: 470px;
+    line-height: 0.85;
   }
 }
 
@@ -194,6 +261,12 @@
   letter-spacing: 0.05em;
   color: $color-accent;
   margin-top: $space-2;
+
+  @media (min-width: $bp-lg) {
+    font-size: 54px;
+    line-height: 68px;
+    margin-top: 0;
+  }
 }
 
 .experience__text {
@@ -206,10 +279,13 @@
   margin: $space-8 0 0;
 
   @media (min-width: $bp-lg) {
+    order: 1;
+    flex: 0 0 40%;
+    font-size: 20px;
+    line-height: 25px;
     text-align: left;
-    max-width: 720px;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: none;
+    margin: 0;
   }
 }
 
@@ -219,7 +295,7 @@
   padding: $space-8 0;
 }
 
-.partners__grid {
+.partners__list {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: $space-6;
@@ -227,7 +303,17 @@
   margin-bottom: $space-8;
 
   @media (min-width: $bp-lg) {
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    flex-direction: column;
+    gap: $space-8;
+    justify-items: unset;
+  }
+}
+
+.partner-item {
+  @media (min-width: $bp-lg) {
+    display: flex;
+    align-items: center;
   }
 }
 
@@ -247,11 +333,47 @@
     max-height: 55%;
     object-fit: contain;
   }
+
+  @media (min-width: $bp-lg) {
+    width: 192px;
+    height: 192px;
+    flex-shrink: 0;
+    z-index: 1;
+    margin-right: -60px;
+    cursor: default;
+  }
+}
+
+.partner-item__card {
+  display: none;
+
+  @media (min-width: $bp-lg) {
+    display: flex;
+    align-items: center;
+    flex: 1 1 0;
+    max-width: 836px;
+    min-height: 192px;
+    border: 3px solid $color-accent;
+    border-radius: 9px;
+    padding: $space-6 $space-8 $space-6 calc(60px + $space-8);
+  }
+}
+
+.partner-item__text {
+  font-weight: $fw-regular;
+  font-size: 18px;
+  line-height: 22px;
+  color: $color-secondary;
+  margin: 0;
 }
 
 .partners__cta {
   display: flex;
   justify-content: center;
+
+  @media (min-width: $bp-lg) {
+    display: none;
+  }
 }
 
 // ─── Clients ──────────────────────────────────────────────────────────────────
@@ -280,6 +402,10 @@
   height: 3px;
   background: $color-accent;
   margin-top: $space-8;
+
+  @media (min-width: $bp-lg) {
+    height: 5px;
+  }
 }
 
 .certifications {
