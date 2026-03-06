@@ -107,10 +107,14 @@
 }
 
 .about-carousel__dots {
+  position: absolute;
+  bottom: $space-4;
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: center;
   gap: 12px;
-  padding-top: $space-3;
+  z-index: 10;
 }
 
 .about-carousel__dot {
@@ -307,6 +311,9 @@
     flex-direction: column;
     gap: $space-8;
     justify-items: unset;
+    max-width: 970px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
@@ -355,7 +362,7 @@
     min-height: 192px;
     border: 3px solid $color-accent;
     border-radius: 9px;
-    padding: $space-6 $space-8 $space-6 calc(60px + $space-8);
+    padding: $space-6 $space-16 $space-6 calc(60px + $space-16);
   }
 }
 

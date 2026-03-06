@@ -24,12 +24,12 @@ get_header();
 				<div class="about-carousel__slide" style="background-image: url(<?php echo esc_url( get_template_directory_uri() . '/dist/images/about/rifki-kurniawan-pO3lCoKJncM-unsplash.jpg' ); ?>)"></div>
 				<div class="about-carousel__slide" style="background-image: url(<?php echo esc_url( get_template_directory_uri() . '/dist/images/about/scott-blake-x-ghf9LjrVg-unsplash.jpg' ); ?>)"></div>
 				<div class="about-carousel__slide" style="background-image: url(<?php echo esc_url( get_template_directory_uri() . '/dist/images/about/thomas-richter-B09tL5bSQJk-unsplash.jpg' ); ?>)"></div>
-			</div>
-			<div class="about-carousel__dots" role="tablist" aria-label="<?php esc_attr_e( 'Image slides', 'energynet' ); ?>">
-				<button class="about-carousel__dot is-active" role="tab" aria-selected="true"  aria-label="<?php esc_attr_e( 'Slide 1', 'energynet' ); ?>"></button>
-				<button class="about-carousel__dot"            role="tab" aria-selected="false" aria-label="<?php esc_attr_e( 'Slide 2', 'energynet' ); ?>"></button>
-				<button class="about-carousel__dot"            role="tab" aria-selected="false" aria-label="<?php esc_attr_e( 'Slide 3', 'energynet' ); ?>"></button>
-				<button class="about-carousel__dot"            role="tab" aria-selected="false" aria-label="<?php esc_attr_e( 'Slide 4', 'energynet' ); ?>"></button>
+				<div class="about-carousel__dots" role="tablist" aria-label="<?php esc_attr_e( 'Image slides', 'energynet' ); ?>">
+					<button class="about-carousel__dot is-active" role="tab" aria-selected="true"  aria-label="<?php esc_attr_e( 'Slide 1', 'energynet' ); ?>"></button>
+					<button class="about-carousel__dot"            role="tab" aria-selected="false" aria-label="<?php esc_attr_e( 'Slide 2', 'energynet' ); ?>"></button>
+					<button class="about-carousel__dot"            role="tab" aria-selected="false" aria-label="<?php esc_attr_e( 'Slide 3', 'energynet' ); ?>"></button>
+					<button class="about-carousel__dot"            role="tab" aria-selected="false" aria-label="<?php esc_attr_e( 'Slide 4', 'energynet' ); ?>"></button>
+				</div>
 			</div>
 		</div>
 
