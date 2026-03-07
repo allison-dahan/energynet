@@ -80,7 +80,7 @@ function energynet_register_product_brand_taxonomy() {
 add_action( 'init', 'energynet_register_product_brand_taxonomy' );
 
 // ─── ACF Fields ───────────────────────────────────────────────────────────────
-// Uses free ACF only — 3 separate label+file pairs instead of a repeater.
+// Uses free ACF — individual file fields with fixed labels.
 
 function energynet_register_product_acf_fields() {
 	if ( ! function_exists( 'acf_add_local_field_group' ) ) {
@@ -88,61 +88,37 @@ function energynet_register_product_acf_fields() {
 	}
 
 	acf_add_local_field_group( [
-		'key'      => 'group_product_details',
-		'title'    => 'Product Details',
-		'fields'   => [
+		'key'    => 'group_product_details',
+		'title'  => 'Technical Information',
+		'fields' => [
 
-			// Technical File 1
 			[
-				'key'   => 'field_tech_file_1_label',
-				'label' => 'Technical File 1 — Label',
-				'name'  => 'tech_file_1_label',
-				'type'  => 'text',
+				'key'          => 'field_tech_brochure',
+				'label'        => 'Brochure',
+				'name'         => 'tech_brochure',
+				'type'         => 'url',
+				'instructions' => 'Paste a URL or upload a file to the Media Library and paste its URL.',
 			],
 			[
-				'key'           => 'field_tech_file_1_upload',
-				'label'         => 'Technical File 1 — File',
-				'name'          => 'tech_file_1_upload',
-				'type'          => 'file',
-				'return_format' => 'url',
-			],
-
-			// Technical File 2
-			[
-				'key'   => 'field_tech_file_2_label',
-				'label' => 'Technical File 2 — Label',
-				'name'  => 'tech_file_2_label',
-				'type'  => 'text',
+				'key'          => 'field_tech_certificate',
+				'label'        => 'Certificate',
+				'name'         => 'tech_certificate',
+				'type'         => 'url',
+				'instructions' => 'Paste a URL or upload a file to the Media Library and paste its URL.',
 			],
 			[
-				'key'           => 'field_tech_file_2_upload',
-				'label'         => 'Technical File 2 — File',
-				'name'          => 'tech_file_2_upload',
-				'type'          => 'file',
-				'return_format' => 'url',
-			],
-
-			// Technical File 3
-			[
-				'key'   => 'field_tech_file_3_label',
-				'label' => 'Technical File 3 — Label',
-				'name'  => 'tech_file_3_label',
-				'type'  => 'text',
+				'key'          => 'field_tech_data_sheet',
+				'label'        => 'Data Sheet',
+				'name'         => 'tech_data_sheet',
+				'type'         => 'url',
+				'instructions' => 'Paste a URL or upload a file to the Media Library and paste its URL.',
 			],
 			[
-				'key'           => 'field_tech_file_3_upload',
-				'label'         => 'Technical File 3 — File',
-				'name'          => 'tech_file_3_upload',
-				'type'          => 'file',
-				'return_format' => 'url',
-			],
-
-			// Video
-			[
-				'key'   => 'field_product_video',
-				'label' => 'Video URL or Filename',
-				'name'  => 'product_video',
-				'type'  => 'text',
+				'key'          => 'field_tech_video',
+				'label'        => 'Video',
+				'name'         => 'tech_video',
+				'type'         => 'url',
+				'instructions' => 'Paste a video URL or link.',
 			],
 
 		],

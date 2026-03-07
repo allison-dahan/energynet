@@ -31,12 +31,15 @@ if ( $brand_terms && ! is_wp_error( $brand_terms ) ) {
 	$brand_slugs = wp_list_pluck( $brand_terms, 'slug' );
 }
 
-// Build tech files from 3 separate ACF field pairs (free ACF compatible).
+// Technical information files.
 $tech_rows = [];
 if ( function_exists( 'get_field' ) ) {
-	for ( $i = 1; $i <= 3; $i++ ) {
-		$url   = get_field( "tech_file_{$i}_upload" );
-		$label = get_field( "tech_file_{$i}_label" );
+	foreach ( [
+		'Brochure'    => 'tech_brochure',
+		'Certificate' => 'tech_certificate',
+		'Data Sheet'  => 'tech_data_sheet',
+	] as $label => $field_name ) {
+		$url = get_field( $field_name );
 		if ( $url ) {
 			$tech_rows[] = [ 'tech_file_label' => $label, 'tech_file_upload' => $url ];
 		}
