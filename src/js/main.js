@@ -129,6 +129,43 @@ document.addEventListener('keydown', (e) => {
   timer = setInterval(advance, 5000);
 })();
 
+// ─── Products filter ───────────────────────────────────────────────────────────
+
+(function () {
+  const filterWrap = document.querySelector('[data-products-filter]');
+  if (!filterWrap) return;
+
+  const cards = document.querySelectorAll('.product-card');
+  const activeFilters = { brand: 'all', category: 'all' };
+
+  function applyFilters() {
+    cards.forEach(card => {
+      const brands     = (card.dataset.brands     || '').split(',').filter(Boolean);
+      const categories = (card.dataset.categories || '').split(',').filter(Boolean);
+
+      const brandMatch = activeFilters.brand === 'all' || brands.includes(activeFilters.brand);
+      const catMatch   = activeFilters.category === 'all' || categories.includes(activeFilters.category);
+
+      card.classList.toggle('is-hidden', !(brandMatch && catMatch));
+    });
+  }
+
+  filterWrap.addEventListener('click', e => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+
+    const filterType = btn.dataset.filter;
+    const value      = btn.dataset.value;
+
+    filterWrap.querySelectorAll(`.filter-btn[data-filter="${filterType}"]`)
+      .forEach(b => b.classList.remove('is-active'));
+    btn.classList.add('is-active');
+
+    activeFilters[filterType] = value;
+    applyFilters();
+  });
+})();
+
 // ─── Hero slideshow (fade transition) ─────────────────────────────────────────
 
 (function () {

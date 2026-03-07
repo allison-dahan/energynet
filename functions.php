@@ -180,6 +180,11 @@ if ( defined( 'JETPACK__VERSION' ) ) {
 	require get_template_directory() . '/inc/jetpack.php';
 }
 
+/**
+ * Product CPT, taxonomy, and ACF fields.
+ */
+require get_template_directory() . '/inc/cpt-product.php';
+
 function energynet_enqueue_assets() {
   $theme_dir = get_template_directory();
   $theme_uri = get_template_directory_uri();
