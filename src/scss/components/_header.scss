@@ -9,6 +9,15 @@
   right: 0;
   z-index: 100;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 57%, rgba(255, 255, 255, 0) 100%);
+
+  // WP admin bar pushes html down — move header below it
+  body.admin-bar & {
+    top: 32px;
+
+    @media screen and (max-width: 782px) {
+      top: 46px;
+    }
+  }
 }
 
 // ─── Row 1: Social bar (desktop only, top-right) ──────────────────────────────

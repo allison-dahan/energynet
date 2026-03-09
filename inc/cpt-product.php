@@ -25,7 +25,7 @@ function energynet_register_product_cpt() {
 		'has_archive'  => false,
 		'show_in_rest' => true,
 		'menu_icon'    => 'dashicons-products',
-		'supports'     => [ 'title', 'thumbnail', 'excerpt' ],
+		'supports'     => [ 'title', 'editor', 'thumbnail', 'excerpt' ],
 		'rewrite'      => [ 'slug' => 'product' ],
 	] );
 }

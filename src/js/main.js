@@ -166,6 +166,42 @@ document.addEventListener('keydown', (e) => {
   });
 })();
 
+// ─── Back to top ───────────────────────────────────────────────────────────────
+
+(function () {
+  const btn = document.querySelector('[data-back-to-top]');
+  if (!btn) return;
+
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('is-visible', window.scrollY > 300);
+  }, { passive: true });
+
+  btn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+
+// ─── Copy link ─────────────────────────────────────────────────────────────────
+
+(function () {
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('[data-copy-url]');
+    if (!btn) return;
+
+    const url = btn.dataset.copyUrl;
+    if (!url) return;
+
+    navigator.clipboard.writeText(url).then(() => {
+      const icon = btn.querySelector('iconify-icon');
+      if (icon) {
+        const prev = icon.getAttribute('icon');
+        icon.setAttribute('icon', 'mdi:check');
+        setTimeout(() => icon.setAttribute('icon', prev), 1500);
+      }
+    });
+  });
+})();
+
 // ─── Hero slideshow (fade transition) ─────────────────────────────────────────
 
 (function () {
