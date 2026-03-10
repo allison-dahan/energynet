@@ -75,6 +75,7 @@ function energynet_register_product_brand_taxonomy() {
 		'hierarchical' => false,
 		'show_in_rest' => true,
 		'rewrite'      => [ 'slug' => 'product-brand' ],
+		'meta_box_cb'  => false, // replaced by ACF checkbox field below
 	] );
 }
 add_action( 'init', 'energynet_register_product_brand_taxonomy' );
@@ -134,3 +135,77 @@ function energynet_register_product_acf_fields() {
 	] );
 }
 add_action( 'acf/init', 'energynet_register_product_acf_fields' );
+
+// ─── ACF: Brand checklist on product edit screen ──────────────────────────────
+
+function energynet_register_product_brand_checkbox() {
+	if ( ! function_exists( 'acf_add_local_field_group' ) ) {
+		return;
+	}
+
+	acf_add_local_field_group( [
+		'key'    => 'group_product_brand_select',
+		'title'  => 'Brand',
+		'fields' => [
+			[
+				'key'           => 'field_product_brand_checkbox',
+				'label'         => 'Brand',
+				'name'          => 'product_brand_terms',
+				'type'          => 'taxonomy',
+				'taxonomy'      => 'product_brand',
+				'field_type'    => 'checkbox',  // checklist display
+				'allow_null'    => 1,
+				'add_term'      => 0,           // don't allow adding new brands inline
+				'save_terms'    => 1,           // saves to the actual taxonomy relationship
+				'load_terms'    => 1,           // pre-checks already-assigned terms
+				'return_format' => 'id',
+				'instructions'  => 'Select the brand(s) for this product.',
+			],
+		],
+		'location' => [
+			[
+				[
+					'param'    => 'post_type',
+					'operator' => '==',
+					'value'    => 'product',
+				],
+			],
+		],
+	] );
+}
+add_action( 'acf/init', 'energynet_register_product_brand_checkbox' );
+
+// ─── ACF: Product Brand logo image ────────────────────────────────────────────
+
+function energynet_register_brand_acf_fields() {
+	if ( ! function_exists( 'acf_add_local_field_group' ) ) {
+		return;
+	}
+
+	acf_add_local_field_group( [
+		'key'    => 'group_product_brand_image',
+		'title'  => 'Brand Logo',
+		'fields' => [
+			[
+				'key'           => 'field_brand_logo',
+				'label'         => 'Logo',
+				'name'          => 'brand_logo',
+				'type'          => 'image',
+				'return_format' => 'array', // returns [ url, width, height, alt, ... ]
+				'preview_size'  => 'medium',
+				'library'       => 'all',
+				'instructions'  => 'Upload or select the brand logo image.',
+			],
+		],
+		'location' => [
+			[
+				[
+					'param'    => 'taxonomy',
+					'operator' => '==',
+					'value'    => 'product_brand',
+				],
+			],
+		],
+	] );
+}
+add_action( 'acf/init', 'energynet_register_brand_acf_fields' );
