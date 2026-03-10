@@ -3,7 +3,7 @@
 // ─── Products intro ────────────────────────────────────────────────────────────
 
 .products-intro {
-  padding-top: 80px; // clear fixed mobile header
+  padding-top: $space-20; // clear fixed mobile header
 
   @media (min-width: $bp-lg) {
     padding-top: 140px;

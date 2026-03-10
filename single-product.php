@@ -30,9 +30,9 @@ if ( function_exists( 'get_field' ) ) {
 $video_url = function_exists( 'get_field' ) ? get_field( 'tech_video' ) : '';
 
 $tech_icons = [
-	'Brochure'    => 'mdi:file-document-outline',
-	'Certificate' => 'mdi:certificate-outline',
-	'Data Sheet'  => 'mdi:file-table-outline',
+	'Brochure'    => 'ph:file-text-thin',
+	'Certificate' => 'ph:certificate-thin',
+	'Data Sheet'  => 'ph:table-thin',
 ];
 ?>
 
@@ -53,6 +53,9 @@ $tech_icons = [
 		<span class="product-breadcrumb__sep">&gt;</span>
 		<span class="product-breadcrumb__current"><?php echo esc_html( $title ); ?></span>
 	</nav>
+
+	<?php // ─── Product main grid (image + info) ─────────────────────────── ?>
+	<div class="product-main-grid">
 
 	<?php // ─── Product image ───────────────────────────────────────────────── ?>
 	<?php if ( $image_url ) : ?>
@@ -87,6 +90,8 @@ $tech_icons = [
 			<?php esc_html_e( 'NEED MORE INFORMATION? CONTACT US', 'energynet' ); ?>
 		</a>
 	</div>
+
+	</div><!-- .product-main-grid -->
 
 	<?php // ─── Share bar ───────────────────────────────────────────────────── ?>
 	<div class="product-share">
@@ -155,7 +160,7 @@ $tech_icons = [
 
 	<?php // ─── Video ───────────────────────────────────────────────────────── ?>
 	<?php if ( $video_url ) : ?>
-	<div class="product-section">
+	<div class="product-section product-section--video">
 		<div class="product-section__header">
 			<span class="product-section__diamond" aria-hidden="true"></span>
 			<span class="product-section__eyebrow"><?php esc_html_e( 'VIDEO', 'energynet' ); ?></span>

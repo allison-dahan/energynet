@@ -5,7 +5,7 @@
 .section-heading {
   font-family: $font-body;
   font-weight: $fw-medium;
-  font-size: 32px;
+  font-size: $fs-h4; // 32px
   line-height: 40px;
   letter-spacing: 0.05em;
   color: $color-primary;
@@ -18,7 +18,7 @@
   }
 
   &--sm {
-    font-size: 24px;
+    font-size: $fs-h5; // 24px
     line-height: 30px;
 
     @media (min-width: $bp-lg) {
@@ -113,7 +113,7 @@
   right: 0;
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: $space-3;
   z-index: 10;
 }
 
@@ -459,7 +459,7 @@
     position: fixed;
     inset: 0;
     z-index: 300;
-    background: rgba(0, 0, 0, 0.45);
+    background: rgba($color-black, 0.45);
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;

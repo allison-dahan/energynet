@@ -11,6 +11,11 @@ $color-accent: #D9BF9E;    // Light accent
 $color-white: #FFFFFF;
 $color-black: #000000;
 
+/* UI */
+$color-text-light: #F6FAF9;  // Off-white text on dark backgrounds
+$color-button-dark: #615237; // Dark brown CTA/button fill (also shadow base color)
+$color-bg-warm: #FFECD4;     // Warm cream section background
+
 /* States */
 $color-error: #B80000;
 
@@ -22,7 +27,7 @@ $color-disabled-button-bg: #9D9D9D;
 $color-disabled-button-border: #9C9C9C;
 
 /* Drop shadow color */
-$shadow-color: rgba(97, 82, 55, 0.1);
+$shadow-color: rgba($color-button-dark, 0.1);
 
 /* ===============================
    TYPOGRAPHY
