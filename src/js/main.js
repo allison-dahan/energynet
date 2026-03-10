@@ -129,39 +129,73 @@ document.addEventListener('keydown', (e) => {
   timer = setInterval(advance, 5000);
 })();
 
-// ─── Products filter ───────────────────────────────────────────────────────────
+// ─── Products filter overlay ───────────────────────────────────────────────────
 
 (function () {
-  const filterWrap = document.querySelector('[data-products-filter]');
-  if (!filterWrap) return;
+  const overlay   = document.querySelector('[data-filter-overlay]');
+  if (!overlay) return;
 
-  const cards = document.querySelectorAll('.product-card');
-  const activeFilters = { brand: 'all', category: 'all' };
+  const openBtn     = document.querySelector('[data-filter-open]');
+  const closeBtns   = overlay.querySelectorAll('[data-filter-close]');
+  const searchInput = overlay.querySelector('[data-filter-search]');
+  const cards       = document.querySelectorAll('.product-card');
+
+  const activeFilters = { brand: 'all', category: 'all', search: '' };
 
   function applyFilters() {
+    const term = activeFilters.search.toLowerCase();
     cards.forEach(card => {
       const brands     = (card.dataset.brands     || '').split(',').filter(Boolean);
       const categories = (card.dataset.categories || '').split(',').filter(Boolean);
+      const title      = (card.querySelector('.product-card__title')?.textContent || '').toLowerCase();
 
-      const brandMatch = activeFilters.brand === 'all' || brands.includes(activeFilters.brand);
-      const catMatch   = activeFilters.category === 'all' || categories.includes(activeFilters.category);
+      const brandMatch  = activeFilters.brand    === 'all' || brands.includes(activeFilters.brand);
+      const catMatch    = activeFilters.category === 'all' || categories.includes(activeFilters.category);
+      const searchMatch = !term || title.includes(term);
 
-      card.classList.toggle('is-hidden', !(brandMatch && catMatch));
+      card.classList.toggle('is-hidden', !(brandMatch && catMatch && searchMatch));
     });
   }
 
-  filterWrap.addEventListener('click', e => {
-    const btn = e.target.closest('.filter-btn');
-    if (!btn) return;
+  function openOverlay() {
+    overlay.classList.add('is-open');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
 
-    const filterType = btn.dataset.filter;
-    const value      = btn.dataset.value;
+  function closeOverlay() {
+    overlay.classList.remove('is-open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
 
-    filterWrap.querySelectorAll(`.filter-btn[data-filter="${filterType}"]`)
+  openBtn?.addEventListener('click', openOverlay);
+  closeBtns.forEach(btn => btn.addEventListener('click', closeOverlay));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeOverlay();
+  });
+
+  // Category / brand filter item clicks — apply and close overlay.
+  overlay.addEventListener('click', e => {
+    const item = e.target.closest('[data-filter]');
+    if (!item) return;
+
+    const filterType = item.dataset.filter;
+    const value      = item.dataset.value;
+
+    overlay.querySelectorAll(`[data-filter="${filterType}"]`)
       .forEach(b => b.classList.remove('is-active'));
-    btn.classList.add('is-active');
+    item.classList.add('is-active');
 
     activeFilters[filterType] = value;
+    applyFilters();
+    closeOverlay();
+  });
+
+  // Real-time search filtering (does not close overlay).
+  searchInput?.addEventListener('input', e => {
+    activeFilters.search = e.target.value;
     applyFilters();
   });
 })();

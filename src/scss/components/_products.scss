@@ -4,78 +4,233 @@
 
 .products-intro {
   padding-top: $space-20; // clear fixed mobile header
+  padding-bottom: $space-8;
 
   @media (min-width: $bp-lg) {
     padding-top: 140px;
   }
-}
 
-// ─── Filter bar ────────────────────────────────────────────────────────────────
-
-.products-filter {
-  padding: $space-4 0;
-  border-bottom: 2px solid $color-accent;
-  margin-bottom: $space-4;
-}
-
-.products-filter__group {
-  display: flex;
-  flex-direction: column;
-  gap: $space-2;
-  margin-bottom: $space-4;
-
-  &:last-child {
-    margin-bottom: 0;
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $space-6;
   }
 }
 
-.products-filter__label {
-  font-weight: $fw-semibold;
-  font-size: $fs-small;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: $color-secondary;
-}
-
-.products-filter__buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: $space-2;
-}
-
-.filter-btn {
-  font-family: $font-body;
-  font-size: $fs-small;
+.products-title {
+  font-size: $fs-h5; // 24px per Figma
   font-weight: $fw-medium;
   letter-spacing: 0.05em;
-  color: $color-secondary;
-  background: transparent;
-  border: 2px solid $color-accent;
-  border-radius: $radius-sm;
-  padding: $space-1 $space-3;
+  color: $color-primary;
+  margin: 0;
+
+  @media (min-width: $bp-lg) {
+    font-size: $fs-h2; // scale up on desktop
+  }
+}
+
+// ─── Filter toggle button ──────────────────────────────────────────────────────
+
+.products-filter-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: $color-white;
+  box-shadow: 0px 0px 2px 1px rgba($color-primary, 0.25);
+  color: $color-primary;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0px 0px 4px 2px rgba($color-primary, 0.35);
+  }
+}
+
+// ─── Filter overlay ────────────────────────────────────────────────────────────
+
+.filter-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: $color-white;
+  overflow-y: auto;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+
+  &.is-open {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.filter-overlay__top {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 80px; // matches mobile header height
+  padding: 0 $space-6;
+  flex-shrink: 0;
+}
+
+.filter-overlay__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $color-primary;
+  padding: 0;
+}
+
+.filter-overlay__content {
+  padding: 0 $space-6 $space-8;
+}
+
+.filter-overlay__search-wrap {
+  position: relative;
+  margin-bottom: $space-6;
+}
+
+.filter-overlay__search {
+  width: 100%;
+  height: 49px;
+  padding: 0 48px 0 $space-4;
+  border: 1px solid rgba($color-button-dark, 0.5);
+  border-radius: 10px;
+  font-family: $font-body;
+  font-size: $fs-body;
+  color: $color-secondary;
+  box-sizing: border-box;
+  outline: none;
+
+  &::placeholder {
+    color: $color-disabled-button-bg; // grey
+  }
+
+  &:focus {
+    border-color: $color-primary;
+  }
+}
+
+.filter-overlay__search-icon {
+  position: absolute;
+  right: $space-4;
+  top: 50%;
+  transform: translateY(-50%);
+  color: $color-primary;
+  pointer-events: none;
+}
+
+.filter-overlay__card {
+  background: $color-white;
+  box-shadow: 0px 0px 8px 3px rgba($color-black, 0.1);
+  border-radius: $radius-md;
+  padding: $space-6;
+}
+
+.filter-overlay__section {
+  &:not(:last-child) {
+    margin-bottom: $space-6;
+  }
+}
+
+.filter-overlay__heading {
+  font-size: $fs-body;
+  font-weight: $fw-bold;
+  color: $color-primary;
+  margin: 0 0 $space-4;
+}
+
+.filter-overlay__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.filter-overlay__item {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: $font-body;
+  font-size: $fs-body;
+  font-weight: $fw-medium;
+  line-height: 30px; // Figma: 30px line-height per item
+  color: $color-secondary;
+  text-align: left;
+
+  &::before {
+    content: '';
+    flex-shrink: 0;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: $color-accent; // gold bullet dot per Figma
+  }
 
   &.is-active {
-    background: $color-primary;
+    color: $color-primary;
+    font-weight: $fw-semibold;
+  }
+}
+
+.filter-overlay__brands {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.filter-overlay__brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 67px; // Figma: 67px brand button height
+  border: 1px solid $color-accent;
+  border-radius: $radius-md;
+  background: $color-white;
+  cursor: pointer;
+  font-family: $font-body;
+  font-size: $fs-body;
+  font-weight: $fw-semibold;
+  color: $color-primary;
+  transition: border-color 0.2s ease;
+
+  img {
+    max-width: 60%;
+    max-height: 55%;
+    object-fit: contain;
+  }
+
+  &.is-active {
     border-color: $color-primary;
-    color: $color-white;
+    border-width: 2px;
   }
 }
 
 // ─── Products grid ─────────────────────────────────────────────────────────────
 
 .products-grid {
-  padding: $space-8 0;
+  padding: 0 0 $space-8;
 }
 
 .products-grid__list {
-  display: flex;
-  flex-direction: column;
-  gap: $space-6;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $space-4;
 
   @media (min-width: $bp-lg) {
-    display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: $space-8;
   }
@@ -88,104 +243,51 @@
 }
 
 .product-card {
-  border: 3px solid $color-accent;
+  background: $color-white;
+  border: 1.5px solid rgba($color-accent, 0.5);
+  box-shadow: 0px 0px 12px 2px $shadow-color;
   border-radius: $radius-md;
   overflow: hidden;
+}
+
+.product-card__link {
   display: flex;
   flex-direction: column;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
 }
 
 .product-card__image-wrap {
-  width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-3;
   overflow: hidden;
 }
 
 .product-card__image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
 }
 
-.product-card__body {
-  display: flex;
-  flex-direction: column;
-  gap: $space-3;
-  padding: $space-4 $space-4 $space-6;
-  flex: 1;
-}
-
-.product-card__brand {
-  font-weight: $fw-semibold;
-  font-size: $fs-caption;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: $color-primary;
-}
-
-.product-card__tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: $space-2;
-}
-
-.product-card__tag {
-  font-size: $fs-caption;
-  font-weight: $fw-medium;
-  letter-spacing: 0.05em;
-  color: $color-white;
-  background: $color-primary;
-  border-radius: $radius-sm;
-  padding: 2px $space-2;
-
-  &--sub {
-    background: $color-secondary;
-  }
+.product-card__divider {
+  display: block;
+  height: 1px;
+  background: #F3E3D0; // Figma: lighter accent divider line
+  margin: 0 $space-3;
 }
 
 .product-card__title {
-  font-weight: $fw-semibold;
-  font-size: 18px;
-  line-height: 22px;
-  letter-spacing: 0.03em;
-  color: $color-primary;
-  margin: 0;
-}
-
-.product-card__text {
-  font-weight: $fw-regular;
-  font-size: $fs-body;
-  line-height: 20px;
-  color: $color-secondary;
-  margin: 0;
-  flex: 1;
-}
-
-.product-card__tech-files {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: $space-1;
-}
-
-.product-card__tech-link {
-  font-size: $fs-small;
+  font-size: $fs-body; // 16px per Figma
   font-weight: $fw-medium;
-  color: $color-primary;
-  text-decoration: underline;
-  letter-spacing: 0.03em;
-
-  &:hover {
-    color: $color-secondary;
-  }
-}
-
-.product-card__cta {
-  align-self: flex-start;
-  margin-top: $space-2;
-  text-decoration: none;
+  line-height: 1.25;
   letter-spacing: 0.05em;
+  color: $color-primary;
+  text-align: center;
+  padding: $space-3;
+  margin: 0;
 }

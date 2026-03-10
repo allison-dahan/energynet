@@ -15,7 +15,7 @@ $products_query = new WP_Query( [
 	'order'          => 'ASC',
 ] );
 
-// Collect all brand and category terms for filter buttons.
+// Collect all brand and category terms for filter overlay.
 $brand_terms = get_terms( [ 'taxonomy' => 'product_brand',    'hide_empty' => true ] );
 $cat_terms   = get_terms( [ 'taxonomy' => 'product_category', 'hide_empty' => true, 'parent' => 0 ] );
 ?>
@@ -24,59 +24,19 @@ $cat_terms   = get_terms( [ 'taxonomy' => 'product_category', 'hide_empty' => tr
 
 	<section class="products-intro">
 		<div class="container">
-			<h1 class="section-heading section-heading--ruled">
-				<?php esc_html_e( 'PRODUCTS', 'energynet' ); ?>
-			</h1>
+			<h1 class="products-title"><?php esc_html_e( 'Our Products', 'energynet' ); ?></h1>
+
+			<?php if ( ( $brand_terms && ! is_wp_error( $brand_terms ) ) || ( $cat_terms && ! is_wp_error( $cat_terms ) ) ) : ?>
+			<button
+				class="products-filter-toggle"
+				data-filter-open
+				aria-label="<?php esc_attr_e( 'Filter products', 'energynet' ); ?>"
+			>
+				<iconify-icon icon="ph:squares-four" width="16" height="16"></iconify-icon>
+			</button>
+			<?php endif; ?>
 		</div>
 	</section>
-
-	<?php if ( ( $brand_terms && ! is_wp_error( $brand_terms ) ) || ( $cat_terms && ! is_wp_error( $cat_terms ) ) ) : ?>
-	<div class="products-filter" data-products-filter>
-		<div class="container">
-
-			<?php if ( $brand_terms && ! is_wp_error( $brand_terms ) ) : ?>
-			<div class="products-filter__group">
-				<span class="products-filter__label"><?php esc_html_e( 'Brand', 'energynet' ); ?></span>
-				<div class="products-filter__buttons">
-					<button class="filter-btn is-active" data-filter="brand" data-value="all">
-						<?php esc_html_e( 'All', 'energynet' ); ?>
-					</button>
-					<?php foreach ( $brand_terms as $term ) : ?>
-						<button
-							class="filter-btn"
-							data-filter="brand"
-							data-value="<?php echo esc_attr( $term->slug ); ?>"
-						>
-							<?php echo esc_html( $term->name ); ?>
-						</button>
-					<?php endforeach; ?>
-				</div>
-			</div>
-			<?php endif; ?>
-
-			<?php if ( $cat_terms && ! is_wp_error( $cat_terms ) ) : ?>
-			<div class="products-filter__group">
-				<span class="products-filter__label"><?php esc_html_e( 'Category', 'energynet' ); ?></span>
-				<div class="products-filter__buttons">
-					<button class="filter-btn is-active" data-filter="category" data-value="all">
-						<?php esc_html_e( 'All', 'energynet' ); ?>
-					</button>
-					<?php foreach ( $cat_terms as $term ) : ?>
-						<button
-							class="filter-btn"
-							data-filter="category"
-							data-value="<?php echo esc_attr( $term->slug ); ?>"
-						>
-							<?php echo esc_html( $term->name ); ?>
-						</button>
-					<?php endforeach; ?>
-				</div>
-			</div>
-			<?php endif; ?>
-
-		</div>
-	</div>
-	<?php endif; ?>
 
 	<section class="products-grid">
 		<div class="container">
@@ -92,6 +52,91 @@ $cat_terms   = get_terms( [ 'taxonomy' => 'product_category', 'hide_empty' => tr
 			</div>
 		</div>
 	</section>
+
+	<?php // ─── Filter overlay ─────────────────────────────────────────────────── ?>
+	<?php if ( ( $brand_terms && ! is_wp_error( $brand_terms ) ) || ( $cat_terms && ! is_wp_error( $cat_terms ) ) ) : ?>
+	<div class="filter-overlay" data-filter-overlay aria-hidden="true">
+
+		<div class="filter-overlay__top">
+			<button
+				class="filter-overlay__close"
+				data-filter-close
+				aria-label="<?php esc_attr_e( 'Close filters', 'energynet' ); ?>"
+			>
+				<iconify-icon icon="mdi:close" width="24" height="24"></iconify-icon>
+			</button>
+		</div>
+
+		<div class="filter-overlay__content">
+
+			<div class="filter-overlay__search-wrap">
+				<input
+					class="filter-overlay__search"
+					type="text"
+					placeholder="<?php esc_attr_e( 'Search products...', 'energynet' ); ?>"
+					data-filter-search
+				>
+				<iconify-icon class="filter-overlay__search-icon" icon="mdi:magnify" width="20" height="20"></iconify-icon>
+			</div>
+
+			<div class="filter-overlay__card">
+
+				<?php if ( $cat_terms && ! is_wp_error( $cat_terms ) ) : ?>
+				<div class="filter-overlay__section">
+					<h3 class="filter-overlay__heading"><?php esc_html_e( 'Product Categories', 'energynet' ); ?></h3>
+					<ul class="filter-overlay__list">
+						<li>
+							<button class="filter-overlay__item is-active" data-filter="category" data-value="all">
+								<?php esc_html_e( 'All Categories', 'energynet' ); ?>
+							</button>
+						</li>
+						<?php foreach ( $cat_terms as $term ) : ?>
+						<li>
+							<button class="filter-overlay__item" data-filter="category" data-value="<?php echo esc_attr( $term->slug ); ?>">
+								<?php echo esc_html( $term->name ); ?>
+							</button>
+						</li>
+						<?php endforeach; ?>
+					</ul>
+				</div>
+				<?php endif; ?>
+
+				<?php if ( $brand_terms && ! is_wp_error( $brand_terms ) ) : ?>
+				<div class="filter-overlay__section">
+					<h3 class="filter-overlay__heading"><?php esc_html_e( 'Search product by brand', 'energynet' ); ?></h3>
+					<div class="filter-overlay__brands">
+						<?php foreach ( $brand_terms as $term ) :
+							// Check for ACF brand logo (field: brand_logo, returns attachment ID or URL).
+							$logo_url = '';
+							if ( function_exists( 'get_field' ) ) {
+								$logo = get_field( 'brand_logo', 'product_brand_' . $term->term_id );
+								if ( $logo ) {
+									$logo_url = is_array( $logo ) ? ( $logo['url'] ?? '' ) : $logo;
+								}
+							}
+						?>
+						<button
+							class="filter-overlay__brand"
+							data-filter="brand"
+							data-value="<?php echo esc_attr( $term->slug ); ?>"
+						>
+							<?php if ( $logo_url ) : ?>
+								<img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $term->name ); ?>">
+							<?php else : ?>
+								<?php echo esc_html( $term->name ); ?>
+							<?php endif; ?>
+						</button>
+						<?php endforeach; ?>
+					</div>
+				</div>
+				<?php endif; ?>
+
+			</div><!-- .filter-overlay__card -->
+
+		</div><!-- .filter-overlay__content -->
+
+	</div><!-- .filter-overlay -->
+	<?php endif; ?>
 
 </main>
 
