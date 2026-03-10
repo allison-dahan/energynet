@@ -103,7 +103,7 @@ $tech_icons = [
 				target="_blank" rel="noopener noreferrer"
 				aria-label="<?php esc_attr_e( 'Share on Facebook', 'energynet' ); ?>"
 			>
-				<iconify-icon icon="uil:facebook" width="20" height="20"></iconify-icon>
+				<iconify-icon icon="uil:facebook"></iconify-icon>
 			</a>
 			<a
 				class="product-share__btn"
@@ -111,7 +111,7 @@ $tech_icons = [
 				target="_blank" rel="noopener noreferrer"
 				aria-label="<?php esc_attr_e( 'Share on Instagram', 'energynet' ); ?>"
 			>
-				<iconify-icon icon="ri:instagram-fill" width="20" height="20"></iconify-icon>
+				<iconify-icon icon="ri:instagram-fill"></iconify-icon>
 			</a>
 			<a
 				class="product-share__btn"
@@ -119,14 +119,14 @@ $tech_icons = [
 				target="_blank" rel="noopener noreferrer"
 				aria-label="<?php esc_attr_e( 'Share on WhatsApp', 'energynet' ); ?>"
 			>
-				<iconify-icon icon="mdi:whatsapp" width="20" height="20"></iconify-icon>
+				<iconify-icon icon="mdi:whatsapp"></iconify-icon>
 			</a>
 			<button
 				class="product-share__btn"
 				data-copy-url="<?php echo esc_attr( $page_url ); ?>"
 				aria-label="<?php esc_attr_e( 'Copy link', 'energynet' ); ?>"
 			>
-				<iconify-icon icon="mdi:link-variant" width="20" height="20"></iconify-icon>
+				<iconify-icon icon="mdi:link-variant"></iconify-icon>
 			</button>
 		</div>
 	</div>
