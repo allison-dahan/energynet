@@ -1,0 +1,76 @@
+@use "../partials/variables" as *;
+
+// ─── FAQ intro ────────────────────────────────────────────────────────────────
+
+.faq-section {
+  padding: $space-8 0 $space-16;
+}
+
+.faq-intro {
+  text-align: center;
+  margin-bottom: $space-8;
+}
+
+.faq-intro__title {
+  font-size: $fs-h4; // 32px per Figma
+  font-weight: $fw-medium;
+  letter-spacing: 0.05em;
+  color: $color-primary;
+  line-height: 1.25;
+  margin: 0 0 $space-3;
+}
+
+.faq-intro__subtitle {
+  font-size: $fs-small; // ~14px per Figma
+  font-weight: $fw-regular;
+  letter-spacing: 0.05em;
+  color: $color-primary;
+  line-height: 1.3;
+  margin: 0;
+}
+
+// ─── FAQ list ─────────────────────────────────────────────────────────────────
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-8;
+}
+
+.faq-item__question {
+  font-size: $fs-body;
+  font-weight: $fw-semibold;
+  letter-spacing: 0.05em;
+  color: $color-primary;
+  line-height: 1.25;
+  margin: 0 0 $space-3;
+}
+
+.faq-item__answer {
+  font-size: $fs-body;
+  font-weight: $fw-regular;
+  color: $color-secondary;
+  line-height: 1.25; // 20px/16px per Figma
+
+  p {
+    margin: 0 0 $space-3;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  ul {
+    margin: $space-2 0 $space-3 $space-4;
+    padding: 0;
+    list-style: disc;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  li {
+    margin-bottom: $space-1;
+  }
+}
