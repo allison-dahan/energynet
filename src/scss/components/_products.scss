@@ -49,6 +49,165 @@
   &:hover {
     box-shadow: 0px 0px 4px 2px rgba($color-primary, 0.35);
   }
+
+  @media (min-width: $bp-lg) {
+    display: none;
+  }
+}
+
+// ─── Products layout (sidebar + grid) ─────────────────────────────────────────
+
+.products-layout {
+  padding-bottom: $space-16;
+}
+
+.products-layout__inner {
+  @media (min-width: $bp-lg) {
+    display: flex;
+    align-items: flex-start;
+    gap: 32px;
+  }
+}
+
+// ─── Desktop sidebar ───────────────────────────────────────────────────────────
+
+.products-sidebar {
+  display: none;
+
+  @media (min-width: $bp-lg) {
+    display: block;
+    width: 315px;
+    flex-shrink: 0;
+  }
+}
+
+.products-sidebar__search-wrap {
+  position: relative;
+  margin-bottom: $space-6;
+}
+
+.products-sidebar__search {
+  width: 100%;
+  height: 49px;
+  padding: 0 48px 0 $space-4;
+  border: 1px solid rgba($color-button-dark, 0.5);
+  border-radius: 10px;
+  font-family: $font-body;
+  font-size: $fs-body;
+  color: $color-secondary;
+  box-sizing: border-box;
+  outline: none;
+
+  &::placeholder {
+    color: $color-disabled-button-bg;
+  }
+
+  &:focus {
+    border-color: $color-primary;
+  }
+}
+
+.products-sidebar__search-icon {
+  position: absolute;
+  right: $space-4;
+  top: 50%;
+  transform: translateY(-50%);
+  color: $color-primary;
+  pointer-events: none;
+}
+
+.products-sidebar__panel {
+  background: $color-white;
+  box-shadow: 0px 0px 8px 1px rgba($color-black, 0.1);
+  border-radius: $radius-md;
+  padding: $space-4 $space-6;
+  margin-bottom: $space-8;
+}
+
+.products-sidebar__heading {
+  font-size: $fs-body;
+  font-weight: $fw-bold;
+  color: $color-primary;
+  margin: 0 0 $space-4;
+}
+
+.products-sidebar__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.products-sidebar__item {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: $font-body;
+  font-size: $fs-body;
+  font-weight: $fw-medium;
+  line-height: 30px;
+  color: $color-secondary;
+  text-align: left;
+
+  &::before {
+    content: '';
+    flex-shrink: 0;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: $color-accent;
+  }
+
+  &.is-active {
+    color: $color-primary;
+    font-weight: $fw-semibold;
+  }
+}
+
+.products-sidebar__brand-heading {
+  font-size: $fs-h5; // 24px per Figma
+  font-weight: $fw-medium;
+  color: $color-primary;
+  letter-spacing: 0.05em;
+  margin: 0 0 $space-4;
+}
+
+.products-sidebar__brands {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+.products-sidebar__brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 93px;
+  background: $color-white;
+  box-shadow: 0px 0px 8px 1px rgba($color-black, 0.1);
+  border-radius: $radius-md;
+  border: 2px solid transparent;
+  cursor: pointer;
+  font-family: $font-body;
+  font-size: $fs-body;
+  font-weight: $fw-semibold;
+  color: $color-primary;
+  transition: border-color 0.2s ease;
+
+  img {
+    max-width: 60%;
+    max-height: 55%;
+    object-fit: contain;
+  }
+
+  &.is-active {
+    border-color: rgba($color-accent, 0.8);
+  }
 }
 
 // ─── Filter overlay ────────────────────────────────────────────────────────────
@@ -66,6 +225,10 @@
   &.is-open {
     opacity: 1;
     visibility: visible;
+  }
+
+  @media (min-width: $bp-lg) {
+    display: none;
   }
 }
 
@@ -223,6 +386,11 @@
 
 .products-grid {
   padding: 0 0 $space-8;
+
+  @media (min-width: $bp-lg) {
+    flex: 1;
+    min-width: 0;
+  }
 }
 
 .products-grid__list {
@@ -282,7 +450,7 @@
 }
 
 .product-card__title {
-  font-size: $fs-body; // 16px per Figma
+  font-size: $fs-body; // 16px mobile
   font-weight: $fw-medium;
   line-height: 1.25;
   letter-spacing: 0.05em;
@@ -290,4 +458,8 @@
   text-align: center;
   padding: $space-3;
   margin: 0;
+
+  @media (min-width: $bp-lg) {
+    font-size: 20px; // per Figma desktop
+  }
 }

@@ -129,16 +129,14 @@ document.addEventListener('keydown', (e) => {
   timer = setInterval(advance, 5000);
 })();
 
-// ─── Products filter overlay ───────────────────────────────────────────────────
+// ─── Products filter (sidebar + overlay) ──────────────────────────────────────
 
 (function () {
-  const overlay   = document.querySelector('[data-filter-overlay]');
-  if (!overlay) return;
+  const cards = document.querySelectorAll('.product-card');
+  if (!cards.length) return;
 
-  const openBtn     = document.querySelector('[data-filter-open]');
-  const closeBtns   = overlay.querySelectorAll('[data-filter-close]');
-  const searchInput = overlay.querySelector('[data-filter-search]');
-  const cards       = document.querySelectorAll('.product-card');
+  const overlay  = document.querySelector('[data-filter-overlay]');
+  const openBtn  = document.querySelector('[data-filter-open]');
 
   const activeFilters = { brand: 'all', category: 'all', search: '' };
 
@@ -157,44 +155,61 @@ document.addEventListener('keydown', (e) => {
     });
   }
 
+  // Sync active class across ALL matching filter buttons (sidebar + overlay).
+  function syncButtons(filterType, value) {
+    document.querySelectorAll(`[data-filter="${filterType}"]`)
+      .forEach(b => b.classList.remove('is-active'));
+    document.querySelectorAll(`[data-filter="${filterType}"][data-value="${value}"]`)
+      .forEach(b => b.classList.add('is-active'));
+  }
+
   function openOverlay() {
+    if (!overlay) return;
     overlay.classList.add('is-open');
     overlay.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
   }
 
   function closeOverlay() {
+    if (!overlay) return;
     overlay.classList.remove('is-open');
     overlay.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
   }
 
   openBtn?.addEventListener('click', openOverlay);
-  closeBtns.forEach(btn => btn.addEventListener('click', closeOverlay));
+
+  overlay?.querySelectorAll('[data-filter-close]')
+    .forEach(btn => btn.addEventListener('click', closeOverlay));
 
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeOverlay();
+    if (e.key === 'Escape' && overlay?.classList.contains('is-open')) closeOverlay();
   });
 
-  // Category / brand filter item clicks — apply and close overlay.
-  overlay.addEventListener('click', e => {
+  // Global filter button handler — works for both sidebar and overlay buttons.
+  document.addEventListener('click', e => {
     const item = e.target.closest('[data-filter]');
     if (!item) return;
 
     const filterType = item.dataset.filter;
     const value      = item.dataset.value;
 
-    overlay.querySelectorAll(`[data-filter="${filterType}"]`)
-      .forEach(b => b.classList.remove('is-active'));
-    item.classList.add('is-active');
-
+    syncButtons(filterType, value);
     activeFilters[filterType] = value;
     applyFilters();
-    closeOverlay();
+
+    // Close overlay only when clicking inside it.
+    if (overlay?.contains(item)) closeOverlay();
   });
 
-  // Real-time search filtering (does not close overlay).
-  searchInput?.addEventListener('input', e => {
+  // Sidebar search (desktop).
+  document.querySelector('[data-sidebar-search]')?.addEventListener('input', e => {
+    activeFilters.search = e.target.value;
+    applyFilters();
+  });
+
+  // Overlay search (mobile).
+  overlay?.querySelector('[data-filter-search]')?.addEventListener('input', e => {
     activeFilters.search = e.target.value;
     applyFilters();
   });
