@@ -185,6 +185,11 @@ if ( defined( 'JETPACK__VERSION' ) ) {
  */
 require get_template_directory() . '/inc/cpt-product.php';
 
+/**
+ * Service CPT.
+ */
+require get_template_directory() . '/inc/cpt-service.php';
+
 function energynet_enqueue_assets() {
   $theme_dir = get_template_directory();
   $theme_uri = get_template_directory_uri();

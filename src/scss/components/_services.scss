@@ -1,0 +1,131 @@
+@use "../partials/variables" as *;
+
+// ─── Services intro ────────────────────────────────────────────────────────────
+
+.services-intro {
+  padding-top: $space-20; // clear fixed mobile header
+  padding-bottom: $space-8;
+  text-align: center;
+
+  @media (min-width: $bp-lg) {
+    padding-top: 140px;
+    padding-bottom: $space-12;
+  }
+}
+
+.services-intro__title {
+  font-size: $fs-h4; // 32px mobile
+  font-weight: $fw-medium;
+  letter-spacing: 0.05em;
+  color: $color-primary;
+  margin: 0 0 $space-2;
+
+  @media (min-width: $bp-lg) {
+    font-size: $fs-h2; // 56px desktop
+    margin-bottom: $space-3;
+  }
+}
+
+.services-intro__subtitle {
+  font-size: $fs-body;
+  font-weight: $fw-regular;
+  letter-spacing: 0.05em;
+  color: $color-primary;
+  line-height: 1.25;
+  max-width: 321px;
+  margin: 0 auto;
+
+  @media (min-width: $bp-lg) {
+    font-size: $fs-body-lg; // 24px desktop
+    max-width: 1050px;
+  }
+}
+
+// ─── Services section ──────────────────────────────────────────────────────────
+
+.services-section {
+  padding-bottom: $space-16;
+}
+
+// ─── Services grid ─────────────────────────────────────────────────────────────
+
+.services-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 29px; // visual gap between button-bottom and next card's image-top
+
+  @media (min-width: $bp-lg) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 20px;
+    row-gap: 60px; // 27px button below image + ~33px visual gap
+  }
+}
+
+// ─── Service card ──────────────────────────────────────────────────────────────
+
+.service-card {
+  position: relative;
+  padding-bottom: 21px; // room for label button below the image (mobile)
+  border: none;
+  outline: none;
+  box-shadow: none;
+
+  @media (min-width: $bp-lg) {
+    padding-bottom: 27px; // button extends 27px below image on desktop
+  }
+}
+
+.service-card__image-wrap {
+  aspect-ratio: 5 / 3;
+  overflow: hidden;
+  border: none;
+  outline: none;
+  border-radius: 8px;
+}
+
+// Override any WordPress-generated image classes (wp-post-image, attachment-*)
+.service-card__image-wrap img {
+  display: block;
+  border: none;
+  outline: none;
+}
+
+.service-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border: none;
+  outline: none;
+
+  &--placeholder {
+    background: $color-disabled-button-bg;
+  }
+}
+
+.service-card__label {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 222px;
+  height: 41px;
+  background: $color-button-dark;
+  border-radius: $radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: $font-body;
+  font-weight: $fw-bold;
+  font-size: $fs-body;
+  letter-spacing: 0.1em;
+  color: $color-text-light;
+  white-space: nowrap;
+  text-transform: uppercase;
+
+  @media (min-width: $bp-lg) {
+    width: 233px;
+    height: 55px;
+  }
+}
