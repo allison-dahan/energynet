@@ -20,13 +20,34 @@ $brand_terms = get_terms( [ 'taxonomy' => 'product_brand',    'hide_empty' => tr
 $cat_terms   = get_terms( [ 'taxonomy' => 'product_category', 'hide_empty' => true, 'parent' => 0 ] );
 
 $has_filters = ( $brand_terms && ! is_wp_error( $brand_terms ) ) || ( $cat_terms && ! is_wp_error( $cat_terms ) );
+
+// Pre-fetch brand logos for reuse in sidebar + overlay.
+$brand_logo_map = [];
+if ( $brand_terms && ! is_wp_error( $brand_terms ) && function_exists( 'get_field' ) ) {
+	foreach ( $brand_terms as $term ) {
+		$logo = get_field( 'brand_logo', 'product_brand_' . $term->term_id );
+		if ( $logo ) {
+			$brand_logo_map[ $term->term_id ] = is_array( $logo ) ? ( $logo['url'] ?? '' ) : $logo;
+		}
+	}
+}
 ?>
 
 <main id="primary" class="site-main">
 
 	<section class="products-intro">
 		<div class="container">
-			<h1 class="products-title"><?php esc_html_e( 'Our Products', 'energynet' ); ?></h1>
+
+			<?php // Default state: "Our Products" heading ?>
+			<h1 class="products-title" data-intro-title><?php esc_html_e( 'Our Products', 'energynet' ); ?></h1>
+
+			<?php // Brand-filtered state: brand logo + breadcrumb (hidden until JS activates it) ?>
+			<div class="products-intro__brand" data-brand-header aria-hidden="true">
+				<img class="products-intro__brand-logo" data-brand-logo-img src="" alt="">
+				<p class="products-intro__breadcrumb">
+					<?php esc_html_e( 'Our Products', 'energynet' ); ?> &rsaquo; <span data-brand-label></span>
+				</p>
+			</div>
 
 			<?php if ( $has_filters ) : ?>
 			<button
@@ -37,6 +58,7 @@ $has_filters = ( $brand_terms && ! is_wp_error( $brand_terms ) ) || ( $cat_terms
 				<iconify-icon icon="ph:squares-four" width="16" height="16"></iconify-icon>
 			</button>
 			<?php endif; ?>
+
 		</div>
 	</section>
 
@@ -81,24 +103,19 @@ $has_filters = ( $brand_terms && ! is_wp_error( $brand_terms ) ) || ( $cat_terms
 				<h3 class="products-sidebar__brand-heading"><?php esc_html_e( 'Search product by Brand', 'energynet' ); ?></h3>
 				<div class="products-sidebar__brands">
 					<?php foreach ( $brand_terms as $term ) :
-						$logo_url = '';
-						if ( function_exists( 'get_field' ) ) {
-							$logo = get_field( 'brand_logo', 'product_brand_' . $term->term_id );
-							if ( $logo ) {
-								$logo_url = is_array( $logo ) ? ( $logo['url'] ?? '' ) : $logo;
-							}
-						}
+						$logo_url = $brand_logo_map[ $term->term_id ] ?? '';
 					?>
 					<button
 						class="products-sidebar__brand"
 						data-filter="brand"
 						data-value="<?php echo esc_attr( $term->slug ); ?>"
+						data-brand-logo="<?php echo esc_url( $logo_url ); ?>"
+						data-brand-label="<?php echo esc_attr( $term->name ); ?>"
 					>
 						<?php if ( $logo_url ) : ?>
-							<img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $term->name ); ?>">
-						<?php else : ?>
-							<?php echo esc_html( $term->name ); ?>
+							<img class="products-sidebar__brand-img" src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $term->name ); ?>">
 						<?php endif; ?>
+						<span class="products-sidebar__brand-name"><?php echo esc_html( $term->name ); ?></span>
 					</button>
 					<?php endforeach; ?>
 				</div>
@@ -119,6 +136,7 @@ $has_filters = ( $brand_terms && ! is_wp_error( $brand_terms ) ) || ( $cat_terms
 						<p><?php esc_html_e( 'No products found.', 'energynet' ); ?></p>
 					<?php endif; ?>
 				</div>
+				<nav class="products-pagination" data-products-pagination aria-label="<?php esc_attr_e( 'Product pages', 'energynet' ); ?>"></nav>
 			</div>
 
 		</div>
@@ -177,18 +195,14 @@ $has_filters = ( $brand_terms && ! is_wp_error( $brand_terms ) ) || ( $cat_terms
 					<h3 class="filter-overlay__heading"><?php esc_html_e( 'Search product by brand', 'energynet' ); ?></h3>
 					<div class="filter-overlay__brands">
 						<?php foreach ( $brand_terms as $term ) :
-							$logo_url = '';
-							if ( function_exists( 'get_field' ) ) {
-								$logo = get_field( 'brand_logo', 'product_brand_' . $term->term_id );
-								if ( $logo ) {
-									$logo_url = is_array( $logo ) ? ( $logo['url'] ?? '' ) : $logo;
-								}
-							}
+							$logo_url = $brand_logo_map[ $term->term_id ] ?? '';
 						?>
 						<button
 							class="filter-overlay__brand"
 							data-filter="brand"
 							data-value="<?php echo esc_attr( $term->slug ); ?>"
+							data-brand-logo="<?php echo esc_url( $logo_url ); ?>"
+							data-brand-label="<?php echo esc_attr( $term->name ); ?>"
 						>
 							<?php if ( $logo_url ) : ?>
 								<img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $term->name ); ?>">

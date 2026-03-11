@@ -151,8 +151,9 @@ document.addEventListener('keydown', (e) => {
       const catMatch    = activeFilters.category === 'all' || categories.includes(activeFilters.category);
       const searchMatch = !term || title.includes(term);
 
-      card.classList.toggle('is-hidden', !(brandMatch && catMatch && searchMatch));
+      card.classList.toggle('is-filter-hidden', !(brandMatch && catMatch && searchMatch));
     });
+    document.dispatchEvent(new CustomEvent('productsFiltered'));
   }
 
   // Sync active class across ALL matching filter buttons (sidebar + overlay).
@@ -186,6 +187,34 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && overlay?.classList.contains('is-open')) closeOverlay();
   });
 
+  // Brand header elements.
+  const introTitle   = document.querySelector('[data-intro-title]');
+  const brandHeader  = document.querySelector('[data-brand-header]');
+  const brandLogoImg = document.querySelector('[data-brand-logo-img]');
+  const brandLabel   = document.querySelector('[data-brand-label]');
+  const sidebar      = document.querySelector('.products-sidebar');
+
+  function updateBrandHeader(value, btn) {
+    if (!brandHeader) return;
+    if (value === 'all') {
+      brandHeader.setAttribute('aria-hidden', 'true');
+      introTitle?.removeAttribute('hidden');
+      sidebar?.classList.remove('is-filtered');
+    } else {
+      const logoSrc = btn?.dataset.brandLogo || '';
+      const label   = btn?.dataset.brandLabel || value;
+      if (brandLogoImg) {
+        brandLogoImg.src = logoSrc;
+        brandLogoImg.alt = label;
+        brandLogoImg.hidden = !logoSrc;
+      }
+      if (brandLabel) brandLabel.textContent = label;
+      brandHeader.setAttribute('aria-hidden', 'false');
+      introTitle?.setAttribute('hidden', '');
+      sidebar?.classList.add('is-filtered');
+    }
+  }
+
   // Global filter button handler — works for both sidebar and overlay buttons.
   document.addEventListener('click', e => {
     const item = e.target.closest('[data-filter]');
@@ -194,9 +223,23 @@ document.addEventListener('keydown', (e) => {
     const filterType = item.dataset.filter;
     const value      = item.dataset.value;
 
+    // "All Categories" resets all filters.
+    if (filterType === 'category' && value === 'all') {
+      activeFilters.brand    = 'all';
+      activeFilters.category = 'all';
+      syncButtons('brand', 'all');
+      syncButtons('category', 'all');
+      updateBrandHeader('all', null);
+      applyFilters();
+      if (overlay?.contains(item)) closeOverlay();
+      return;
+    }
+
     syncButtons(filterType, value);
     activeFilters[filterType] = value;
     applyFilters();
+
+    if (filterType === 'brand') updateBrandHeader(value, item);
 
     // Close overlay only when clicking inside it.
     if (overlay?.contains(item)) closeOverlay();
@@ -213,6 +256,105 @@ document.addEventListener('keydown', (e) => {
     activeFilters.search = e.target.value;
     applyFilters();
   });
+})();
+
+// ─── Products pagination ───────────────────────────────────────────────────────
+
+(function () {
+  const paginationEl = document.querySelector('[data-products-pagination]');
+  if (!paginationEl) return;
+
+  const allCards = Array.from(document.querySelectorAll('.product-card'));
+  if (!allCards.length) return;
+
+  let currentPage = 1;
+
+  function perPage() {
+    return window.innerWidth >= 1024 ? 9 : 8;
+  }
+
+  function filteredCards() {
+    return allCards.filter(c => !c.classList.contains('is-filter-hidden'));
+  }
+
+  function showPage(page) {
+    const pp      = perPage();
+    const visible = filteredCards();
+    const total   = Math.ceil(visible.length / pp) || 1;
+    currentPage   = Math.max(1, Math.min(page, total));
+
+    const start = (currentPage - 1) * pp;
+    const end   = start + pp;
+
+    allCards.forEach(card => {
+      if (card.classList.contains('is-filter-hidden')) {
+        card.classList.remove('is-page-hidden');
+        return;
+      }
+      const idx = visible.indexOf(card);
+      card.classList.toggle('is-page-hidden', idx < start || idx >= end);
+    });
+
+    renderPagination(total);
+  }
+
+  function pageNumbers(current, total) {
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+
+    if (current <= 4) {
+      const pages = [1, 2, 3, 4, 5];
+      if (total > 6) pages.push('...');
+      for (let i = Math.max(total - 2, 6); i <= total; i++) pages.push(i);
+      return pages;
+    }
+
+    if (current >= total - 3) {
+      const pages = [1, 2, 3, '...'];
+      for (let i = Math.min(total - 4, total - 4); i <= total; i++) pages.push(i);
+      return pages;
+    }
+
+    return [1, 2, 3, '...', current - 1, current, current + 1, '...', total - 2, total - 1, total];
+  }
+
+  function renderPagination(total) {
+    if (total <= 1) { paginationEl.innerHTML = ''; return; }
+
+    let html = '';
+    pageNumbers(currentPage, total).forEach(p => {
+      if (p === '...') {
+        html += '<span class="pagination__ellipsis" aria-hidden="true">...</span>';
+      } else {
+        const active = p === currentPage;
+        html += `<button class="pagination__btn${active ? ' is-active' : ''}" data-page="${p}"${active ? ' aria-current="page"' : ''} aria-label="Page ${p}">${p}</button>`;
+      }
+    });
+
+    if (currentPage < total) {
+      html += `<button class="pagination__next" data-page="${currentPage + 1}" aria-label="Next page"><iconify-icon icon="ph:caret-right" width="13" height="24"></iconify-icon></button>`;
+    }
+
+    paginationEl.innerHTML = html;
+  }
+
+  paginationEl.addEventListener('click', e => {
+    const btn = e.target.closest('[data-page]');
+    if (!btn) return;
+    showPage(parseInt(btn.dataset.page, 10));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Reset to page 1 whenever filters change.
+  document.addEventListener('productsFiltered', () => showPage(1));
+
+  // Re-paginate on viewport resize (9 ↔ 8 per page).
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => showPage(currentPage), 200);
+  }, { passive: true });
+
+  showPage(1);
 })();
 
 // ─── Back to top ───────────────────────────────────────────────────────────────

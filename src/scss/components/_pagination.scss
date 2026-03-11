@@ -1,0 +1,69 @@
+@use "../partials/variables" as *;
+
+.products-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 19px;
+  padding: $space-8 0 $space-16;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.pagination__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid $color-primary;
+  background: transparent;
+  font-family: $font-body;
+  font-size: $fs-body;
+  font-weight: $fw-bold;
+  color: $color-secondary;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background: $color-secondary;
+    border: 3px solid $color-primary;
+    color: $color-white;
+  }
+
+  &.is-active {
+    background: $color-secondary;
+    border-color: transparent;
+    color: $color-white;
+    pointer-events: none;
+  }
+}
+
+.pagination__ellipsis {
+  font-family: $font-body;
+  font-size: $fs-h5; // 24px per Figma
+  font-weight: $fw-bold;
+  letter-spacing: 0.05em;
+  color: $color-secondary;
+  line-height: 1;
+  user-select: none;
+}
+
+.pagination__next {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $color-primary;
+  padding: 10px;
+
+  iconify-icon {
+    display: block;
+  }
+}

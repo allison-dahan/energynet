@@ -28,6 +28,34 @@
   @media (min-width: $bp-lg) {
     font-size: $fs-h2; // scale up on desktop
   }
+
+}
+
+// ─── Brand header (shown when brand filter is active) ──────────────────────────
+
+.products-intro__brand {
+  display: none;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $space-2;
+
+  &[aria-hidden="false"] {
+    display: flex;
+  }
+}
+
+.products-intro__brand-logo {
+  max-height: 54px;
+  width: auto;
+  display: block;
+}
+
+.products-intro__breadcrumb {
+  font-size: $fs-body;
+  font-weight: $fw-medium;
+  letter-spacing: 0.05em;
+  color: $color-primary;
+  margin: 0;
 }
 
 // ─── Filter toggle button ──────────────────────────────────────────────────────
@@ -199,14 +227,66 @@
   color: $color-primary;
   transition: border-color 0.2s ease;
 
-  img {
+  .products-sidebar__brand-img {
     max-width: 60%;
     max-height: 55%;
     object-fit: contain;
   }
 
+  // Name shown only when no img sibling exists (text fallback)
+  .products-sidebar__brand-name {
+    display: none;
+  }
+
+  &:not(:has(.products-sidebar__brand-img)) .products-sidebar__brand-name {
+    display: block;
+  }
+
   &.is-active {
     border-color: rgba($color-accent, 0.8);
+  }
+}
+
+// When a brand is actively filtered: switch sidebar brand boxes → compact text list
+.products-sidebar.is-filtered {
+  .products-sidebar__brands {
+    gap: 0;
+  }
+
+  .products-sidebar__brand {
+    height: auto;
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    justify-content: flex-start;
+    gap: $space-3;
+    padding: 0;
+    font-weight: $fw-medium;
+    color: $color-secondary;
+    line-height: 30px;
+
+    &::before {
+      content: '';
+      flex-shrink: 0;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: $color-accent;
+    }
+
+    .products-sidebar__brand-img {
+      display: none;
+    }
+
+    .products-sidebar__brand-name {
+      display: block;
+    }
+
+    &.is-active {
+      color: $color-primary;
+      font-weight: $fw-semibold;
+      border: none;
+    }
   }
 }
 
@@ -359,7 +439,7 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 67px; // Figma: 67px brand button height
+  height: 67px;
   border: 1px solid $color-accent;
   border-radius: $radius-md;
   background: $color-white;
@@ -406,7 +486,8 @@
 
 // ─── Product card ──────────────────────────────────────────────────────────────
 
-.product-card.is-hidden {
+.product-card.is-filter-hidden,
+.product-card.is-page-hidden {
   display: none;
 }
 
