@@ -4,6 +4,10 @@
 
 .contact-hero {
   padding-top: $space-20; // clear fixed mobile header
+
+  @media (min-width: $bp-lg) {
+    padding-top: 160px;
+  }
 }
 
 .contact-hero__image {
@@ -18,7 +22,10 @@
   justify-content: center;
 
   @media (min-width: $bp-lg) {
-    height: 360px;
+    height: 400px;
+    justify-content: flex-start;
+    // Align buttons with the container's left edge
+    padding-left: max(16px, calc((100% - 1200px) / 2));
   }
 }
 
@@ -27,6 +34,11 @@
   flex-direction: column;
   align-items: center;
   gap: 12px;
+
+  @media (min-width: $bp-lg) {
+    align-items: stretch;
+    gap: 13px;
+  }
 }
 
 .contact-hero__btn {
@@ -57,26 +69,22 @@
   &--outline {
     background: $color-white;
     color: $color-primary;
-    border: 1px solid $color-primary;
+    border: 2px solid $color-primary;
   }
 
   @media (min-width: $bp-lg) {
-    width: 220px;
-    height: 44px;
+    width: 233px;
+    height: 55px;
     font-size: $fs-body;
+    border-radius: $radius-md;
   }
 }
 
 // ─── Contact form section ──────────────────────────────────────────────────────
 
 .contact-form-section {
-  padding: $space-8 0;
+  padding: $space-8 0 $space-16;
   text-align: center;
-
-  @media (min-width: $bp-lg) {
-    padding-top: $space-12;
-    padding-bottom: $space-12;
-  }
 }
 
 .contact-form__title {
@@ -101,17 +109,45 @@
   margin: 0 auto $space-8;
 
   @media (min-width: $bp-lg) {
-    font-size: $fs-body;
-    max-width: 700px;
+    font-size: $fs-h4; // 32px per Figma desktop
+    line-height: 1.1;
+    max-width: 791px;
+    margin-bottom: $space-12;
   }
 }
 
+// ─── Two-column layout (desktop) ──────────────────────────────────────────────
+
+.contact-content {
+  @media (min-width: $bp-lg) {
+    display: grid;
+    grid-template-columns: 1fr 0.8fr;
+    gap: 80px;
+    align-items: start;
+    text-align: left;
+  }
+}
+
+.contact-content__form {
+  // just a column wrapper
+}
+
+.contact-content__sidebar {
+  // info + map stacked
+}
+
+// ─── Form ─────────────────────────────────────────────────────────────────────
+
 .contact-form {
   text-align: left;
+}
 
+// Two-column grid for quote form fields on desktop
+.contact-form__grid {
   @media (min-width: $bp-lg) {
-    max-width: 700px;
-    margin-inline: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 60px;
   }
 }
 
@@ -128,7 +164,15 @@
   margin-bottom: 0;
 
   &--lg {
-    font-size: 20px; // MESSAGE label is slightly larger per Figma
+    font-size: 20px;
+  }
+
+  @media (min-width: $bp-lg) {
+    font-size: 20px;
+
+    &--lg {
+      font-size: 20px;
+    }
   }
 }
 
@@ -166,6 +210,14 @@
 
   &--tall {
     height: 181px;
+
+    @media (min-width: $bp-lg) {
+      height: 174px; // desktop per Figma
+    }
+  }
+
+  @media (min-width: $bp-lg) {
+    height: 271px;
   }
 }
 
@@ -173,12 +225,24 @@
   margin: $space-6 0;
   display: flex;
   justify-content: center;
+
+  @media (min-width: $bp-lg) {
+    justify-content: flex-start;
+  }
 }
 
 .contact-form__submit-wrap {
   display: flex;
   justify-content: center;
   margin-top: $space-6;
+
+  @media (min-width: $bp-lg) {
+    justify-content: flex-start;
+
+    &--centered {
+      justify-content: center;
+    }
+  }
 }
 
 .contact-form__submit {
@@ -202,6 +266,10 @@
   &:hover {
     background: $color-secondary;
   }
+
+  @media (min-width: $bp-lg) {
+    width: 233px;
+  }
 }
 
 // ─── Divider ──────────────────────────────────────────────────────────────────
@@ -210,13 +278,13 @@
   height: 2px;
   background: $color-accent;
   margin: $space-8 0;
+
+  @media (min-width: $bp-lg) {
+    display: none; // replaced by two-column layout
+  }
 }
 
-// ─── Contact info section ──────────────────────────────────────────────────────
-
-.contact-info-section {
-  padding-bottom: $space-8;
-}
+// ─── Contact info ──────────────────────────────────────────────────────────────
 
 .contact-info__items {
   display: flex;
@@ -284,6 +352,23 @@
   }
 }
 
+.contact-map__placeholder {
+  width: 100%;
+  height: 100%;
+  background: $color-accent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  span {
+    font-family: $font-body;
+    font-size: $fs-h2; // 56px per Figma
+    font-weight: $fw-medium;
+    letter-spacing: 0.05em;
+    color: #8D8D8D;
+  }
+}
+
 // ─── Select dropdown ──────────────────────────────────────────────────────────
 
 .contact-form__select {
@@ -312,12 +397,17 @@
 // ─── Form section title ────────────────────────────────────────────────────────
 
 .contact-form__section-title {
-  font-size: $fs-h4;
+  font-size: $fs-h4; // 32px mobile
   font-weight: $fw-medium;
   letter-spacing: 0.05em;
   color: $color-primary;
   text-align: center;
   margin: $space-8 0 $space-6;
+
+  @media (min-width: $bp-lg) {
+    font-size: $fs-h3; // 48px desktop per Figma
+    margin: $space-12 0 $space-8;
+  }
 }
 
 // ─── Checkbox ─────────────────────────────────────────────────────────────────
@@ -353,23 +443,4 @@
   color: $color-secondary;
   letter-spacing: 0.05em;
   line-height: 1.3;
-}
-
-// ─── Map ──────────────────────────────────────────────────────────────────────
-
-.contact-map__placeholder {
-  width: 100%;
-  height: 100%;
-  background: $color-accent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  span {
-    font-family: $font-body;
-    font-size: $fs-h2; // 56px per Figma
-    font-weight: $fw-medium;
-    letter-spacing: 0.05em;
-    color: #8D8D8D;
-  }
 }
