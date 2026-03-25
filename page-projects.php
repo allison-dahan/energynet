@@ -58,41 +58,38 @@ $ongoing_projects   = energynet_get_projects_by_status( 'ongoing' );
 	<div class="projects-page">
 		<div class="container">
 
-			<!-- ─── Intro ──────────────────────────────────────────────────────────── -->
+			<!-- ─── Title ────────────────────────────────────────────────────────── -->
 			<div class="projects-intro">
-
 				<h1 class="projects-intro__title"><?php esc_html_e( 'PROJECTS', 'energynet' ); ?></h1>
-
 				<div class="projects-intro__divider" aria-hidden="true"></div>
+			</div>
 
-				<div class="projects-stat">
-					<p class="projects-stat__before"><?php esc_html_e( 'We bring proven expertise with', 'energynet' ); ?></p>
-					<div class="projects-stat__counter">
-						<span class="projects-stat__number">999</span>
-						<span class="projects-stat__plus">+</span>
+			<!-- ─── Body: two-column on desktop ──────────────────────────────────── -->
+			<div class="projects-body">
+
+				<div class="projects-left">
+					<div class="projects-stat">
+						<p class="projects-stat__before"><?php esc_html_e( 'We bring proven expertise with', 'energynet' ); ?></p>
+						<p class="projects-stat__after"><?php esc_html_e( 'SUCCESSFUL PROJECTS across the country', 'energynet' ); ?></p>
 					</div>
-					<p class="projects-stat__after"><?php esc_html_e( 'SUCCESSFUL PROJECTS across the country', 'energynet' ); ?></p>
+
+					<div class="projects-cta">
+						<button
+							class="projects-cta__btn projects-cta__btn--filled"
+							data-drawer-open="completed"
+							aria-haspopup="dialog"
+						>
+							<?php esc_html_e( 'SEE OUR PROJECTS', 'energynet' ); ?>
+						</button>
+					</div>
 				</div>
 
-				<div class="projects-intro__divider" aria-hidden="true"></div>
+				<!-- ─── Map placeholder ──────────────────────────────────────────── -->
+				<div class="projects-map" aria-label="<?php esc_attr_e( 'Project locations map', 'energynet' ); ?>">
+					<span class="projects-map__label"><?php esc_html_e( 'MAP', 'energynet' ); ?></span>
+				</div>
 
-			</div>
-
-			<!-- ─── Map placeholder ────────────────────────────────────────────────── -->
-			<div class="projects-map" aria-label="<?php esc_attr_e( 'Project locations map', 'energynet' ); ?>">
-				<span class="projects-map__label"><?php esc_html_e( 'MAP', 'energynet' ); ?></span>
-			</div>
-
-			<!-- ─── CTA ────────────────────────────────────────────────────────────── -->
-			<div class="projects-cta">
-				<button
-					class="projects-cta__btn projects-cta__btn--filled"
-					data-drawer-open="completed"
-					aria-haspopup="dialog"
-				>
-					<?php esc_html_e( 'SEE OUR PROJECTS', 'energynet' ); ?>
-				</button>
-			</div>
+			</div><!-- .projects-body -->
 
 		</div><!-- .container -->
 	</div><!-- .projects-page -->

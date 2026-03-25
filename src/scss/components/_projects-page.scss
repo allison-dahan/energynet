@@ -11,7 +11,7 @@
   }
 }
 
-// ─── Intro ─────────────────────────────────────────────────────────────────────
+// ─── Intro (title row) ─────────────────────────────────────────────────────────
 
 .projects-intro {
   text-align: center;
@@ -29,6 +29,7 @@
   @media (min-width: $bp-lg) {
     font-size: $fs-h2; // 56px desktop
     line-height: 1.07;
+    margin-bottom: $space-6;
   }
 }
 
@@ -37,54 +38,59 @@
   max-width: 100%;
   height: 1px;
   background: $color-accent;
-  margin: $space-3 auto;
+  margin: 0 auto;
+}
+
+// ─── Body: two-column on desktop ───────────────────────────────────────────────
+
+.projects-body {
+  display: flex;
+  flex-direction: column;
+  gap: $space-8;
+
+  @media (min-width: $bp-lg) {
+    flex-direction: row;
+    align-items: center;
+    gap: 60px;
+  }
+}
+
+.projects-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-8;
+
+  @media (min-width: $bp-lg) {
+    align-items: flex-start;
+    flex-shrink: 0;
+    width: 445px;
+  }
 }
 
 // ─── Stat block ────────────────────────────────────────────────────────────────
 
 .projects-stat {
-  padding: $space-2 0;
   text-align: center;
+
+  @media (min-width: $bp-lg) {
+    text-align: left;
+  }
 }
 
-.projects-stat__before {
+.projects-stat__before,
+.projects-stat__after {
   font-size: 20px;
   font-weight: $fw-medium;
   letter-spacing: 0.05em;
   color: $color-primary;
   line-height: 1.25;
   margin: 0;
-}
 
-.projects-stat__counter {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 4px;
-}
-
-.projects-stat__number {
-  font-size: 76px;
-  font-weight: $fw-medium;
-  color: $color-secondary;
-  line-height: 1.1;
-}
-
-.projects-stat__plus {
-  font-size: 25px;
-  font-weight: $fw-medium;
-  letter-spacing: 0.05em;
-  color: $color-secondary;
-  line-height: 1;
-}
-
-.projects-stat__after {
-  font-size: 20px;
-  font-weight: $fw-medium;
-  letter-spacing: 0.05em;
-  color: $color-secondary;
-  line-height: 1.25;
-  margin: 0;
+  @media (min-width: $bp-lg) {
+    font-size: 40px;
+    line-height: 50px;
+  }
 }
 
 // ─── Map placeholder ───────────────────────────────────────────────────────────
@@ -93,7 +99,7 @@
   width: 319px;
   max-width: 100%;
   height: 380px;
-  margin: $space-8 auto;
+  margin: 0 auto;
   background: $color-accent;
   display: flex;
   align-items: center;
@@ -101,14 +107,17 @@
   overflow: hidden;
 
   @media (min-width: $bp-lg) {
-    width: 100%;
-    height: 560px;
+    flex: 1;
+    width: auto;
+    max-width: none;
+    height: 580px;
+    margin: 0;
   }
 }
 
 .projects-map__label {
   font-family: $font-body;
-  font-size: $fs-h2; // 56px per Figma placeholder style
+  font-size: $fs-h2;
   font-weight: $fw-medium;
   letter-spacing: 0.05em;
   color: #8D8D8D;
@@ -121,6 +130,10 @@
   flex-direction: column;
   align-items: center;
   gap: $space-3;
+
+  @media (min-width: $bp-lg) {
+    align-items: flex-start;
+  }
 }
 
 .projects-cta__btn {
@@ -136,7 +149,7 @@
   letter-spacing: 0.1em;
   text-decoration: none;
   cursor: pointer;
-  border: 2px solid $color-primary;
+  border: none;
   transition: opacity 0.2s ease;
 
   &:hover {
@@ -144,18 +157,19 @@
   }
 
   &--filled {
-    background: $color-primary;
+    background: $color-button-dark;
     color: $color-text-light;
   }
 
   &--outline {
     background: $color-white;
     color: $color-primary;
+    border: 2px solid $color-primary;
   }
 
   @media (min-width: $bp-lg) {
-    width: 280px;
-    height: 55px;
+    width: 335px;
+    height: 46px;
   }
 }
 
