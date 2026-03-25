@@ -190,6 +190,11 @@ require get_template_directory() . '/inc/cpt-product.php';
  */
 require get_template_directory() . '/inc/cpt-service.php';
 
+/**
+ * Project CPT and ACF fields.
+ */
+require get_template_directory() . '/inc/cpt-project.php';
+
 function energynet_enqueue_assets() {
   $theme_dir = get_template_directory();
   $theme_uri = get_template_directory_uri();

@@ -393,6 +393,110 @@ document.addEventListener('keydown', (e) => {
   });
 })();
 
+// ─── Projects drawers ─────────────────────────────────────────────────────────
+
+(function () {
+  const drawers = document.querySelectorAll('.projects-drawer');
+  if (!drawers.length) return;
+
+  function openDrawer(id) {
+    const drawer = document.getElementById(id);
+    if (!drawer) return;
+    drawer.classList.add('is-open');
+    drawer.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer(drawer) {
+    drawer.classList.remove('is-open');
+    drawer.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    // Reset to list view on close
+    const list   = drawer.querySelector('.projects-drawer__list');
+    const detail = drawer.querySelector('.projects-detail');
+    if (list)   list.hidden   = false;
+    if (detail) detail.hidden = true;
+  }
+
+  document.querySelectorAll('[data-drawer-open]').forEach(btn => {
+    btn.addEventListener('click', () => openDrawer('drawer-' + btn.dataset.drawerOpen));
+  });
+
+  drawers.forEach(drawer => {
+    drawer.querySelectorAll('[data-drawer-close]').forEach(el => {
+      el.addEventListener('click', () => closeDrawer(drawer));
+    });
+
+    const list   = drawer.querySelector('.projects-drawer__list');
+    const detail = drawer.querySelector('.projects-detail');
+
+    // ── Detail view ──
+    if (list && detail) {
+      const dataKey  = drawer.id === 'drawer-completed' ? 'projectsCompleted' : 'projectsOngoing';
+      const projects = window[dataKey] || [];
+      const total    = projects.length;
+      let current    = 0;
+
+      const titleEl   = detail.querySelector('[data-detail-title]');
+      const clientEl  = detail.querySelector('[data-detail-client]');
+      const dateEl    = detail.querySelector('[data-detail-date]');
+      const scopeEl   = detail.querySelector('[data-detail-scope]');
+      const counterEl = detail.querySelector('[data-detail-counter]');
+      const prevBtn   = detail.querySelector('[data-detail-prev]');
+      const nextBtn   = detail.querySelector('[data-detail-next]');
+      const panel     = drawer.querySelector('.projects-drawer__panel');
+
+      function showDetail(index) {
+        current = Math.max(0, Math.min(index, total - 1));
+        const p = projects[current];
+        if (!p) return;
+
+        if (titleEl)   titleEl.textContent   = p.title;
+        if (clientEl)  clientEl.textContent  = p.client;
+        if (dateEl)    dateEl.textContent    = p.date;
+        if (scopeEl)   scopeEl.textContent   = p.scope;
+        if (counterEl) counterEl.textContent = `PROJECT ${current + 1} of ${total}`;
+        if (prevBtn)   prevBtn.disabled = current === 0;
+        if (nextBtn)   nextBtn.disabled = current === total - 1;
+
+        list.hidden   = true;
+        detail.hidden = false;
+        if (panel) panel.scrollTop = 0;
+      }
+
+      drawer.querySelectorAll('.project-card').forEach((card, i) => {
+        card.addEventListener('click', () => showDetail(i));
+        card.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showDetail(i); }
+        });
+      });
+
+      prevBtn?.addEventListener('click', () => showDetail(current - 1));
+      nextBtn?.addEventListener('click', () => showDetail(current + 1));
+    }
+
+    // ── List pagination ──
+    const pageBtns = drawer.querySelectorAll('.drawer-page-btn');
+    const pageNext = drawer.querySelector('[data-page-next]');
+    let currentPage = 1;
+
+    function goToPage(page) {
+      const pageTotal = pageBtns.length;
+      currentPage = Math.max(1, Math.min(page, pageTotal));
+      pageBtns.forEach(b => b.classList.toggle('is-active', parseInt(b.dataset.page, 10) === currentPage));
+    }
+
+    pageBtns.forEach(b => b.addEventListener('click', () => goToPage(parseInt(b.dataset.page, 10))));
+    pageNext?.addEventListener('click', () => goToPage(currentPage + 1));
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    const open = document.querySelector('.projects-drawer.is-open');
+    if (open) closeDrawer(open);
+  });
+})();
+
 // ─── Hero slideshow (fade transition) ─────────────────────────────────────────
 
 (function () {

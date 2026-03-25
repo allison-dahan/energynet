@@ -94,6 +94,17 @@ function energynet_register_product_acf_fields() {
 		'fields' => [
 
 			[
+				'key'        => 'field_product_brand',
+				'label'      => 'Brand',
+				'name'       => 'product_brand',
+				'type'       => 'taxonomy',
+				'taxonomy'   => 'product_brand',
+				'field_type' => 'checkbox',
+				'save_terms' => 1,
+				'load_terms' => 1,
+				'return_format' => 'id',
+			],
+			[
 				'key'          => 'field_tech_brochure',
 				'label'        => 'Brochure',
 				'name'         => 'tech_brochure',
