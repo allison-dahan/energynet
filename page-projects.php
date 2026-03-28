@@ -128,15 +128,7 @@ $ongoing_projects   = energynet_get_projects_by_status( 'ongoing' );
 					<?php endforeach; ?>
 				</div>
 
-				<div class="projects-drawer__pagination">
-					<button class="drawer-page-btn is-active" data-page="1">1</button>
-					<button class="drawer-page-btn" data-page="2">2</button>
-					<button class="drawer-page-btn" data-page="3">3</button>
-					<button class="drawer-page-btn" data-page="4">4</button>
-					<button class="drawer-page-next" data-page-next aria-label="<?php esc_attr_e( 'Next page', 'energynet' ); ?>">
-						<iconify-icon icon="ph:caret-right" width="10" height="18"></iconify-icon>
-					</button>
-				</div>
+				<div class="projects-drawer__pagination"></div>
 			</div>
 
 			<!-- ── Detail view ── -->

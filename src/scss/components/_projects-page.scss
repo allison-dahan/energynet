@@ -201,10 +201,14 @@
   max-height: 90vh;
   overflow-y: auto;
   background: $color-white;
-  box-shadow: 0 0 8px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 8px 3px rgba(0, 0, 0, 0.15);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
+
+  @media (min-width: $bp-lg) {
+    width: min(1235px, 90%);
+  }
 }
 
 .projects-drawer__header {
@@ -219,6 +223,13 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 $space-4 0 $space-6;
+
+  @media (min-width: $bp-lg) {
+    border-radius: 0;
+    border-bottom: 3px solid $color-primary;
+    background: $color-white;
+    padding: 0 $space-6;
+  }
 }
 
 .projects-drawer__title {
@@ -227,6 +238,19 @@
   letter-spacing: 0.05em;
   color: $color-white;
   margin: 0;
+
+  @media (min-width: $bp-lg) {
+    font-size: 28px;
+    line-height: 36px;
+    color: $color-white;
+    background: $color-primary;
+    padding: 0 $space-4;
+    height: 57px;
+    display: flex;
+    align-items: center;
+    margin-left: -$space-6;
+    border-radius: 8px 0 0 0;
+  }
 }
 
 .projects-drawer__close {
@@ -243,6 +267,10 @@
   width: 32px;
   height: 32px;
 
+  @media (min-width: $bp-lg) {
+    color: $color-primary;
+  }
+
   &:hover {
     opacity: 0.8;
   }
@@ -257,6 +285,13 @@
   display: flex;
   flex-direction: column;
   gap: $space-4;
+
+  @media (min-width: $bp-lg) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: $space-6;
+    gap: $space-4;
+  }
 }
 
 // ─── Project cards ─────────────────────────────────────────────────────────────
@@ -267,8 +302,13 @@
   height: 238px;
   border-radius: 8.5px;
   overflow: hidden;
-  border: 2px solid rgba(217, 191, 158, 0.5);
+  border: 1.5px solid rgba(217, 191, 158, 0.5);
   flex-shrink: 0;
+  cursor: pointer;
+
+  @media (min-width: $bp-lg) {
+    height: 278px;
+  }
 }
 
 .project-card__img {
@@ -309,6 +349,10 @@
   color: $color-white;
   margin: 0;
   line-height: 1.25;
+
+  @media (min-width: $bp-lg) {
+    font-size: 20px;
+  }
 }
 
 .project-card__title {
@@ -342,10 +386,16 @@
   font-weight: $fw-bold;
   font-family: $font-body;
   cursor: pointer;
-  border: 1.5px solid $color-primary;
+  border: 2px solid $color-primary;
   background: $color-white;
   color: $color-secondary;
   transition: background 0.2s, color 0.2s;
+
+  @media (min-width: $bp-lg) {
+    width: 48px;
+    height: 48px;
+    font-size: $fs-body;
+  }
 
   &.is-active {
     background: $color-secondary;

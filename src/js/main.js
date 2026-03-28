@@ -411,7 +411,6 @@ document.addEventListener('keydown', (e) => {
     drawer.classList.remove('is-open');
     drawer.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
-    // Reset to list view on close
     const list   = drawer.querySelector('.projects-drawer__list');
     const detail = drawer.querySelector('.projects-detail');
     if (list)   list.hidden   = false;
@@ -427,15 +426,59 @@ document.addEventListener('keydown', (e) => {
       el.addEventListener('click', () => closeDrawer(drawer));
     });
 
-    const list   = drawer.querySelector('.projects-drawer__list');
-    const detail = drawer.querySelector('.projects-detail');
+    const list         = drawer.querySelector('.projects-drawer__list');
+    const detail       = drawer.querySelector('.projects-detail');
+    const cards        = Array.from(drawer.querySelectorAll('.project-card'));
+    const paginationEl = drawer.querySelector('.projects-drawer__pagination');
+
+    if (!list || !cards.length) return;
+
+    const dataKey  = drawer.id === 'drawer-completed' ? 'projectsCompleted' : 'projectsOngoing';
+    const projects = window[dataKey] || [];
+    let currentPage = 1;
+
+    function perPage() {
+      return window.innerWidth >= 1024 ? 6 : 3;
+    }
+
+    function showPage(page) {
+      const pp    = perPage();
+      const total = Math.ceil(cards.length / pp) || 1;
+      currentPage = Math.max(1, Math.min(page, total));
+
+      const start = (currentPage - 1) * pp;
+      const end   = start + pp;
+
+      cards.forEach((card, i) => {
+        card.hidden = i < start || i >= end;
+      });
+
+      renderPagination(total);
+    }
+
+    function renderPagination(total) {
+      if (!paginationEl) return;
+      if (total <= 1) { paginationEl.innerHTML = ''; return; }
+
+      let html = '';
+      for (let p = 1; p <= total; p++) {
+        html += `<button class="drawer-page-btn${p === currentPage ? ' is-active' : ''}" data-page="${p}">${p}</button>`;
+      }
+      if (currentPage < total) {
+        html += `<button class="drawer-page-next" data-page-next aria-label="Next page"><iconify-icon icon="ph:caret-right" width="10" height="18"></iconify-icon></button>`;
+      }
+      paginationEl.innerHTML = html;
+
+      paginationEl.querySelectorAll('.drawer-page-btn').forEach(btn => {
+        btn.addEventListener('click', () => showPage(parseInt(btn.dataset.page, 10)));
+      });
+      paginationEl.querySelector('[data-page-next]')?.addEventListener('click', () => showPage(currentPage + 1));
+    }
 
     // ── Detail view ──
-    if (list && detail) {
-      const dataKey  = drawer.id === 'drawer-completed' ? 'projectsCompleted' : 'projectsOngoing';
-      const projects = window[dataKey] || [];
-      const total    = projects.length;
-      let current    = 0;
+    if (detail) {
+      const total     = projects.length;
+      let current     = 0;
 
       const titleEl   = detail.querySelector('[data-detail-title]');
       const clientEl  = detail.querySelector('[data-detail-client]');
@@ -464,7 +507,7 @@ document.addEventListener('keydown', (e) => {
         if (panel) panel.scrollTop = 0;
       }
 
-      drawer.querySelectorAll('.project-card').forEach((card, i) => {
+      cards.forEach((card, i) => {
         card.addEventListener('click', () => showDetail(i));
         card.addEventListener('keydown', e => {
           if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showDetail(i); }
@@ -475,19 +518,14 @@ document.addEventListener('keydown', (e) => {
       nextBtn?.addEventListener('click', () => showDetail(current + 1));
     }
 
-    // ── List pagination ──
-    const pageBtns = drawer.querySelectorAll('.drawer-page-btn');
-    const pageNext = drawer.querySelector('[data-page-next]');
-    let currentPage = 1;
+    // Re-paginate on resize
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => showPage(currentPage), 200);
+    }, { passive: true });
 
-    function goToPage(page) {
-      const pageTotal = pageBtns.length;
-      currentPage = Math.max(1, Math.min(page, pageTotal));
-      pageBtns.forEach(b => b.classList.toggle('is-active', parseInt(b.dataset.page, 10) === currentPage));
-    }
-
-    pageBtns.forEach(b => b.addEventListener('click', () => goToPage(parseInt(b.dataset.page, 10))));
-    pageNext?.addEventListener('click', () => goToPage(currentPage + 1));
+    showPage(1);
   });
 
   document.addEventListener('keydown', e => {
