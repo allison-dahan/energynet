@@ -10,13 +10,16 @@ get_header();
 
 <main id="primary" class="site-main">
 
-	<section class="hero" data-hero>
+	<section class="hero">
 
-		<div class="hero__bg-wrap">
-			<div class="hero__bg is-active" style="background-image: url(<?php echo esc_url( get_template_directory_uri() ); ?>/assets/images/hero-1.jpg)"></div>
-			<div class="hero__bg" style="background-image: url(<?php echo esc_url( get_template_directory_uri() ); ?>/assets/images/hero-2.jpg)"></div>
-			<div class="hero__bg" style="background-image: url(<?php echo esc_url( get_template_directory_uri() ); ?>/assets/images/hero-3.jpg)"></div>
-		</div>
+		<video
+			class="hero__video"
+			src="<?php echo esc_url( get_template_directory_uri() ); ?>/dist/images/home/Home page video.mp4"
+			autoplay
+			muted
+			loop
+			playsinline
+		></video>
 
 		<div class="hero__content">
 			<h1 class="hero__heading"><?php esc_html_e( 'EPITOME OF RESILIENCE', 'Energynet' ); ?></h1>
