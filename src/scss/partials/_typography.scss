@@ -19,8 +19,22 @@ h4 { font-size: $fs-h4; }
 h5 { font-size: $fs-h5; }
 
 /* Body */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: $color-secondary;
+}
+
 body {
   font-family: $font-body;
   font-weight: $fw-regular;
   font-size: $fs-body;
+  background: $color-white;
 }
