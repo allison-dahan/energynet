@@ -1,5 +1,33 @@
 @use "../partials/variables" as *;
 
+// ─── Map marker & popup ────────────────────────────────────────────────────────
+
+.map-pin {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: $color-white;
+  border: 2.5px solid #444444;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.map-popup .leaflet-popup-content-wrapper {
+  background: #222222;
+  color: $color-white;
+  border-radius: 6px;
+  font-family: $font-body;
+  font-size: 13px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.map-popup .leaflet-popup-tip {
+  background: #222222;
+}
+
+.map-popup .leaflet-popup-content {
+  margin: 8px 12px;
+}
+
 // ─── Projects page ─────────────────────────────────────────────────────────────
 
 .projects-page {
@@ -51,7 +79,7 @@
   @media (min-width: $bp-lg) {
     flex-direction: row;
     align-items: center;
-    gap: 60px;
+    gap: 80px;
   }
 }
 
@@ -64,7 +92,7 @@
   @media (min-width: $bp-lg) {
     align-items: flex-start;
     flex-shrink: 0;
-    width: 445px;
+    width: 500px;
   }
 }
 
@@ -75,6 +103,16 @@
 
   @media (min-width: $bp-lg) {
     text-align: left;
+  }
+}
+
+.projects-stat__divider {
+  height: 2px;
+  background: $color-accent;
+  margin: $space-4 0;
+
+  @media (min-width: $bp-lg) {
+    display: none;
   }
 }
 
@@ -93,34 +131,69 @@
   }
 }
 
-// ─── Map placeholder ───────────────────────────────────────────────────────────
+// ─── Map ───────────────────────────────────────────────────────────────────────
 
 .projects-map {
   width: 319px;
   max-width: 100%;
   height: 380px;
   margin: 0 auto;
-  background: $color-accent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
+  border-radius: 8px;
+  background: #111111; // dark fallback while tiles load
 
   @media (min-width: $bp-lg) {
-    flex: 1;
-    width: auto;
-    max-width: none;
-    height: 580px;
+    flex-shrink: 0;
+    width: 582px;
+    height: 692px;
     margin: 0;
   }
 }
 
-.projects-map__label {
-  font-family: $font-body;
-  font-size: $fs-h2;
-  font-weight: $fw-medium;
-  letter-spacing: 0.05em;
-  color: #8D8D8D;
+#projects-map-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+// ─── Leaflet zoom controls ──────────────────────────────────────────────────────
+
+// Vertically centre the zoom control within the map
+#projects-map-canvas .leaflet-right {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.leaflet-touch .leaflet-control-zoom-in,
+.leaflet-touch .leaflet-control-zoom-out,
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+  background: rgba(20, 20, 20, 0.85) !important;
+  border: 1.5px solid #888888 !important;
+  color: #888888 !important;
+  font-size: 26px !important;
+  line-height: 36px !important;
+  width: 36px !important;
+  height: 36px !important;
+
+  &:hover {
+    background: rgba(40, 40, 40, 0.95) !important;
+    color: #bbbbbb !important;
+  }
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: none !important;
+
+  a + a {
+    border-top: 1px solid #555555 !important;
+  }
+}
+
+// Attribution watermark — bottom right
+#projects-map-canvas .leaflet-bottom.leaflet-right {
+  top: auto;
+  transform: none;
 }
 
 // ─── CTA buttons ───────────────────────────────────────────────────────────────

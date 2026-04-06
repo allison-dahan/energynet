@@ -23,11 +23,11 @@ $has_filters = ( $brand_terms && ! is_wp_error( $brand_terms ) ) || ( $cat_terms
 
 // Pre-fetch brand logos for reuse in sidebar + overlay.
 $brand_logo_map = [];
-if ( $brand_terms && ! is_wp_error( $brand_terms ) && function_exists( 'get_field' ) ) {
+if ( $brand_terms && ! is_wp_error( $brand_terms ) ) {
 	foreach ( $brand_terms as $term ) {
-		$logo = get_field( 'brand_logo', 'product_brand_' . $term->term_id );
-		if ( $logo ) {
-			$brand_logo_map[ $term->term_id ] = is_array( $logo ) ? ( $logo['url'] ?? '' ) : $logo;
+		$logo_id = get_term_meta( $term->term_id, '_brand_logo_id', true );
+		if ( $logo_id ) {
+			$brand_logo_map[ $term->term_id ] = wp_get_attachment_url( (int) $logo_id );
 		}
 	}
 }

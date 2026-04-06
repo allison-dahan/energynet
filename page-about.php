@@ -39,6 +39,8 @@ get_header();
 		</div>
 	</section>
 
+
+	
 	<!-- ─── Services ─────────────────────────────────────────────────────────── -->
 	<section class="services">
 		<div class="container">
@@ -132,11 +134,27 @@ get_header();
 	<section class="clients">
 		<div class="container">
 			<h2 class="section-heading section-heading--ruled section-heading--sm">CLIENTS</h2>
-			<div class="clients__logos">
-				<img src="<?php echo esc_url( get_template_directory_uri() . '/dist/images/about/clients/Meralco.jpg' ); ?>" alt="Meralco">
-				<img src="<?php echo esc_url( get_template_directory_uri() . '/dist/images/about/clients/Aboitiz.png' ); ?>" alt="Aboitiz">
-				<img src="<?php echo esc_url( get_template_directory_uri() . '/dist/images/about/clients/Rockwell Land.png' ); ?>" alt="Rockwell Land">
-				<img src="<?php echo esc_url( get_template_directory_uri() . '/dist/images/about/clients/SMDC.png' ); ?>" alt="SMDC">
+			<div class="clients__carousel" data-clients-carousel>
+				<div class="clients__track">
+					<?php
+					$clients = new WP_Query( [
+						'post_type'      => 'client',
+						'posts_per_page' => -1,
+						'orderby'        => 'menu_order',
+						'order'          => 'ASC',
+					] );
+					while ( $clients->have_posts() ) :
+						$clients->the_post();
+						$logo = get_the_post_thumbnail_url( null, 'full' );
+						if ( $logo ) :
+							?>
+							<img class="clients__logo" src="<?php echo esc_url( $logo ); ?>" alt="<?php the_title_attribute(); ?>">
+						<?php
+						endif;
+					endwhile;
+					wp_reset_postdata();
+					?>
+				</div>
 			</div>
 			<div class="section-divider"></div>
 		</div>

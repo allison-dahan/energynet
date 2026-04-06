@@ -153,10 +153,12 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
+}
 
+.services .service-card {
   @media (min-width: $bp-lg) {
     border: 3px solid $color-accent;
-    border-radius: 9px;
+    border-radius: 8.51792px;
     padding: $space-6;
   }
 }
@@ -180,7 +182,6 @@
   letter-spacing: 0.03em;
   color: $color-primary;
   margin: 0 0 $space-4;
-  max-width: 280px;
 
   @media (min-width: $bp-lg) {
     max-width: none;
@@ -194,7 +195,6 @@
   text-align: justify;
   color: $color-secondary;
   margin: 0;
-  max-width: 354px;
 
   @media (min-width: $bp-lg) {
     max-width: none;
@@ -389,18 +389,35 @@
   padding: $space-8 0;
 }
 
-.clients__logos {
+.clients__carousel {
+  overflow: hidden;
+  cursor: grab;
+
+  &:active { cursor: grabbing; }
+}
+
+@keyframes clients-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.clients__track {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: $space-8;
-  flex-wrap: wrap;
+  width: max-content;
+  animation: clients-scroll 20s linear infinite;
 
-  img {
-    height: 55px;
-    width: auto;
-    object-fit: contain;
-  }
+  .clients__carousel:hover & { animation-play-state: paused; }
+}
+
+.clients__logo {
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+  flex-shrink: 0;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 // ─── Certifications ───────────────────────────────────────────────────────────
@@ -433,8 +450,8 @@
   gap: $space-2;
 
   img {
-    width: 108px;
-    height: 108px;
+    width: 180px;
+    height: 180px;
     object-fit: contain;
   }
 }

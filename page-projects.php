@@ -15,7 +15,7 @@ function energynet_get_projects_by_status( string $status ): array {
 		'post_type'      => 'project',
 		'posts_per_page' => -1,
 		'post_status'    => 'publish',
-		'meta_key'       => 'project_status',
+		'meta_key'       => '_project_status',
 		'meta_value'     => $status,
 		'orderby'        => 'title',
 		'order'          => 'ASC',
@@ -25,24 +25,27 @@ function energynet_get_projects_by_status( string $status ): array {
 
 	foreach ( $query->posts as $post ) {
 		$thumbnail_url = get_the_post_thumbnail_url( $post->ID, 'large' ) ?: '';
-		$gallery       = function_exists( 'get_field' ) ? get_field( 'project_gallery', $post->ID ) : [];
-		$gallery_urls  = [];
 
-		if ( is_array( $gallery ) ) {
-			foreach ( $gallery as $img ) {
-				$gallery_urls[] = $img['url'] ?? '';
+		$gallery_ids  = get_post_meta( $post->ID, '_project_gallery', true );
+		$gallery_urls = [];
+		if ( $gallery_ids ) {
+			foreach ( array_filter( array_map( 'trim', explode( ',', $gallery_ids ) ) ) as $id ) {
+				$url = wp_get_attachment_url( (int) $id );
+				if ( $url ) $gallery_urls[] = [ 'url' => $url ];
 			}
 		}
 
 		$projects[] = [
 			'title'    => get_the_title( $post->ID ),
-			'client'   => function_exists( 'get_field' ) ? get_field( 'project_client',   $post->ID ) : '',
-			'date'     => function_exists( 'get_field' ) ? get_field( 'project_date',      $post->ID ) : '',
-			'scope'    => function_exists( 'get_field' ) ? get_field( 'project_scope',     $post->ID ) : '',
-			'location' => function_exists( 'get_field' ) ? get_field( 'project_location',  $post->ID ) : '',
+			'client'   => get_post_meta( $post->ID, '_project_client',   true ),
+			'date'     => get_post_meta( $post->ID, '_project_date',      true ),
+			'scope'    => get_post_meta( $post->ID, '_project_scope',     true ),
+			'location' => get_post_meta( $post->ID, '_project_location',  true ),
 			'image'    => $thumbnail_url,
 			'gallery'  => $gallery_urls,
-			'video'    => function_exists( 'get_field' ) ? get_field( 'project_video',     $post->ID ) : '',
+			'video'    => get_post_meta( $post->ID, '_project_video',     true ),
+			'lat'      => (float) get_post_meta( $post->ID, '_project_lat', true ),
+			'lng'      => (float) get_post_meta( $post->ID, '_project_lng', true ),
 		];
 	}
 
@@ -61,7 +64,6 @@ $ongoing_projects   = energynet_get_projects_by_status( 'ongoing' );
 			<!-- ─── Title ────────────────────────────────────────────────────────── -->
 			<div class="projects-intro">
 				<h1 class="projects-intro__title"><?php esc_html_e( 'PROJECTS', 'energynet' ); ?></h1>
-				<div class="projects-intro__divider" aria-hidden="true"></div>
 			</div>
 
 			<!-- ─── Body: two-column on desktop ──────────────────────────────────── -->
@@ -69,8 +71,11 @@ $ongoing_projects   = energynet_get_projects_by_status( 'ongoing' );
 
 				<div class="projects-left">
 					<div class="projects-stat">
+						<div class="projects-stat__divider" aria-hidden="true"></div>
 						<p class="projects-stat__before"><?php esc_html_e( 'We bring proven expertise with', 'energynet' ); ?></p>
-						<p class="projects-stat__after"><?php esc_html_e( 'SUCCESSFUL PROJECTS across the country', 'energynet' ); ?></p>
+						<p class="projects-stat__after"><?php esc_html_e( 'SUCCESSFUL PROJECTS', 'energynet' ); ?></p>
+						<p class="projects-stat__after"><?php esc_html_e( 'across the country', 'energynet' ); ?></p>
+						<div class="projects-stat__divider" aria-hidden="true"></div>
 					</div>
 
 					<div class="projects-cta">
@@ -84,9 +89,9 @@ $ongoing_projects   = energynet_get_projects_by_status( 'ongoing' );
 					</div>
 				</div>
 
-				<!-- ─── Map placeholder ──────────────────────────────────────────── -->
+				<!-- ─── Map ──────────────────────────────────────────────────────── -->
 				<div class="projects-map" aria-label="<?php esc_attr_e( 'Project locations map', 'energynet' ); ?>">
-					<span class="projects-map__label"><?php esc_html_e( 'MAP', 'energynet' ); ?></span>
+					<div id="projects-map-canvas"></div>
 				</div>
 
 			</div><!-- .projects-body -->
@@ -138,7 +143,7 @@ $ongoing_projects   = energynet_get_projects_by_status( 'ongoing' );
 
 				<div class="projects-detail__media">
 					<div class="projects-detail__main-img">
-						<div class="projects-detail__play" aria-hidden="true">
+						<div class="projects-detail__play" data-detail-play aria-hidden="true">
 							<iconify-icon icon="ph:play-fill" width="20" height="20"></iconify-icon>
 						</div>
 					</div>

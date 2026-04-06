@@ -18,16 +18,13 @@ $brand_terms = get_the_terms( $post_id, 'product_brand' );
 $brand       = ( $brand_terms && ! is_wp_error( $brand_terms ) ) ? $brand_terms[0] : null;
 
 // Tech files
-$tech_fields = [];
-if ( function_exists( 'get_field' ) ) {
-	$tech_fields = array_filter( [
-		'Brochure'    => get_field( 'tech_brochure' ),
-		'Certificate' => get_field( 'tech_certificate' ),
-		'Data Sheet'  => get_field( 'tech_data_sheet' ),
-	] );
-}
+$tech_fields = array_filter( [
+	'Brochure'    => get_post_meta( $post_id, '_tech_brochure',    true ),
+	'Certificate' => get_post_meta( $post_id, '_tech_certificate', true ),
+	'Data Sheet'  => get_post_meta( $post_id, '_tech_data_sheet',  true ),
+] );
 
-$video_url = function_exists( 'get_field' ) ? get_field( 'tech_video' ) : '';
+$video_url = get_post_meta( $post_id, '_tech_video', true );
 
 $tech_icons = [
 	'Brochure'    => 'ph:file-text-thin',

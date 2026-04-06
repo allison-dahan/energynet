@@ -1,6 +1,6 @@
 <?php
 /**
- * Product Custom Post Type, taxonomies, and ACF field registration.
+ * Product Custom Post Type, taxonomies, and native meta box registration.
  *
  * @package energynet
  */
@@ -75,109 +75,168 @@ function energynet_register_product_brand_taxonomy() {
 		'hierarchical' => false,
 		'show_in_rest' => true,
 		'rewrite'      => [ 'slug' => 'product-brand' ],
-		'meta_box_cb'  => false, // replaced by ACF checkbox field below
 	] );
 }
 add_action( 'init', 'energynet_register_product_brand_taxonomy' );
 
-// ─── ACF Fields ───────────────────────────────────────────────────────────────
-// Uses free ACF — individual file fields with fixed labels.
+// ─── Meta box: Technical Information ─────────────────────────────────────────
 
-function energynet_register_product_acf_fields() {
-	if ( ! function_exists( 'acf_add_local_field_group' ) ) {
+function energynet_register_product_meta_box() {
+	add_meta_box(
+		'product_technical_information',
+		__( 'Technical Information', 'energynet' ),
+		'energynet_render_product_meta_box',
+		'product',
+		'normal',
+		'high'
+	);
+}
+add_action( 'add_meta_boxes', 'energynet_register_product_meta_box' );
+
+function energynet_render_product_meta_box( $post ) {
+	wp_nonce_field( 'energynet_save_product_meta', 'energynet_product_nonce' );
+
+	$brochure    = get_post_meta( $post->ID, '_tech_brochure',    true );
+	$certificate = get_post_meta( $post->ID, '_tech_certificate', true );
+	$data_sheet  = get_post_meta( $post->ID, '_tech_data_sheet',  true );
+	$video       = get_post_meta( $post->ID, '_tech_video',       true );
+	?>
+	<style>
+		.en-product-meta-table { width: 100%; border-collapse: collapse; }
+		.en-product-meta-table th { text-align: left; padding: 8px 12px 8px 0; width: 140px; font-weight: 600; vertical-align: middle; }
+		.en-product-meta-table td { padding: 6px 0; vertical-align: middle; }
+		.en-product-meta-table input[type="url"] { width: 100%; }
+	</style>
+	<table class="en-product-meta-table">
+		<tr>
+			<th><label for="_tech_brochure"><?php esc_html_e( 'Brochure', 'energynet' ); ?></label></th>
+			<td><input type="url" id="_tech_brochure" name="_tech_brochure" value="<?php echo esc_attr( $brochure ); ?>" placeholder="https://"></td>
+		</tr>
+		<tr>
+			<th><label for="_tech_certificate"><?php esc_html_e( 'Certificate', 'energynet' ); ?></label></th>
+			<td><input type="url" id="_tech_certificate" name="_tech_certificate" value="<?php echo esc_attr( $certificate ); ?>" placeholder="https://"></td>
+		</tr>
+		<tr>
+			<th><label for="_tech_data_sheet"><?php esc_html_e( 'Data Sheet', 'energynet' ); ?></label></th>
+			<td><input type="url" id="_tech_data_sheet" name="_tech_data_sheet" value="<?php echo esc_attr( $data_sheet ); ?>" placeholder="https://"></td>
+		</tr>
+		<tr>
+			<th><label for="_tech_video"><?php esc_html_e( 'Video URL', 'energynet' ); ?></label></th>
+			<td><input type="url" id="_tech_video" name="_tech_video" value="<?php echo esc_attr( $video ); ?>" placeholder="https://"></td>
+		</tr>
+	</table>
+	<?php
+}
+
+function energynet_save_product_meta( $post_id ) {
+	if ( ! isset( $_POST['energynet_product_nonce'] ) || ! wp_verify_nonce( $_POST['energynet_product_nonce'], 'energynet_save_product_meta' ) ) {
 		return;
 	}
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+	if ( wp_is_post_revision( $post_id ) ) return;
+	if ( ! current_user_can( 'edit_post', $post_id ) ) return;
 
-	acf_add_local_field_group( [
-		'key'    => 'group_product_details',
-		'title'  => 'Technical Information',
-		'fields' => [
-
-			[
-				'key'        => 'field_product_brand',
-				'label'      => 'Brand',
-				'name'       => 'product_brand',
-				'type'       => 'taxonomy',
-				'taxonomy'   => 'product_brand',
-				'field_type' => 'checkbox',
-				'save_terms' => 1,
-				'load_terms' => 1,
-				'return_format' => 'id',
-			],
-			[
-				'key'          => 'field_tech_brochure',
-				'label'        => 'Brochure',
-				'name'         => 'tech_brochure',
-				'type'         => 'url',
-				'instructions' => 'Paste a URL or upload a file to the Media Library and paste its URL.',
-			],
-			[
-				'key'          => 'field_tech_certificate',
-				'label'        => 'Certificate',
-				'name'         => 'tech_certificate',
-				'type'         => 'url',
-				'instructions' => 'Paste a URL or upload a file to the Media Library and paste its URL.',
-			],
-			[
-				'key'          => 'field_tech_data_sheet',
-				'label'        => 'Data Sheet',
-				'name'         => 'tech_data_sheet',
-				'type'         => 'url',
-				'instructions' => 'Paste a URL or upload a file to the Media Library and paste its URL.',
-			],
-			[
-				'key'          => 'field_tech_video',
-				'label'        => 'Video',
-				'name'         => 'tech_video',
-				'type'         => 'url',
-				'instructions' => 'Paste a video URL or link.',
-			],
-
-		],
-		'location' => [
-			[
-				[
-					'param'    => 'post_type',
-					'operator' => '==',
-					'value'    => 'product',
-				],
-			],
-		],
-	] );
-}
-add_action( 'acf/init', 'energynet_register_product_acf_fields' );
-
-// ─── ACF: Product Brand logo image ────────────────────────────────────────────
-
-function energynet_register_brand_acf_fields() {
-	if ( ! function_exists( 'acf_add_local_field_group' ) ) {
-		return;
+	$url_fields = [ '_tech_brochure', '_tech_certificate', '_tech_data_sheet', '_tech_video' ];
+	foreach ( $url_fields as $field ) {
+		$value = isset( $_POST[ $field ] ) ? esc_url_raw( wp_unslash( $_POST[ $field ] ) ) : '';
+		update_post_meta( $post_id, $field, $value );
 	}
-
-	acf_add_local_field_group( [
-		'key'    => 'group_product_brand_image',
-		'title'  => 'Brand Logo',
-		'fields' => [
-			[
-				'key'           => 'field_brand_logo',
-				'label'         => 'Logo',
-				'name'          => 'brand_logo',
-				'type'          => 'image',
-				'return_format' => 'array', // returns [ url, width, height, alt, ... ]
-				'preview_size'  => 'medium',
-				'library'       => 'all',
-				'instructions'  => 'Upload or select the brand logo image.',
-			],
-		],
-		'location' => [
-			[
-				[
-					'param'    => 'taxonomy',
-					'operator' => '==',
-					'value'    => 'product_brand',
-				],
-			],
-		],
-	] );
 }
-add_action( 'acf/init', 'energynet_register_brand_acf_fields' );
+add_action( 'save_post_product', 'energynet_save_product_meta', 10 );
+
+// ─── Brand Logo: enqueue media on taxonomy edit pages ─────────────────────────
+
+function energynet_brand_admin_enqueue( $hook ) {
+	global $pagenow;
+	if ( ( $pagenow === 'term.php' || $pagenow === 'edit-tags.php' ) && isset( $_GET['taxonomy'] ) && $_GET['taxonomy'] === 'product_brand' ) {
+		wp_enqueue_media();
+		wp_add_inline_script( 'jquery-core', energynet_brand_logo_inline_js() );
+	}
+}
+add_action( 'admin_enqueue_scripts', 'energynet_brand_admin_enqueue' );
+
+function energynet_brand_logo_inline_js() {
+	return "
+jQuery(function($){
+	var frame;
+	$(document).on('click', '#en-brand-logo-btn', function(e){
+		e.preventDefault();
+		if (frame) { frame.open(); return; }
+		frame = wp.media({
+			title:    'Select Brand Logo',
+			button:   { text: 'Use this image' },
+			multiple: false,
+			library:  { type: 'image' }
+		});
+		frame.on('select', function(){
+			var attachment = frame.state().get('selection').first().toJSON();
+			$('#_brand_logo_id').val(attachment.id);
+			var url = (attachment.sizes && attachment.sizes.thumbnail) ? attachment.sizes.thumbnail.url : attachment.url;
+			$('#en-brand-logo-preview').html('<img src=\"' + url + '\" style=\"max-width:150px;max-height:100px;border:1px solid #ddd;margin-top:6px;\">');
+			$('#en-brand-logo-remove').show();
+		});
+		frame.open();
+	});
+	$(document).on('click', '#en-brand-logo-remove', function(e){
+		e.preventDefault();
+		$('#_brand_logo_id').val('');
+		$('#en-brand-logo-preview').html('');
+		$(this).hide();
+	});
+});
+";
+}
+
+// ─── Brand Logo: add form fields (edit term page) ─────────────────────────────
+
+function energynet_brand_edit_form_fields( $term ) {
+	$logo_id  = get_term_meta( $term->term_id, '_brand_logo_id', true );
+	$logo_url = $logo_id ? wp_get_attachment_image_url( (int) $logo_id, 'thumbnail' ) : '';
+	?>
+	<tr class="form-field">
+		<th scope="row"><label for="_brand_logo_id"><?php esc_html_e( 'Brand Logo', 'energynet' ); ?></label></th>
+		<td>
+			<input type="hidden" id="_brand_logo_id" name="_brand_logo_id" value="<?php echo esc_attr( $logo_id ); ?>">
+			<button type="button" id="en-brand-logo-btn" class="button"><?php esc_html_e( 'Select / Change Logo', 'energynet' ); ?></button>
+			<button type="button" id="en-brand-logo-remove" class="button" style="<?php echo $logo_id ? '' : 'display:none;'; ?>"><?php esc_html_e( 'Remove', 'energynet' ); ?></button>
+			<div id="en-brand-logo-preview">
+				<?php if ( $logo_url ) : ?>
+					<img src="<?php echo esc_url( $logo_url ); ?>" style="max-width:150px;max-height:100px;border:1px solid #ddd;margin-top:6px;">
+				<?php endif; ?>
+			</div>
+			<p class="description"><?php esc_html_e( 'Upload or select the brand logo image.', 'energynet' ); ?></p>
+		</td>
+	</tr>
+	<?php
+}
+add_action( 'product_brand_edit_form_fields', 'energynet_brand_edit_form_fields' );
+
+// ─── Brand Logo: add form fields (add new term page) ─────────────────────────
+
+function energynet_brand_add_form_fields() {
+	?>
+	<div class="form-field">
+		<label for="_brand_logo_id"><?php esc_html_e( 'Brand Logo', 'energynet' ); ?></label>
+		<input type="hidden" id="_brand_logo_id" name="_brand_logo_id" value="">
+		<button type="button" id="en-brand-logo-btn" class="button"><?php esc_html_e( 'Select Logo', 'energynet' ); ?></button>
+		<button type="button" id="en-brand-logo-remove" class="button" style="display:none;"><?php esc_html_e( 'Remove', 'energynet' ); ?></button>
+		<div id="en-brand-logo-preview"></div>
+		<p><?php esc_html_e( 'Upload or select the brand logo image.', 'energynet' ); ?></p>
+	</div>
+	<?php
+}
+add_action( 'product_brand_add_form_fields', 'energynet_brand_add_form_fields' );
+
+// ─── Brand Logo: save on edit ─────────────────────────────────────────────────
+
+function energynet_save_brand_logo( $term_id ) {
+	if ( ! isset( $_POST['_brand_logo_id'] ) ) return;
+	$logo_id = absint( $_POST['_brand_logo_id'] );
+	if ( $logo_id ) {
+		update_term_meta( $term_id, '_brand_logo_id', $logo_id );
+	} else {
+		delete_term_meta( $term_id, '_brand_logo_id' );
+	}
+}
+add_action( 'edited_product_brand',  'energynet_save_brand_logo' );
+add_action( 'create_product_brand',  'energynet_save_brand_logo' );

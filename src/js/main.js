@@ -393,6 +393,180 @@ document.addEventListener('keydown', (e) => {
   });
 })();
 
+// ─── Clients carousel ─────────────────────────────────────────────────────────
+
+(function () {
+  const carousel = document.querySelector('[data-clients-carousel]');
+  if (!carousel) return;
+
+  const track = carousel.querySelector('.clients__track');
+  if (!track) return;
+
+  // Duplicate items for seamless infinite loop
+  const originals = Array.from(track.children);
+  originals.forEach(el => track.appendChild(el.cloneNode(true)));
+
+  // Touch/swipe to manually scroll
+  let startX = 0;
+  let isDragging = false;
+  let dragOffset = 0;
+
+  carousel.addEventListener('mousedown', e => {
+    isDragging = true;
+    startX = e.pageX;
+    dragOffset = 0;
+    track.style.animationPlayState = 'paused';
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    track.style.animationPlayState = '';
+  });
+
+  window.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    dragOffset = e.pageX - startX;
+    track.style.transform = `translateX(calc(-50% + ${dragOffset}px))`;
+  });
+
+  carousel.addEventListener('touchstart', e => {
+    startX = e.touches[0].pageX;
+    dragOffset = 0;
+    track.style.animationPlayState = 'paused';
+  }, { passive: true });
+
+  carousel.addEventListener('touchmove', e => {
+    dragOffset = e.touches[0].pageX - startX;
+    track.style.transform = `translateX(calc(-50% + ${dragOffset}px))`;
+  }, { passive: true });
+
+  carousel.addEventListener('touchend', () => {
+    track.style.animationPlayState = '';
+    track.style.transform = '';
+  });
+})();
+
+// ─── Experience counter ────────────────────────────────────────────────────────
+
+(function () {
+  const el = document.querySelector('.experience__number');
+  if (!el) return;
+
+  const target   = parseInt(el.textContent, 10) || 20;
+  const duration = 1800; // ms
+  let started    = false;
+
+  function runCount() {
+    if (started) return;
+    started = true;
+
+    const startTime = performance.now();
+
+    function tick(now) {
+      const elapsed  = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // ease-out cubic
+      const eased    = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(eased * target);
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+
+    requestAnimationFrame(tick);
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => { if (entries[0].isIntersecting) { runCount(); observer.disconnect(); } },
+    { threshold: 0.3 }
+  );
+
+  observer.observe(el);
+})();
+
+// ─── Projects map (Leaflet) ────────────────────────────────────────────────────
+
+(function () {
+  const canvas = document.getElementById('projects-map-canvas');
+  if (!canvas || typeof L === 'undefined') return;
+
+  const PH_CENTER = [12.5, 122.0];
+  const PH_BOUNDS = [[4.5, 116.0], [21.5, 127.0]];
+
+  const map = L.map('projects-map-canvas', {
+    center: PH_CENTER,
+    zoom: 6,
+    minZoom: 5,
+    maxZoom: 12,
+    maxBounds: PH_BOUNDS,
+    maxBoundsViscosity: 0.8,
+    zoomControl: false,
+    scrollWheelZoom: false,
+    attributionControl: false,
+  });
+
+  // Zoom control — right side, CSS centres it vertically
+  L.control.zoom({ position: 'topright' }).addTo(map);
+
+  // Attribution — bottom right
+  L.control.attribution({ position: 'bottomright', prefix: false })
+    .addAttribution('&copy; <a href="https://carto.com/">CARTO</a>')
+    .addTo(map);
+
+  // Dark background so water is always near-black even before tiles load
+  canvas.style.background = '#111111';
+
+  // Almost-black water, zero text labels
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19,
+  }).addTo(map);
+
+  // Philippines provinces — light grey land via jsDelivr (reliable CDN)
+  fetch('https://cdn.jsdelivr.net/gh/faeldon/philippines-json-maps@master/geojson/provdists/hires/provinces.0.001.json')
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(data => {
+      L.geoJSON(data, {
+        style: {
+          fillColor:   '#e0e0e0',
+          fillOpacity: 1,
+          color:       '#c0c0c0',
+          weight:      0.5,
+        },
+        interactive: false,
+      }).addTo(map);
+      addMarkers();
+    })
+    .catch(() => addMarkers()); // markers still show if GeoJSON fails
+
+  function makeIcon() {
+    return L.divIcon({
+      className: '',
+      html: '<div class="map-pin"></div>',
+      iconSize: [20, 20],
+      iconAnchor: [10, 10],
+      popupAnchor: [0, -12],
+    });
+  }
+
+  function addMarkers() {
+    const allProjects = [
+      ...(window.projectsCompleted || []),
+      ...(window.projectsOngoing   || []),
+    ];
+
+    allProjects.forEach(p => {
+      if (!p.lat || !p.lng) return;
+      L.marker([p.lat, p.lng], { icon: makeIcon() })
+        .addTo(map)
+        .bindPopup(
+          `<strong>${p.title}</strong>${p.location ? '<br>' + p.location : ''}`,
+          { className: 'map-popup' }
+        );
+    });
+  }
+})();
+
 // ─── Projects drawers ─────────────────────────────────────────────────────────
 
 (function () {
@@ -487,6 +661,7 @@ document.addEventListener('keydown', (e) => {
       const counterEl = detail.querySelector('[data-detail-counter]');
       const prevBtn   = detail.querySelector('[data-detail-prev]');
       const nextBtn   = detail.querySelector('[data-detail-next]');
+      const playBtn   = detail.querySelector('[data-detail-play]');
       const panel     = drawer.querySelector('.projects-drawer__panel');
 
       function showDetail(index) {
@@ -501,6 +676,7 @@ document.addEventListener('keydown', (e) => {
         if (counterEl) counterEl.textContent = `PROJECT ${current + 1} of ${total}`;
         if (prevBtn)   prevBtn.disabled = current === 0;
         if (nextBtn)   nextBtn.disabled = current === total - 1;
+        if (playBtn)   playBtn.hidden   = !p.video;
 
         list.hidden   = true;
         detail.hidden = false;

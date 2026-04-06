@@ -1,6 +1,6 @@
 <?php
 /**
- * Project Custom Post Type and ACF field registration.
+ * Project Custom Post Type and native meta box registration.
  *
  * @package energynet
  */
@@ -31,85 +31,289 @@ function energynet_register_project_cpt() {
 }
 add_action( 'init', 'energynet_register_project_cpt' );
 
-// ─── ACF Fields ───────────────────────────────────────────────────────────────
+// ─── Enqueue media uploader on project edit screen ────────────────────────────
 
-function energynet_register_project_acf_fields() {
-	if ( ! function_exists( 'acf_add_local_field_group' ) ) {
+function energynet_project_admin_enqueue( $hook ) {
+	global $post;
+	if ( ( $hook === 'post.php' || $hook === 'post-new.php' ) && isset( $post ) && $post->post_type === 'project' ) {
+		wp_enqueue_media();
+	}
+}
+add_action( 'admin_enqueue_scripts', 'energynet_project_admin_enqueue' );
+
+// ─── Register meta box ────────────────────────────────────────────────────────
+
+function energynet_register_project_meta_box() {
+	add_meta_box(
+		'project_details',
+		__( 'Project Details', 'energynet' ),
+		'energynet_render_project_meta_box',
+		'project',
+		'normal',
+		'high'
+	);
+}
+add_action( 'add_meta_boxes', 'energynet_register_project_meta_box' );
+
+// ─── Render meta box ──────────────────────────────────────────────────────────
+
+function energynet_render_project_meta_box( $post ) {
+	wp_nonce_field( 'energynet_save_project_meta', 'energynet_project_nonce' );
+
+	$status   = get_post_meta( $post->ID, '_project_status',   true ) ?: 'completed';
+	$client   = get_post_meta( $post->ID, '_project_client',   true );
+	$location = get_post_meta( $post->ID, '_project_location', true );
+	$date     = get_post_meta( $post->ID, '_project_date',     true );
+	$scope    = get_post_meta( $post->ID, '_project_scope',    true );
+	$gallery  = get_post_meta( $post->ID, '_project_gallery',  true );
+	$video    = get_post_meta( $post->ID, '_project_video',    true );
+	$lat      = get_post_meta( $post->ID, '_project_lat',      true );
+	$lng      = get_post_meta( $post->ID, '_project_lng',      true );
+
+	// Build thumbnail previews for existing gallery IDs.
+	$gallery_thumbs = '';
+	if ( $gallery ) {
+		foreach ( array_filter( array_map( 'trim', explode( ',', $gallery ) ) ) as $img_id ) {
+			$thumb = wp_get_attachment_image_url( (int) $img_id, 'thumbnail' );
+			if ( $thumb ) {
+				$gallery_thumbs .= '<div class="en-gallery-thumb" data-id="' . (int) $img_id . '" style="display:inline-block;position:relative;margin:4px;">'
+					. '<img src="' . esc_url( $thumb ) . '" style="width:80px;height:80px;object-fit:cover;border:1px solid #ddd;">'
+					. '<button type="button" class="en-gallery-remove" data-id="' . (int) $img_id . '" style="position:absolute;top:0;right:0;background:#c00;color:#fff;border:none;cursor:pointer;font-size:12px;line-height:1;padding:2px 4px;">&times;</button>'
+					. '</div>';
+			}
+		}
+	}
+	?>
+
+	<style>
+		.en-meta-table { width: 100%; border-collapse: collapse; }
+		.en-meta-table th { text-align: left; padding: 8px 12px 8px 0; width: 160px; font-weight: 600; vertical-align: top; }
+		.en-meta-table td { padding: 6px 0; vertical-align: top; }
+		.en-meta-table input[type="text"],
+		.en-meta-table input[type="url"],
+		.en-meta-table input[type="number"],
+		.en-meta-table textarea,
+		.en-meta-table select { width: 100%; }
+		.en-meta-table .description { color: #666; font-size: 12px; margin-top: 4px; display: block; }
+		#en-gallery-thumbs { margin-top: 8px; }
+	</style>
+
+	<table class="en-meta-table">
+
+		<tr>
+			<th><label for="_project_status"><?php esc_html_e( 'Status', 'energynet' ); ?></label></th>
+			<td>
+				<select id="_project_status" name="_project_status">
+					<option value="completed" <?php selected( $status, 'completed' ); ?>><?php esc_html_e( 'Completed', 'energynet' ); ?></option>
+					<option value="ongoing"   <?php selected( $status, 'ongoing' ); ?>><?php esc_html_e( 'Ongoing',   'energynet' ); ?></option>
+				</select>
+			</td>
+		</tr>
+
+		<tr>
+			<th><label for="_project_client"><?php esc_html_e( 'Client', 'energynet' ); ?></label></th>
+			<td>
+				<input type="text" id="_project_client" name="_project_client" value="<?php echo esc_attr( $client ); ?>">
+			</td>
+		</tr>
+
+		<tr>
+			<th><label for="_project_location"><?php esc_html_e( 'Location', 'energynet' ); ?></label></th>
+			<td>
+				<input type="text" id="_project_location" name="_project_location" value="<?php echo esc_attr( $location ); ?>">
+				<span class="description"><?php esc_html_e( 'City or region, used for the map', 'energynet' ); ?></span>
+			</td>
+		</tr>
+
+		<tr>
+			<th><label for="_project_date"><?php esc_html_e( 'Date Completed', 'energynet' ); ?></label></th>
+			<td>
+				<input type="text" id="_project_date" name="_project_date" value="<?php echo esc_attr( $date ); ?>" placeholder="DD/MM/YYYY">
+				<span class="description"><?php esc_html_e( 'e.g. DD/MM/YYYY', 'energynet' ); ?></span>
+			</td>
+		</tr>
+
+		<tr>
+			<th><label for="_project_scope"><?php esc_html_e( 'Scope', 'energynet' ); ?></label></th>
+			<td>
+				<textarea id="_project_scope" name="_project_scope" rows="3"><?php echo esc_textarea( $scope ); ?></textarea>
+			</td>
+		</tr>
+
+		<tr>
+			<th><?php esc_html_e( 'Gallery', 'energynet' ); ?></th>
+			<td>
+				<input type="hidden" id="_project_gallery" name="_project_gallery" value="<?php echo esc_attr( $gallery ); ?>">
+				<button type="button" id="en-gallery-btn" class="button"><?php esc_html_e( 'Add / Edit Images', 'energynet' ); ?></button>
+				<div id="en-gallery-thumbs"><?php echo $gallery_thumbs; // already escaped per-thumb ?></div>
+			</td>
+		</tr>
+
+		<tr>
+			<th><label for="_project_video"><?php esc_html_e( 'Video URL', 'energynet' ); ?></label></th>
+			<td>
+				<input type="url" id="_project_video" name="_project_video" value="<?php echo esc_attr( $video ); ?>">
+			</td>
+		</tr>
+
+		<tr>
+			<th><label for="_project_lat"><?php esc_html_e( 'Latitude', 'energynet' ); ?></label></th>
+			<td>
+				<input type="number" id="_project_lat" name="_project_lat" value="<?php echo esc_attr( $lat ); ?>" step="any" readonly>
+				<span class="description"><?php esc_html_e( 'Auto-filled from Location on save', 'energynet' ); ?></span>
+			</td>
+		</tr>
+
+		<tr>
+			<th><label for="_project_lng"><?php esc_html_e( 'Longitude', 'energynet' ); ?></label></th>
+			<td>
+				<input type="number" id="_project_lng" name="_project_lng" value="<?php echo esc_attr( $lng ); ?>" step="any" readonly>
+				<span class="description"><?php esc_html_e( 'Auto-filled from Location on save', 'energynet' ); ?></span>
+			</td>
+		</tr>
+
+	</table>
+
+	<script>
+	(function($) {
+		var frame;
+		var $input  = $('#_project_gallery');
+		var $thumbs = $('#en-gallery-thumbs');
+
+		// Open WP media library.
+		$('#en-gallery-btn').on('click', function(e) {
+			e.preventDefault();
+
+			if (frame) {
+				frame.open();
+				return;
+			}
+
+			frame = wp.media({
+				title:    '<?php echo esc_js( __( 'Select Gallery Images', 'energynet' ) ); ?>',
+				button:   { text: '<?php echo esc_js( __( 'Add to Gallery', 'energynet' ) ); ?>' },
+				multiple: true,
+				library:  { type: 'image' }
+			});
+
+			frame.on('select', function() {
+				var selection = frame.state().get('selection');
+				var existingIds = $input.val() ? $input.val().split(',').map(function(id){ return id.trim(); }).filter(Boolean) : [];
+
+				selection.each(function(attachment) {
+					var id  = attachment.get('id');
+					var url = attachment.get('sizes') && attachment.get('sizes').thumbnail
+					          ? attachment.get('sizes').thumbnail.url
+					          : attachment.get('url');
+
+					if (existingIds.indexOf(String(id)) === -1) {
+						existingIds.push(String(id));
+						$thumbs.append(
+							'<div class="en-gallery-thumb" data-id="' + id + '" style="display:inline-block;position:relative;margin:4px;">' +
+							'<img src="' + url + '" style="width:80px;height:80px;object-fit:cover;border:1px solid #ddd;">' +
+							'<button type="button" class="en-gallery-remove" data-id="' + id + '" style="position:absolute;top:0;right:0;background:#c00;color:#fff;border:none;cursor:pointer;font-size:12px;line-height:1;padding:2px 4px;">&times;</button>' +
+							'</div>'
+						);
+					}
+				});
+
+				$input.val(existingIds.join(','));
+			});
+
+			frame.open();
+		});
+
+		// Remove individual image.
+		$thumbs.on('click', '.en-gallery-remove', function() {
+			var id  = $(this).data('id');
+			var ids = $input.val().split(',').map(function(v){ return v.trim(); }).filter(function(v){ return v && String(v) !== String(id); });
+			$input.val(ids.join(','));
+			$(this).closest('.en-gallery-thumb').remove();
+		});
+	}(jQuery));
+	</script>
+	<?php
+}
+
+// ─── Save meta box data ───────────────────────────────────────────────────────
+
+function energynet_save_project_meta( $post_id ) {
+	// Verify nonce.
+	if ( ! isset( $_POST['energynet_project_nonce'] ) || ! wp_verify_nonce( $_POST['energynet_project_nonce'], 'energynet_save_project_meta' ) ) {
 		return;
 	}
 
-	acf_add_local_field_group( [
-		'key'    => 'group_project_details',
-		'title'  => 'Project Details',
-		'fields' => [
+	// Skip autosaves and revisions.
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+	if ( wp_is_post_revision( $post_id ) ) return;
 
-			[
-				'key'   => 'field_project_status',
-				'label' => 'Status',
-				'name'  => 'project_status',
-				'type'  => 'select',
-				'choices' => [
-					'completed' => 'Completed',
-					'ongoing'   => 'Ongoing',
-				],
-				'default_value' => 'completed',
-				'return_format' => 'value',
-			],
-			[
-				'key'   => 'field_project_client',
-				'label' => 'Client',
-				'name'  => 'project_client',
-				'type'  => 'text',
-			],
-			[
-				'key'          => 'field_project_location',
-				'label'        => 'Location',
-				'name'         => 'project_location',
-				'type'         => 'text',
-				'instructions' => 'City or region (e.g. Cavite, Metro Manila). Will be used for the map.',
-			],
-			[
-				'key'   => 'field_project_date',
-				'label' => 'Date Completed',
-				'name'  => 'project_date',
-				'type'  => 'text',
-				'instructions' => 'e.g. DD/MM/YYYY',
-			],
-			[
-				'key'   => 'field_project_scope',
-				'label' => 'Scope',
-				'name'  => 'project_scope',
-				'type'  => 'textarea',
-				'rows'  => 3,
-			],
-			[
-				'key'           => 'field_project_gallery',
-				'label'         => 'Gallery',
-				'name'          => 'project_gallery',
-				'type'          => 'gallery',
-				'return_format' => 'array',
-				'preview_size'  => 'medium',
-				'library'       => 'all',
-				'instructions'  => 'Upload project images. First image is used as the main photo.',
-			],
-			[
-				'key'          => 'field_project_video',
-				'label'        => 'Video URL',
-				'name'         => 'project_video',
-				'type'         => 'url',
-				'instructions' => 'Paste a video URL (YouTube, Vimeo, etc.).',
-			],
+	// Check permissions.
+	if ( ! current_user_can( 'edit_post', $post_id ) ) return;
 
-		],
-		'location' => [
-			[
-				[
-					'param'    => 'post_type',
-					'operator' => '==',
-					'value'    => 'project',
-				],
-			],
-		],
-	] );
+	$fields = [
+		'_project_status',
+		'_project_client',
+		'_project_location',
+		'_project_date',
+		'_project_video',
+		'_project_gallery',
+	];
+
+	foreach ( $fields as $field ) {
+		$value = isset( $_POST[ $field ] ) ? sanitize_text_field( wp_unslash( $_POST[ $field ] ) ) : '';
+		update_post_meta( $post_id, $field, $value );
+	}
+
+	// Scope is a textarea — preserve line breaks.
+	$scope = isset( $_POST['_project_scope'] ) ? sanitize_textarea_field( wp_unslash( $_POST['_project_scope'] ) ) : '';
+	update_post_meta( $post_id, '_project_scope', $scope );
+
+	// Lat / lng — numeric, stored as-is (geocoding will overwrite).
+	$lat = isset( $_POST['_project_lat'] ) ? (float) $_POST['_project_lat'] : '';
+	$lng = isset( $_POST['_project_lng'] ) ? (float) $_POST['_project_lng'] : '';
+	if ( $lat ) update_post_meta( $post_id, '_project_lat', $lat );
+	if ( $lng ) update_post_meta( $post_id, '_project_lng', $lng );
 }
-add_action( 'acf/init', 'energynet_register_project_acf_fields' );
+add_action( 'save_post_project', 'energynet_save_project_meta', 10 );
+
+// ─── Auto-geocode location → lat/lng on save ──────────────────────────────────
+
+function energynet_geocode_project_location( $post_id ) {
+	// Skip autosaves, revisions, and non-project posts.
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+	if ( wp_is_post_revision( $post_id ) ) return;
+	if ( get_post_type( $post_id ) !== 'project' ) return;
+
+	$location = get_post_meta( $post_id, '_project_location', true );
+	if ( ! $location ) return;
+
+	// Only geocode when lat/lng are empty OR location has changed since last geocode.
+	$cached_location = get_post_meta( $post_id, '_geocoded_location', true );
+	$lat             = get_post_meta( $post_id, '_project_lat', true );
+	$lng             = get_post_meta( $post_id, '_project_lng', true );
+
+	if ( $lat && $lng && $cached_location === $location ) return;
+
+	// Call Nominatim — bias results to the Philippines.
+	$url = add_query_arg( [
+		'q'            => $location . ', Philippines',
+		'format'       => 'json',
+		'limit'        => 1,
+		'countrycodes' => 'ph',
+	], 'https://nominatim.openstreetmap.org/search' );
+
+	$response = wp_remote_get( $url, [
+		'timeout' => 8,
+		'headers' => [ 'User-Agent' => 'EnergyNet-Theme/1.0' ],
+	] );
+
+	if ( is_wp_error( $response ) ) return;
+
+	$data = json_decode( wp_remote_retrieve_body( $response ), true );
+	if ( empty( $data[0]['lat'] ) ) return;
+
+	update_post_meta( $post_id, '_project_lat', (float) $data[0]['lat'] );
+	update_post_meta( $post_id, '_project_lng', (float) $data[0]['lon'] );
+	update_post_meta( $post_id, '_geocoded_location', $location );
+}
+add_action( 'save_post_project', 'energynet_geocode_project_location', 20 );

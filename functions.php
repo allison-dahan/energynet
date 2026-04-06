@@ -195,6 +195,16 @@ require get_template_directory() . '/inc/cpt-service.php';
  */
 require get_template_directory() . '/inc/cpt-project.php';
 
+/**
+ * ACF fields for the About page (clients repeater, etc.).
+ */
+require get_template_directory() . '/inc/acf-about.php';
+
+/**
+ * Client CPT.
+ */
+require get_template_directory() . '/inc/cpt-client.php';
+
 function energynet_enqueue_assets() {
   $theme_dir = get_template_directory();
   $theme_uri = get_template_directory_uri();
@@ -215,11 +225,32 @@ function energynet_enqueue_assets() {
     );
   }
 
+  $on_projects = is_page( 'projects' ) || is_page_template( 'page-projects.php' );
+
+  // Leaflet — enqueue before main.js so it's available when the map init runs
+  $js_deps = array();
+  if ( $on_projects ) {
+    wp_enqueue_style(
+      'leaflet',
+      'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
+      array(),
+      '1.9.4'
+    );
+    wp_enqueue_script(
+      'leaflet',
+      'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+      array(),
+      '1.9.4',
+      true
+    );
+    $js_deps[] = 'leaflet';
+  }
+
   if ( file_exists( $js_path ) ) {
     wp_enqueue_script(
       'energynet-vite',
       $theme_uri . $js_rel,
-      array(),
+      $js_deps,
       filemtime( $js_path ),
       true
     );
