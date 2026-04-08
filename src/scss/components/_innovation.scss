@@ -1,0 +1,237 @@
+@use "../partials/variables" as *;
+
+// ─── Section label (◆ RESEARCH AND DEVELOPMENT) ─────────────────────────────
+
+.inno-label {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  font-size: $fs-body; // 16px
+  font-weight: $fw-bold;
+  letter-spacing: 0.05em;
+  color: $color-primary;
+  margin: 0 0 $space-4;
+}
+
+// Rotated square diamond (matches Figma Polygon 7)
+.inno-label__poly {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  background: $color-accent;
+  border-radius: 2px;
+  transform: rotate(45deg);
+}
+
+// ─── Shared heading ──────────────────────────────────────────────────────────
+
+.inno-heading {
+  font-size: 32px;
+  font-weight: $fw-medium;
+  letter-spacing: 0.05em;
+  color: $color-primary;
+  line-height: 40px;
+  margin: 0 0 $space-6;
+
+  @media (min-width: $bp-lg) {
+    font-size: $fs-h2; // 56px
+    line-height: 1.1;
+    margin-bottom: $space-8;
+  }
+}
+
+// ─── Shared body text ────────────────────────────────────────────────────────
+
+.inno-body {
+  font-size: $fs-body; // 16px
+  font-weight: $fw-regular;
+  letter-spacing: 0.05em;
+  color: $color-secondary;
+  line-height: 20px;
+  margin: 0 0 $space-4;
+
+  &--medium {
+    font-weight: $fw-medium;
+  }
+}
+
+// ─── Intro text (R&D subtitle) ───────────────────────────────────────────────
+
+.inno-intro {
+  font-size: 20px;
+  font-weight: $fw-regular;
+  letter-spacing: 0.05em;
+  color: $color-primary;
+  line-height: 25px;
+  margin: 0 0 $space-6;
+}
+
+// ─── Sections ────────────────────────────────────────────────────────────────
+
+.inno-rd {
+  padding-top: $space-20; // clear fixed mobile header
+  padding-bottom: $space-8;
+
+  @media (min-width: $bp-lg) {
+    padding-top: 160px;
+    padding-bottom: $space-12;
+  }
+}
+
+.inno-ese,
+.inno-test,
+.inno-discover {
+  padding-bottom: $space-8;
+
+  @media (min-width: $bp-lg) {
+    padding-bottom: $space-16;
+  }
+}
+
+// ─── Images ──────────────────────────────────────────────────────────────────
+
+// Portrait — innovation1: 316×373
+.inno-img--portrait {
+  width: 316px;
+  height: 373px;
+  max-width: 100%;
+  margin: 0 auto $space-6;
+
+  img {
+    width: 316px;
+    height: 373px;
+    max-width: 100%;
+    display: block;
+    object-fit: fill;
+  }
+
+  @media (min-width: $bp-lg) {
+    width: 100%;
+    height: 540px;
+    margin-bottom: $space-8;
+  }
+}
+
+// Landscape — innovation2: 373×241
+.inno-img--landscape {
+  width: 373px;
+  height: 241px;
+  max-width: 100%;
+  margin: 0 auto $space-4;
+  border-radius: $radius-md;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  @media (min-width: $bp-lg) {
+    width: 100%;
+    height: 400px;
+    margin-bottom: $space-8;
+  }
+}
+
+// ─── CTA button (Prevectron3® CONNECT) ──────────────────────────────────────
+
+.inno-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 283px;
+  margin-left: auto;
+  margin-right: auto;
+  height: 49px;
+  background: $color-button-dark; // #615237
+  border-radius: $radius-md; // 10px
+  font-family: $font-body;
+  font-weight: $fw-bold;
+  font-size: $fs-body; // 16px
+  letter-spacing: 0.1em;
+  color: $color-text-light;
+  text-decoration: none;
+  margin-top: $space-6;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.85;
+  }
+
+  @media (min-width: $bp-lg) {
+    width: 335px;
+    height: 52px;
+    font-size: $fs-body-lg;
+  }
+}
+
+// ─── Discover cards ──────────────────────────────────────────────────────────
+
+.inno-cards {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-4;
+
+  @media (min-width: $bp-lg) {
+    flex-direction: row;
+    align-items: stretch;
+    gap: $space-6;
+  }
+}
+
+.inno-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 258px;
+  height: 240px;
+  background: $color-white;
+  border: 1.35px solid rgba(217, 191, 158, 0.5);
+  box-shadow: 0px 0px 10.82px 0.92px rgba(97, 82, 55, 0.1);
+  border-radius: 7.81px;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.85;
+  }
+
+  @media (min-width: $bp-lg) {
+    flex: 1;
+    width: auto;
+    height: 260px;
+  }
+}
+
+.inno-card__icon {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-4 $space-4 0;
+
+  img {
+    max-width: 183px;
+    max-height: 183px;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+  }
+}
+
+.inno-card__label {
+  flex-shrink: 0;
+  font-size: 18px;
+  font-weight: $fw-bold;
+  color: $color-primary;
+  text-align: center;
+  margin: 0;
+  padding: $space-3 $space-2 $space-4;
+  line-height: 23px;
+}
