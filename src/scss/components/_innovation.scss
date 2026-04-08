@@ -11,9 +11,10 @@
   letter-spacing: 0.05em;
   color: $color-primary;
   margin: 0 0 $space-4;
+  padding-top: $space-4;
 }
 
-// Rotated square diamond (matches Figma Polygon 7)
+// Rotated square diamond (Figma: Polygon 7 — 16×16, #D9BF9E, border-radius 2px, rotate 45deg)
 .inno-label__poly {
   display: inline-block;
   flex-shrink: 0;
@@ -32,16 +33,18 @@
   letter-spacing: 0.05em;
   color: $color-primary;
   line-height: 40px;
-  margin: 0 0 $space-6;
+  margin: 0;
+  padding-bottom: $space-8; // 32px — 2× top
 
   @media (min-width: $bp-lg) {
-    font-size: $fs-h2; // 56px
-    line-height: 1.1;
-    margin-bottom: $space-8;
+    font-size: 56px;
+    line-height: 60px;
+    padding-top: $space-2;
+    padding-bottom: $space-8; // 48px — 2× top
   }
 }
 
-// ─── Shared body text ────────────────────────────────────────────────────────
+// ─── Body text ───────────────────────────────────────────────────────────────
 
 .inno-body {
   font-size: $fs-body; // 16px
@@ -51,12 +54,26 @@
   line-height: 20px;
   margin: 0 0 $space-4;
 
-  &--medium {
+  // Larger paragraph — 16px medium on mobile, 20px regular on desktop
+  &--lead {
     font-weight: $fw-medium;
+
+    @media (min-width: $bp-lg) {
+      font-size: 20px;
+      font-weight: $fw-regular;
+      line-height: 25px;
+    }
+  }
+
+  // Full-width — sits below two-column layout on desktop
+  &--full {
+    @media (min-width: $bp-lg) {
+      margin-top: $space-6;
+    }
   }
 }
 
-// ─── Intro text (R&D subtitle) ───────────────────────────────────────────────
+// ─── Intro subtitle (R&D section) ────────────────────────────────────────────
 
 .inno-intro {
   font-size: 20px;
@@ -65,6 +82,11 @@
   color: $color-primary;
   line-height: 25px;
   margin: 0 0 $space-6;
+
+  @media (min-width: $bp-lg) {
+    font-size: 28px;
+    line-height: 36px;
+  }
 }
 
 // ─── Sections ────────────────────────────────────────────────────────────────
@@ -89,14 +111,44 @@
   }
 }
 
+// ─── Two-column layout (ESE: image|content  /  Test: content|image) ──────────
+
+.inno-two-col {
+  display: flex;
+  flex-direction: column;
+  gap: $space-8;
+
+  @media (min-width: $bp-lg) {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 60px;
+  }
+}
+
+.inno-col-img {
+  display: flex;
+  justify-content: center;
+
+  @media (min-width: $bp-lg) {
+    flex-shrink: 0;
+    justify-content: flex-start;
+  }
+}
+
+.inno-col-content {
+  @media (min-width: $bp-lg) {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
 // ─── Images ──────────────────────────────────────────────────────────────────
 
-// Portrait — innovation1: 316×373
+// Portrait — mobile: 316×373 / desktop: 502×593 (no border-radius, has shadow)
 .inno-img--portrait {
   width: 316px;
   height: 373px;
   max-width: 100%;
-  margin: 0 auto $space-6;
 
   img {
     width: 316px;
@@ -107,18 +159,21 @@
   }
 
   @media (min-width: $bp-lg) {
-    width: 100%;
-    height: 540px;
-    margin-bottom: $space-8;
+    width: 502px;
+    height: 593px;
+
+    img {
+      width: 502px;
+      height: 593px;
+    }
   }
 }
 
-// Landscape — innovation2: 373×241
+// Landscape — mobile: 373×241 / desktop: 619×400
 .inno-img--landscape {
   width: 373px;
   height: 241px;
   max-width: 100%;
-  margin: 0 auto $space-4;
   border-radius: $radius-md;
   overflow: hidden;
 
@@ -130,9 +185,9 @@
   }
 
   @media (min-width: $bp-lg) {
-    width: 100%;
+    width: 619px;
     height: 400px;
-    margin-bottom: $space-8;
+    border-radius: 0;
   }
 }
 
@@ -143,18 +198,16 @@
   align-items: center;
   justify-content: center;
   width: 283px;
-  margin-left: auto;
-  margin-right: auto;
   height: 49px;
-  background: $color-button-dark; // #615237
-  border-radius: $radius-md; // 10px
+  margin: $space-6 auto 0;
+  background: $color-button-dark;
+  border-radius: $radius-md;
   font-family: $font-body;
   font-weight: $fw-bold;
-  font-size: $fs-body; // 16px
+  font-size: $fs-body;
   letter-spacing: 0.1em;
   color: $color-text-light;
   text-decoration: none;
-  margin-top: $space-6;
   transition: opacity 0.2s ease;
 
   &:hover {
@@ -162,9 +215,9 @@
   }
 
   @media (min-width: $bp-lg) {
-    width: 335px;
-    height: 52px;
-    font-size: $fs-body-lg;
+    width: 305px;
+    height: 55px;
+    margin: $space-8 0 0; // left-align inside right column
   }
 }
 
@@ -204,7 +257,9 @@
   @media (min-width: $bp-lg) {
     flex: 1;
     width: auto;
-    height: 260px;
+    height: 261px;
+    border-radius: 8.52px;
+    border-width: 1.47px;
   }
 }
 
@@ -222,6 +277,11 @@
     height: auto;
     object-fit: contain;
     display: block;
+
+    @media (min-width: $bp-lg) {
+      max-width: 220px;
+      max-height: 200px;
+    }
   }
 }
 
@@ -234,4 +294,9 @@
   margin: 0;
   padding: $space-3 $space-2 $space-4;
   line-height: 23px;
+
+  @media (min-width: $bp-lg) {
+    font-size: 20px;
+    line-height: 26px;
+  }
 }
