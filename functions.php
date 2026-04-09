@@ -227,23 +227,26 @@ function energynet_enqueue_assets() {
 
   $on_projects = is_page( 'projects' ) || is_page_template( 'page-projects.php' );
 
-  // Leaflet — enqueue before main.js so it's available when the map init runs
+  // Map entry — always loaded for now to debug page detection
   $js_deps = array();
-  if ( $on_projects ) {
-    wp_enqueue_style(
-      'leaflet',
-      'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
-      array(),
-      '1.9.4'
-    );
+  $map_js_path = $theme_dir . '/dist/assets/map.js';
+
+  wp_enqueue_style(
+    'maptiler-sdk',
+    'https://cdn.jsdelivr.net/npm/@maptiler/sdk@3.11.2/dist/maptiler-sdk.css',
+    array(),
+    '3.11.2',
+    'all'
+  );
+
+  if ( file_exists( $map_js_path ) ) {
     wp_enqueue_script(
-      'leaflet',
-      'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+      'energynet-map',
+      $theme_uri . '/dist/assets/map.js',
       array(),
-      '1.9.4',
+      filemtime( $map_js_path ),
       true
     );
-    $js_deps[] = 'leaflet';
   }
 
   if ( file_exists( $js_path ) ) {

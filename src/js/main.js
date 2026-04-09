@@ -1,3 +1,5 @@
+
+
 const toggle = document.querySelector('.header__toggle');
 const close  = document.querySelector('.header__close');
 const drawer = document.querySelector('.header__drawer');
@@ -483,90 +485,6 @@ document.addEventListener('keydown', (e) => {
   observer.observe(el);
 })();
 
-// ─── Projects map (Leaflet) ────────────────────────────────────────────────────
-
-(function () {
-  const canvas = document.getElementById('projects-map-canvas');
-  if (!canvas || typeof L === 'undefined') return;
-
-  const PH_CENTER = [12.5, 122.0];
-  const PH_BOUNDS = [[4.5, 116.0], [21.5, 127.0]];
-
-  const map = L.map('projects-map-canvas', {
-    center: PH_CENTER,
-    zoom: 6,
-    minZoom: 5,
-    maxZoom: 12,
-    maxBounds: PH_BOUNDS,
-    maxBoundsViscosity: 0.8,
-    zoomControl: false,
-    scrollWheelZoom: false,
-    attributionControl: false,
-  });
-
-  // Zoom control — right side, CSS centres it vertically
-  L.control.zoom({ position: 'topright' }).addTo(map);
-
-  // Attribution — bottom right
-  L.control.attribution({ position: 'bottomright', prefix: false })
-    .addAttribution('&copy; <a href="https://carto.com/">CARTO</a>')
-    .addTo(map);
-
-  // Dark background so water is always near-black even before tiles load
-  canvas.style.background = '#111111';
-
-  // Almost-black water, zero text labels
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
-    subdomains: 'abcd',
-    maxZoom: 19,
-  }).addTo(map);
-
-  // Philippines provinces — light grey land via jsDelivr (reliable CDN)
-  fetch('https://cdn.jsdelivr.net/gh/faeldon/philippines-json-maps@master/geojson/provdists/hires/provinces.0.001.json')
-    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then(data => {
-      L.geoJSON(data, {
-        style: {
-          fillColor:   '#e0e0e0',
-          fillOpacity: 1,
-          color:       '#c0c0c0',
-          weight:      0.5,
-        },
-        interactive: false,
-      }).addTo(map);
-      addMarkers();
-    })
-    .catch(() => addMarkers()); // markers still show if GeoJSON fails
-
-  function makeIcon() {
-    return L.divIcon({
-      className: '',
-      html: '<div class="map-pin"></div>',
-      iconSize: [20, 20],
-      iconAnchor: [10, 10],
-      popupAnchor: [0, -12],
-    });
-  }
-
-  function addMarkers() {
-    const allProjects = [
-      ...(window.projectsCompleted || []),
-      ...(window.projectsOngoing   || []),
-    ];
-
-    allProjects.forEach(p => {
-      if (!p.lat || !p.lng) return;
-      L.marker([p.lat, p.lng], { icon: makeIcon() })
-        .addTo(map)
-        .bindPopup(
-          `<strong>${p.title}</strong>${p.location ? '<br>' + p.location : ''}`,
-          { className: 'map-popup' }
-        );
-    });
-  }
-})();
-
 // ─── Projects drawers ─────────────────────────────────────────────────────────
 
 (function () {
@@ -692,6 +610,16 @@ document.addEventListener('keydown', (e) => {
 
       prevBtn?.addEventListener('click', () => showDetail(current - 1));
       nextBtn?.addEventListener('click', () => showDetail(current + 1));
+
+      // Allow map markers to open this drawer and jump to a project by title
+      if (drawer.id === 'drawer-completed') {
+        window.openProjectDetail = function (title) {
+          const idx = projects.findIndex(p => p.title === title);
+          if (idx === -1) return;
+          openDrawer('drawer-completed');
+          showDetail(idx);
+        };
+      }
     }
 
     // Re-paginate on resize

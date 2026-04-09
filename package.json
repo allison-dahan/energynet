@@ -9,8 +9,13 @@
     "start": "node -e \"require('child_process').spawn('npm',['run','dev'],{stdio:'inherit',shell:true}); require('child_process').spawn('npm',['run','bs'],{stdio:'inherit',shell:true});\""
   },
   "devDependencies": {
-    "vite": "^5.4.0",
-    "sass": "^1.77.0", 
-    "browser-sync": "^3.0.4"
+    "browser-sync": "^3.0.4",
+    "sass": "^1.77.0",
+    "vite": "^5.4.0"
+  },
+  "dependencies": {
+    "@maptiler/leaflet-maptilersdk": "^4.1.1",
+    "@maptiler/sdk": "^4.0.1",
+    "leaflet": "^1.9.4"
   }
 }

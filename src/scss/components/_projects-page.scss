@@ -131,9 +131,11 @@
   }
 }
 
-// ─── Map ───────────────────────────────────────────────────────────────────────
+// ─── 
+ ───────────────────────────────────────────────────────────────────────
 
 .projects-map {
+  min-height: 420px;
   width: 319px;
   max-width: 100%;
   height: 380px;
@@ -152,48 +154,45 @@
 
 #projects-map-canvas {
   width: 100%;
-  height: 100%;
+  height: 380px;
+
+  @media (min-width: $bp-lg) {
+    height: 692px;
+  }
 }
 
-// ─── Leaflet zoom controls ──────────────────────────────────────────────────────
+// ─── MapTiler SDK zoom controls ─────────────────────────────────────────────────
 
-// Vertically centre the zoom control within the map
-#projects-map-canvas .leaflet-right {
-  top: 50%;
-  transform: translateY(-50%);
+#projects-map-canvas .maplibregl-ctrl-group {
+  background: transparent !important;
+  border: 1px solid #cccccc !important;
+  box-shadow: none !important;
+  border-radius: 4px !important;
+  overflow: hidden;
 }
 
-.leaflet-touch .leaflet-control-zoom-in,
-.leaflet-touch .leaflet-control-zoom-out,
-.leaflet-control-zoom-in,
-.leaflet-control-zoom-out {
-  background: rgba(20, 20, 20, 0.85) !important;
-  border: 1.5px solid #888888 !important;
-  color: #888888 !important;
-  font-size: 26px !important;
-  line-height: 36px !important;
+#projects-map-canvas .maplibregl-ctrl-zoom-in,
+#projects-map-canvas .maplibregl-ctrl-zoom-out {
+  background: transparent !important;
   width: 36px !important;
   height: 36px !important;
 
   &:hover {
-    background: rgba(40, 40, 40, 0.95) !important;
-    color: #bbbbbb !important;
+    background: rgba(204, 204, 204, 0.15) !important;
   }
 }
 
-.leaflet-control-zoom {
-  border: none !important;
-  box-shadow: none !important;
-
-  a + a {
-    border-top: 1px solid #555555 !important;
-  }
+// Replace default black icons with mid-grey SVGs
+#projects-map-canvas .maplibregl-ctrl-zoom-in .maplibregl-ctrl-icon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 29 29'%3E%3Cpath fill='%23888888' d='M14.5 8.5c-.75 0-1.5.75-1.5 1.5v3h-3c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h3v3c0 .75.75 1.5 1.5 1.5S16 19.75 16 19v-3h3c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13h-3v-3c0-.75-.75-1.5-1.5-1.5z'/%3E%3C/svg%3E") !important;
 }
 
-// Attribution watermark — bottom right
-#projects-map-canvas .leaflet-bottom.leaflet-right {
-  top: auto;
-  transform: none;
+#projects-map-canvas .maplibregl-ctrl-zoom-out .maplibregl-ctrl-icon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 29 29'%3E%3Cpath fill='%23888888' d='M10 13c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h9c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13h-9z'/%3E%3C/svg%3E") !important;
+}
+
+#projects-map-canvas .maplibregl-ctrl-group button + button {
+  border-top: 1px solid #cccccc !important;
 }
 
 // ─── CTA buttons ───────────────────────────────────────────────────────────────
