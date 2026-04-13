@@ -21,10 +21,10 @@ setSize();
 
 const map = new Map({
   container: canvas,
-  style: '019d6f93-6bb9-75e4-aca3-b932b6cd672c',
+  style: '019d883c-9869-72c8-a759-408ba05bc32f',
   center: [122.0, 12.5],
-  zoom: 4,
-  minZoom: 4,
+  zoom: 5,
+  minZoom: 5,
   maxZoom: 12,
   scrollZoom: false,
   navigationControl: false,
@@ -32,6 +32,98 @@ const map = new Map({
 });
 
 map.addControl(new NavigationControl({ showCompass: false }), 'top-right');
+
+// ── Region highlighting ───────────────────────────────────────────────────────
+
+function highlightRegions(projects) {
+  const validProjects = projects.filter(p => p.lat && p.lng);
+  if (!validProjects.length) return;
+
+  // Find the property key used for region names by sampling a project point
+  let nameKey = null;
+  const regionNames = new Set();
+
+  validProjects.forEach(p => {
+    const pixel = map.project([p.lng, p.lat]);
+    const features = map.queryRenderedFeatures(pixel, {
+      filter: ['==', '$type', 'Polygon'],
+    });
+
+    features.forEach(f => {
+      // Auto-detect the name property on first hit
+      if (!nameKey && f.properties) {
+        const candidates = ['name', 'name_en', 'NAME_1', 'NAME_2', 'admin_name', 'region'];
+        for (const key of candidates) {
+          if (f.properties[key]) { nameKey = key; break; }
+        }
+        // Fallback: first non-empty string property
+        if (!nameKey) {
+          for (const [k, v] of Object.entries(f.properties)) {
+            if (typeof v === 'string' && v.length > 0) { nameKey = k; break; }
+          }
+        }
+      }
+      if (nameKey && f.properties?.[nameKey]) {
+        regionNames.add(f.properties[nameKey]);
+      }
+    });
+  });
+
+  if (!regionNames.size || !nameKey) return;
+
+  // Find source info from a sample feature
+  const samplePixel = map.project([validProjects[0].lng, validProjects[0].lat]);
+  const sampleFeatures = map.queryRenderedFeatures(samplePixel, {
+    filter: ['==', '$type', 'Polygon'],
+  });
+  if (!sampleFeatures.length) return;
+
+  const { source, sourceLayer } = sampleFeatures[0];
+  const names = [...regionNames];
+
+  // Insert before the first symbol layer so pins/labels stay on top
+  const firstSymbolId = map.getStyle().layers.find(l => l.type === 'symbol')?.id;
+
+  // Remove stale layer if re-running
+  if (map.getLayer('project-regions-highlight')) {
+    map.removeLayer('project-regions-highlight');
+  }
+
+  if (map.getLayer('project-regions-highlight')) map.removeLayer('project-regions-highlight');
+  if (map.getLayer('project-regions-borders')) map.removeLayer('project-regions-borders');
+
+  map.addLayer(
+    {
+      id: 'project-regions-highlight',
+      type: 'fill',
+      source,
+      'source-layer': sourceLayer,
+      paint: {
+        'fill-color': [
+          'match', ['get', nameKey],
+          names, '#917B52',
+          '#CFB27B',
+        ],
+      },
+    },
+    firstSymbolId,
+  );
+
+  map.addLayer(
+    {
+      id: 'project-regions-borders',
+      type: 'line',
+      source,
+      'source-layer': sourceLayer,
+      paint: {
+        'line-color': '#FFF8F0'
+      },
+    },
+    firstSymbolId,
+  );
+}
+
+// ── Map init ──────────────────────────────────────────────────────────────────
 
 map.on('load', () => {
   map.resize();
@@ -41,6 +133,7 @@ map.on('load', () => {
     ...(window.projectsOngoing   || []),
   ];
 
+  // Add pin markers
   allProjects.forEach(p => {
     if (!p.lat || !p.lng) return;
 
@@ -54,6 +147,11 @@ map.on('load', () => {
     el.addEventListener('click', () => {
       if (window.openProjectDetail) window.openProjectDetail(p.title);
     });
+  });
+
+  // Wait for tiles to fully render before querying polygon features
+  map.once('idle', () => {
+    highlightRegions(allProjects);
   });
 });
 

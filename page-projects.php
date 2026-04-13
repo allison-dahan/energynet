@@ -30,8 +30,15 @@ function energynet_get_projects_by_status( string $status ): array {
 		$gallery_urls = [];
 		if ( $gallery_ids ) {
 			foreach ( array_filter( array_map( 'trim', explode( ',', $gallery_ids ) ) ) as $id ) {
-				$url = wp_get_attachment_url( (int) $id );
-				if ( $url ) $gallery_urls[] = [ 'url' => $url ];
+				$id   = (int) $id;
+				$url  = wp_get_attachment_url( $id );
+				$mime = get_post_mime_type( $id );
+				if ( $url ) {
+					$gallery_urls[] = [
+						'url'  => $url,
+						'type' => strpos( $mime, 'video' ) === 0 ? 'video' : 'image',
+					];
+				}
 			}
 		}
 
@@ -124,6 +131,9 @@ $ongoing_projects   = energynet_get_projects_by_status( 'ongoing' );
 					<?php foreach ( $completed_projects as $project ) : ?>
 						<div class="project-card" role="button" tabindex="0" aria-label="<?php echo esc_attr( $project['title'] ); ?>">
 							<div class="project-card__placeholder"></div>
+							<?php if ( ! empty( $project['image'] ) ) : ?>
+								<img class="project-card__img" src="<?php echo esc_url( $project['image'] ); ?>" alt="<?php echo esc_attr( $project['title'] ); ?>" loading="lazy">
+							<?php endif; ?>
 							<div class="project-card__gradient"></div>
 							<div class="project-card__info">
 								<p class="project-card__client"><?php echo esc_html( $project['client'] ); ?></p>
@@ -165,8 +175,18 @@ $ongoing_projects   = energynet_get_projects_by_status( 'ongoing' );
 				<div class="projects-detail__divider" aria-hidden="true"></div>
 
 				<div class="projects-detail__info-card">
+					<p class="projects-detail__info-heading"><?php esc_html_e( 'PROJECT INFORMATION', 'energynet' ); ?></p>
+
+					<div class="projects-detail__project-row">
+						<p class="projects-detail__label"><?php esc_html_e( 'PROJECT:', 'energynet' ); ?></p>
+						<p class="projects-detail__value" data-detail-title></p>
+						<div class="projects-detail__info-divider" aria-hidden="true"></div>
+					</div>
+
 					<p class="projects-detail__label"><?php esc_html_e( 'CLIENT:', 'energynet' ); ?></p>
 					<p class="projects-detail__value" data-detail-client></p>
+
+					<div class="projects-detail__info-divider" aria-hidden="true"></div>
 
 					<p class="projects-detail__label"><?php esc_html_e( 'DATE COMPLETED:', 'energynet' ); ?></p>
 					<p class="projects-detail__value" data-detail-date></p>

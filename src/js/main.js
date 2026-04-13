@@ -569,37 +569,151 @@ document.addEventListener('keydown', (e) => {
 
     // ── Detail view ──
     if (detail) {
-      const total     = projects.length;
-      let current     = 0;
+      const total      = projects.length;
+      let current      = 0;
+      let activeMedia  = 0;
+      let thumbOffset  = 0;
 
-      const titleEl   = detail.querySelector('[data-detail-title]');
-      const clientEl  = detail.querySelector('[data-detail-client]');
-      const dateEl    = detail.querySelector('[data-detail-date]');
-      const scopeEl   = detail.querySelector('[data-detail-scope]');
-      const counterEl = detail.querySelector('[data-detail-counter]');
-      const prevBtn   = detail.querySelector('[data-detail-prev]');
-      const nextBtn   = detail.querySelector('[data-detail-next]');
-      const playBtn   = detail.querySelector('[data-detail-play]');
-      const panel     = drawer.querySelector('.projects-drawer__panel');
+      const titleEls   = detail.querySelectorAll('[data-detail-title]');
+      const clientEl   = detail.querySelector('[data-detail-client]');
+      const dateEl     = detail.querySelector('[data-detail-date]');
+      const scopeEl    = detail.querySelector('[data-detail-scope]');
+      const counterEl  = detail.querySelector('[data-detail-counter]');
+      const prevBtn    = detail.querySelector('[data-detail-prev]');
+      const nextBtn    = detail.querySelector('[data-detail-next]');
+      const playBtn    = detail.querySelector('[data-detail-play]');
+      const mainImgEl  = detail.querySelector('.projects-detail__main-img');
+      const thumbItems = [...detail.querySelectorAll('.projects-detail__thumb')];
+      const thumbPrev  = detail.querySelector('[data-thumb-prev]');
+      const thumbNext  = detail.querySelector('[data-thumb-next]');
+      const panel      = drawer.querySelector('.projects-drawer__panel');
+
+      function buildMedia(p) {
+        const items = [];
+        if (p.image) items.push({ type: 'image', url: p.image });
+        (p.gallery || []).forEach(g => {
+          if (g.url && g.url !== p.image) items.push({ type: g.type || 'image', url: g.url });
+        });
+        // legacy: separate video field
+        if (p.video && !items.some(m => m.url === p.video)) items.push({ type: 'video', url: p.video });
+        return items;
+      }
+
+      function renderMainMedia(item) {
+        if (!mainImgEl) return;
+        mainImgEl.querySelectorAll('img, video, iframe').forEach(el => el.remove());
+
+        if (!item) return;
+
+        if (item.type === 'video') {
+          const vid = document.createElement('video');
+          vid.src = item.url;
+          vid.controls = true;
+          vid.autoplay = true;
+          vid.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;';
+          mainImgEl.appendChild(vid);
+          if (playBtn) playBtn.hidden = true;
+        } else {
+          const img = document.createElement('img');
+          img.src = item.url;
+          img.alt = '';
+          img.className = 'project-card__img';
+          mainImgEl.appendChild(img);
+          if (playBtn) playBtn.hidden = !projects[current]?.video;
+        }
+      }
+
+      function renderThumbs(mediaItems) {
+        const VISIBLE = thumbItems.length;
+        thumbItems.forEach((thumb, i) => {
+          const idx  = thumbOffset + i;
+          const item = mediaItems[idx];
+          thumb.dataset.mediaIndex = idx;
+          thumb.style.backgroundImage = '';
+          thumb.innerHTML = '';
+          thumb.classList.toggle('is-active', idx === activeMedia);
+
+          if (!item) {
+            thumb.style.visibility = 'hidden';
+            return;
+          }
+          thumb.style.visibility = '';
+
+          if (item.type === 'video') {
+            thumb.style.background = '#333';
+            thumb.innerHTML = '<span style="display:flex;height:100%;align-items:center;justify-content:center;color:#fff;font-size:20px;pointer-events:none;">▶</span>';
+          } else {
+            thumb.style.backgroundImage = `url(${item.url})`;
+            thumb.style.backgroundSize  = 'cover';
+            thumb.style.backgroundPosition = 'center';
+          }
+        });
+
+        if (thumbPrev) thumbPrev.hidden = thumbOffset === 0;
+        if (thumbNext) thumbNext.hidden = thumbOffset + VISIBLE >= mediaItems.length;
+      }
 
       function showDetail(index) {
         current = Math.max(0, Math.min(index, total - 1));
         const p = projects[current];
         if (!p) return;
 
-        if (titleEl)   titleEl.textContent   = p.title;
+        titleEls.forEach(el => el.textContent = p.title);
         if (clientEl)  clientEl.textContent  = p.client;
         if (dateEl)    dateEl.textContent    = p.date;
         if (scopeEl)   scopeEl.textContent   = p.scope;
         if (counterEl) counterEl.textContent = `PROJECT ${current + 1} of ${total}`;
         if (prevBtn)   prevBtn.disabled = current === 0;
         if (nextBtn)   nextBtn.disabled = current === total - 1;
-        if (playBtn)   playBtn.hidden   = !p.video;
+
+        const mediaItems = buildMedia(p);
+        activeMedia = 0;
+        thumbOffset = 0;
+        renderMainMedia(mediaItems[0] || null);
+        renderThumbs(mediaItems);
 
         list.hidden   = true;
         detail.hidden = false;
         if (panel) panel.scrollTop = 0;
       }
+
+      // Thumbnail click → switch main media
+      thumbItems.forEach(thumb => {
+        thumb.addEventListener('click', () => {
+          const p = projects[current];
+          if (!p) return;
+          const mediaItems = buildMedia(p);
+          const idx = parseInt(thumb.dataset.mediaIndex, 10);
+          if (!mediaItems[idx]) return;
+          activeMedia = idx;
+          renderMainMedia(mediaItems[idx]);
+          renderThumbs(mediaItems);
+        });
+      });
+
+      // Thumbnail strip navigation
+      thumbPrev?.addEventListener('click', () => {
+        const mediaItems = buildMedia(projects[current] || {});
+        thumbOffset = Math.max(0, thumbOffset - 1);
+        renderThumbs(mediaItems);
+      });
+      thumbNext?.addEventListener('click', () => {
+        const mediaItems = buildMedia(projects[current] || {});
+        thumbOffset = Math.min(mediaItems.length - thumbItems.length, thumbOffset + 1);
+        renderThumbs(mediaItems);
+      });
+
+      // Play button → jump to video item
+      playBtn?.addEventListener('click', () => {
+        const p = projects[current];
+        if (!p) return;
+        const mediaItems = buildMedia(p);
+        const vidIdx = mediaItems.findIndex(m => m.type === 'video');
+        if (vidIdx === -1) return;
+        activeMedia = vidIdx;
+        renderMainMedia(mediaItems[vidIdx]);
+        renderThumbs(mediaItems);
+      });
 
       cards.forEach((card, i) => {
         card.addEventListener('click', () => showDetail(i));

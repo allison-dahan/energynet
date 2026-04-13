@@ -73,13 +73,26 @@ function energynet_render_project_meta_box( $post ) {
 	// Build thumbnail previews for existing gallery IDs.
 	$gallery_thumbs = '';
 	if ( $gallery ) {
-		foreach ( array_filter( array_map( 'trim', explode( ',', $gallery ) ) ) as $img_id ) {
-			$thumb = wp_get_attachment_image_url( (int) $img_id, 'thumbnail' );
-			if ( $thumb ) {
-				$gallery_thumbs .= '<div class="en-gallery-thumb" data-id="' . (int) $img_id . '" style="display:inline-block;position:relative;margin:4px;">'
-					. '<img src="' . esc_url( $thumb ) . '" style="width:80px;height:80px;object-fit:cover;border:1px solid #ddd;">'
-					. '<button type="button" class="en-gallery-remove" data-id="' . (int) $img_id . '" style="position:absolute;top:0;right:0;background:#c00;color:#fff;border:none;cursor:pointer;font-size:12px;line-height:1;padding:2px 4px;">&times;</button>'
-					. '</div>';
+		foreach ( array_filter( array_map( 'trim', explode( ',', $gallery ) ) ) as $att_id ) {
+			$att_id = (int) $att_id;
+			$mime   = get_post_mime_type( $att_id );
+			$remove = '<button type="button" class="en-gallery-remove" data-id="' . $att_id . '" style="position:absolute;top:0;right:0;background:#c00;color:#fff;border:none;cursor:pointer;font-size:12px;line-height:1;padding:2px 4px;">&times;</button>';
+
+			if ( strpos( $mime, 'video' ) === 0 ) {
+				$filename = basename( get_attached_file( $att_id ) );
+				$gallery_thumbs .= '<div class="en-gallery-thumb" data-id="' . $att_id . '" style="display:inline-block;position:relative;margin:4px;">'
+					. '<div style="width:80px;height:80px;background:#333;display:flex;align-items:center;justify-content:center;border:1px solid #ddd;flex-direction:column;gap:4px;">'
+					. '<span style="color:#fff;font-size:22px;">&#9654;</span>'
+					. '<span style="color:#aaa;font-size:10px;max-width:76px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' . esc_html( $filename ) . '</span>'
+					. '</div>'
+					. $remove . '</div>';
+			} else {
+				$thumb = wp_get_attachment_image_url( $att_id, 'thumbnail' );
+				if ( $thumb ) {
+					$gallery_thumbs .= '<div class="en-gallery-thumb" data-id="' . $att_id . '" style="display:inline-block;position:relative;margin:4px;">'
+						. '<img src="' . esc_url( $thumb ) . '" style="width:80px;height:80px;object-fit:cover;border:1px solid #ddd;">'
+						. $remove . '</div>';
+				}
 			}
 		}
 	}
@@ -144,15 +157,9 @@ function energynet_render_project_meta_box( $post ) {
 			<th><?php esc_html_e( 'Gallery', 'energynet' ); ?></th>
 			<td>
 				<input type="hidden" id="_project_gallery" name="_project_gallery" value="<?php echo esc_attr( $gallery ); ?>">
-				<button type="button" id="en-gallery-btn" class="button"><?php esc_html_e( 'Add / Edit Images', 'energynet' ); ?></button>
+				<button type="button" id="en-gallery-btn" class="button"><?php esc_html_e( 'Add Images / Videos', 'energynet' ); ?></button>
+				<span class="description"><?php esc_html_e( 'Images and videos both supported.', 'energynet' ); ?></span>
 				<div id="en-gallery-thumbs"><?php echo $gallery_thumbs; // already escaped per-thumb ?></div>
-			</td>
-		</tr>
-
-		<tr>
-			<th><label for="_project_video"><?php esc_html_e( 'Video URL', 'energynet' ); ?></label></th>
-			<td>
-				<input type="url" id="_project_video" name="_project_video" value="<?php echo esc_attr( $video ); ?>">
 			</td>
 		</tr>
 
@@ -190,28 +197,39 @@ function energynet_render_project_meta_box( $post ) {
 			}
 
 			frame = wp.media({
-				title:    '<?php echo esc_js( __( 'Select Gallery Images', 'energynet' ) ); ?>',
+				title:    '<?php echo esc_js( __( 'Select Images or Videos', 'energynet' ) ); ?>',
 				button:   { text: '<?php echo esc_js( __( 'Add to Gallery', 'energynet' ) ); ?>' },
-				multiple: true,
-				library:  { type: 'image' }
+				multiple: true
 			});
 
 			frame.on('select', function() {
-				var selection = frame.state().get('selection');
+				var selection   = frame.state().get('selection');
 				var existingIds = $input.val() ? $input.val().split(',').map(function(id){ return id.trim(); }).filter(Boolean) : [];
 
 				selection.each(function(attachment) {
-					var id  = attachment.get('id');
-					var url = attachment.get('sizes') && attachment.get('sizes').thumbnail
-					          ? attachment.get('sizes').thumbnail.url
-					          : attachment.get('url');
+					var id      = attachment.get('id');
+					var type    = attachment.get('type'); // 'image' or 'video'
+					var remove  = '<button type="button" class="en-gallery-remove" data-id="' + id + '" style="position:absolute;top:0;right:0;background:#c00;color:#fff;border:none;cursor:pointer;font-size:12px;line-height:1;padding:2px 4px;">&times;</button>';
+					var preview;
+
+					if (type === 'video') {
+						var filename = attachment.get('filename') || attachment.get('url').split('/').pop();
+						preview = '<div style="width:80px;height:80px;background:#333;display:flex;align-items:center;justify-content:center;border:1px solid #ddd;flex-direction:column;gap:4px;">' +
+							'<span style="color:#fff;font-size:22px;">&#9654;</span>' +
+							'<span style="color:#aaa;font-size:10px;max-width:76px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + filename + '</span>' +
+							'</div>';
+					} else {
+						var thumbUrl = attachment.get('sizes') && attachment.get('sizes').thumbnail
+							? attachment.get('sizes').thumbnail.url
+							: attachment.get('url');
+						preview = '<img src="' + thumbUrl + '" style="width:80px;height:80px;object-fit:cover;border:1px solid #ddd;">';
+					}
 
 					if (existingIds.indexOf(String(id)) === -1) {
 						existingIds.push(String(id));
 						$thumbs.append(
 							'<div class="en-gallery-thumb" data-id="' + id + '" style="display:inline-block;position:relative;margin:4px;">' +
-							'<img src="' + url + '" style="width:80px;height:80px;object-fit:cover;border:1px solid #ddd;">' +
-							'<button type="button" class="en-gallery-remove" data-id="' + id + '" style="position:absolute;top:0;right:0;background:#c00;color:#fff;border:none;cursor:pointer;font-size:12px;line-height:1;padding:2px 4px;">&times;</button>' +
+							preview + remove +
 							'</div>'
 						);
 					}
@@ -230,6 +248,7 @@ function energynet_render_project_meta_box( $post ) {
 			$input.val(ids.join(','));
 			$(this).closest('.en-gallery-thumb').remove();
 		});
+
 	}(jQuery));
 	</script>
 	<?php
