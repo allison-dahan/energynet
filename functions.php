@@ -227,26 +227,28 @@ function energynet_enqueue_assets() {
 
   $on_projects = is_page( 'projects' ) || is_page_template( 'page-projects.php' );
 
-  // Map entry — always loaded for now to debug page detection
   $js_deps = array();
-  $map_js_path = $theme_dir . '/dist/assets/map.js';
 
-  wp_enqueue_style(
-    'maptiler-sdk',
-    'https://cdn.jsdelivr.net/npm/@maptiler/sdk@3.11.2/dist/maptiler-sdk.css',
-    array(),
-    '3.11.2',
-    'all'
-  );
+  if ( $on_projects ) {
+    $map_js_path = $theme_dir . '/dist/assets/map.js';
 
-  if ( file_exists( $map_js_path ) ) {
-    wp_enqueue_script(
-      'energynet-map',
-      $theme_uri . '/dist/assets/map.js',
+    wp_enqueue_style(
+      'maptiler-sdk',
+      'https://cdn.jsdelivr.net/npm/@maptiler/sdk@4.0.1/dist/maptiler-sdk.css',
       array(),
-      filemtime( $map_js_path ),
-      true
+      '4.0.1',
+      'all'
     );
+
+    if ( file_exists( $map_js_path ) ) {
+      wp_enqueue_script(
+        'energynet-map',
+        $theme_uri . '/dist/assets/map.js',
+        array(),
+        filemtime( $map_js_path ),
+        true
+      );
+    }
   }
 
   if ( file_exists( $js_path ) ) {

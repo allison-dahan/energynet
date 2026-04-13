@@ -1,43 +1,63 @@
 import { config, Map, Marker, NavigationControl } from '@maptiler/sdk';
 
 const canvas = document.getElementById('projects-map-canvas');
+if (!canvas) throw new Error('no map canvas');
 
-if (canvas) {
-  config.apiKey = import.meta.env.VITE_MAPTILER_KEY;
+config.apiKey = import.meta.env.VITE_MAPTILER_KEY;
 
-  const map = new Map({
-    container: canvas,
-    style: '019d6f93-6bb9-75e4-aca3-b932b6cd672c',
-    center: [122.0, 12.5],
-    zoom: 4,
-    minZoom: 4,
-    maxZoom: 12,
-    scrollZoom: false,
-    navigationControl: false,
-    geolocateControl: false,
-  });
+const isDesktop = () => window.innerWidth >= 1024;
 
-  map.addControl(new NavigationControl({ showCompass: false }), 'top-right');
+function setSize() {
+  const w = isDesktop() ? 582 : 319;
+  const h = isDesktop() ? 692 : 380;
+  const wrap = canvas.parentElement; // .projects-map
+  wrap.style.width  = w + 'px';
+  wrap.style.height = h + 'px';
+  canvas.style.width  = w + 'px';
+  canvas.style.height = h + 'px';
+}
 
-  map.on('load', () => {
-    const allProjects = [
-      ...(window.projectsCompleted || []),
-      ...(window.projectsOngoing   || []),
-    ];
+setSize();
 
-    allProjects.forEach(p => {
-      if (!p.lat || !p.lng) return;
+const map = new Map({
+  container: canvas,
+  style: '019d6f93-6bb9-75e4-aca3-b932b6cd672c',
+  center: [122.0, 12.5],
+  zoom: 4,
+  minZoom: 4,
+  maxZoom: 12,
+  scrollZoom: false,
+  navigationControl: false,
+  geolocateControl: false,
+});
 
-      const el = document.createElement('div');
-      el.className = 'map-pin';
+map.addControl(new NavigationControl({ showCompass: false }), 'top-right');
 
-      new Marker({ element: el })
-        .setLngLat([p.lng, p.lat])
-        .addTo(map);
+map.on('load', () => {
+  map.resize();
 
-      el.addEventListener('click', () => {
-        if (window.openProjectDetail) window.openProjectDetail(p.title);
-      });
+  const allProjects = [
+    ...(window.projectsCompleted || []),
+    ...(window.projectsOngoing   || []),
+  ];
+
+  allProjects.forEach(p => {
+    if (!p.lat || !p.lng) return;
+
+    const el = document.createElement('div');
+    el.className = 'map-pin';
+
+    new Marker({ element: el })
+      .setLngLat([p.lng, p.lat])
+      .addTo(map);
+
+    el.addEventListener('click', () => {
+      if (window.openProjectDetail) window.openProjectDetail(p.title);
     });
   });
-}
+});
+
+window.addEventListener('resize', () => {
+  setSize();
+  map.resize();
+});
