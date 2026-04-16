@@ -51,8 +51,10 @@ function energynet_get_projects_by_status( string $status ): array {
 			'image'    => $thumbnail_url,
 			'gallery'  => $gallery_urls,
 			'video'    => get_post_meta( $post->ID, '_project_video',     true ),
-			'lat'      => (float) get_post_meta( $post->ID, '_project_lat', true ),
-			'lng'      => (float) get_post_meta( $post->ID, '_project_lng', true ),
+			'lat'      => (float) get_post_meta( $post->ID, '_project_lat',   true ),
+			'lng'      => (float) get_post_meta( $post->ID, '_project_lng',   true ),
+			'lat2'     => (float) get_post_meta( $post->ID, '_project_lat_2', true ),
+			'lng2'     => (float) get_post_meta( $post->ID, '_project_lng_2', true ),
 		];
 	}
 
@@ -61,6 +63,7 @@ function energynet_get_projects_by_status( string $status ): array {
 
 $completed_projects = energynet_get_projects_by_status( 'completed' );
 $ongoing_projects   = energynet_get_projects_by_status( 'ongoing' );
+$all_projects       = array_merge( $completed_projects, $ongoing_projects );
 ?>
 
 <main id="primary" class="site-main">
@@ -128,7 +131,7 @@ $ongoing_projects   = energynet_get_projects_by_status( 'ongoing' );
 			<!-- ── List view ── -->
 			<div class="projects-drawer__list">
 				<div class="projects-drawer__cards">
-					<?php foreach ( $completed_projects as $project ) : ?>
+					<?php foreach ( $all_projects as $project ) : ?>
 						<div class="project-card" role="button" tabindex="0" aria-label="<?php echo esc_attr( $project['title'] ); ?>">
 							<div class="project-card__placeholder"></div>
 							<?php if ( ! empty( $project['image'] ) ) : ?>
@@ -212,6 +215,7 @@ $ongoing_projects   = energynet_get_projects_by_status( 'ongoing' );
 	<script>
 		window.projectsCompleted = <?php echo wp_json_encode( $completed_projects ); ?>;
 		window.projectsOngoing   = <?php echo wp_json_encode( $ongoing_projects ); ?>;
+		window.projectsAll       = <?php echo wp_json_encode( $all_projects ); ?>;
 	</script>
 
 </main>

@@ -19,12 +19,14 @@ function setSize() {
 
 setSize();
 
+const initialZoom = () => isDesktop() ? 5 : 4;
+
 const map = new Map({
   container: canvas,
   style: '019d883c-9869-72c8-a759-408ba05bc32f',
   center: [122.0, 12.5],
-  zoom: 5,
-  minZoom: 5,
+  zoom: initialZoom(),
+  minZoom: 4,
   maxZoom: 12,
   scrollZoom: false,
   navigationControl: false,
@@ -133,29 +135,44 @@ map.on('load', () => {
     ...(window.projectsOngoing   || []),
   ];
 
-  // Add pin markers
+  // Add pin markers (primary + optional second location)
   allProjects.forEach(p => {
-    if (!p.lat || !p.lng) return;
+    [[p.lat, p.lng], [p.lat2, p.lng2]].forEach(([lat, lng]) => {
+      if (!lat || !lng) return;
 
-    const el = document.createElement('div');
-    el.className = 'map-pin';
+      const el = document.createElement('div');
+      el.className = 'map-pin';
 
-    new Marker({ element: el })
-      .setLngLat([p.lng, p.lat])
-      .addTo(map);
+      new Marker({ element: el })
+        .setLngLat([lng, lat])
+        .addTo(map);
 
-    el.addEventListener('click', () => {
-      if (window.openProjectDetail) window.openProjectDetail(p.title);
+      el.addEventListener('click', () => {
+        if (window.openProjectDetail) window.openProjectDetail(p.title);
+      });
     });
+  });
+
+  // Build a flat list including second locations for region highlighting
+  const allPoints = allProjects.flatMap(p => {
+    const pts = [p];
+    if (p.lat2 && p.lng2) pts.push({ lat: p.lat2, lng: p.lng2 });
+    return pts;
   });
 
   // Wait for tiles to fully render before querying polygon features
   map.once('idle', () => {
-    highlightRegions(allProjects);
+    highlightRegions(allPoints);
   });
 });
 
+let lastDesktop = isDesktop();
 window.addEventListener('resize', () => {
   setSize();
   map.resize();
+  const nowDesktop = isDesktop();
+  if (nowDesktop !== lastDesktop) {
+    map.setZoom(initialZoom());
+    lastDesktop = nowDesktop;
+  }
 });

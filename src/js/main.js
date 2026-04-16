@@ -525,8 +525,7 @@ document.addEventListener('keydown', (e) => {
 
     if (!list || !cards.length) return;
 
-    const dataKey  = drawer.id === 'drawer-completed' ? 'projectsCompleted' : 'projectsOngoing';
-    const projects = window[dataKey] || [];
+    const projects = window.projectsAll || [];
     let currentPage = 1;
 
     function perPage() {

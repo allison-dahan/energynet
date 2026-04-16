@@ -67,8 +67,11 @@ function energynet_render_project_meta_box( $post ) {
 	$scope    = get_post_meta( $post->ID, '_project_scope',    true );
 	$gallery  = get_post_meta( $post->ID, '_project_gallery',  true );
 	$video    = get_post_meta( $post->ID, '_project_video',    true );
-	$lat      = get_post_meta( $post->ID, '_project_lat',      true );
-	$lng      = get_post_meta( $post->ID, '_project_lng',      true );
+	$lat       = get_post_meta( $post->ID, '_project_lat',       true );
+	$lng       = get_post_meta( $post->ID, '_project_lng',       true );
+	$location2 = get_post_meta( $post->ID, '_project_location_2', true );
+	$lat2      = get_post_meta( $post->ID, '_project_lat_2',      true );
+	$lng2      = get_post_meta( $post->ID, '_project_lng_2',      true );
 
 	// Build thumbnail previews for existing gallery IDs.
 	$gallery_thumbs = '';
@@ -179,6 +182,32 @@ function energynet_render_project_meta_box( $post ) {
 			</td>
 		</tr>
 
+		<tr><td colspan="2"><hr style="margin:8px 0;border:none;border-top:1px solid #ddd;"></td></tr>
+
+		<tr>
+			<th><label for="_project_location_2"><?php esc_html_e( 'Location 2 (optional)', 'energynet' ); ?></label></th>
+			<td>
+				<input type="text" id="_project_location_2" name="_project_location_2" value="<?php echo esc_attr( $location2 ); ?>">
+				<span class="description"><?php esc_html_e( 'Second location if the project spans two sites', 'energynet' ); ?></span>
+			</td>
+		</tr>
+
+		<tr>
+			<th><label for="_project_lat_2"><?php esc_html_e( 'Latitude 2', 'energynet' ); ?></label></th>
+			<td>
+				<input type="number" id="_project_lat_2" name="_project_lat_2" value="<?php echo esc_attr( $lat2 ); ?>" step="any" readonly>
+				<span class="description"><?php esc_html_e( 'Auto-filled from Location 2 on save', 'energynet' ); ?></span>
+			</td>
+		</tr>
+
+		<tr>
+			<th><label for="_project_lng_2"><?php esc_html_e( 'Longitude 2', 'energynet' ); ?></label></th>
+			<td>
+				<input type="number" id="_project_lng_2" name="_project_lng_2" value="<?php echo esc_attr( $lng2 ); ?>" step="any" readonly>
+				<span class="description"><?php esc_html_e( 'Auto-filled from Location 2 on save', 'energynet' ); ?></span>
+			</td>
+		</tr>
+
 	</table>
 
 	<script>
@@ -273,6 +302,7 @@ function energynet_save_project_meta( $post_id ) {
 		'_project_status',
 		'_project_client',
 		'_project_location',
+		'_project_location_2',
 		'_project_date',
 		'_project_video',
 		'_project_gallery',
@@ -292,6 +322,11 @@ function energynet_save_project_meta( $post_id ) {
 	$lng = isset( $_POST['_project_lng'] ) ? (float) $_POST['_project_lng'] : '';
 	if ( $lat ) update_post_meta( $post_id, '_project_lat', $lat );
 	if ( $lng ) update_post_meta( $post_id, '_project_lng', $lng );
+
+	$lat2 = isset( $_POST['_project_lat_2'] ) ? (float) $_POST['_project_lat_2'] : '';
+	$lng2 = isset( $_POST['_project_lng_2'] ) ? (float) $_POST['_project_lng_2'] : '';
+	if ( $lat2 ) update_post_meta( $post_id, '_project_lat_2', $lat2 );
+	if ( $lng2 ) update_post_meta( $post_id, '_project_lng_2', $lng2 );
 }
 add_action( 'save_post_project', 'energynet_save_project_meta', 10 );
 
@@ -334,5 +369,36 @@ function energynet_geocode_project_location( $post_id ) {
 	update_post_meta( $post_id, '_project_lat', (float) $data[0]['lat'] );
 	update_post_meta( $post_id, '_project_lng', (float) $data[0]['lon'] );
 	update_post_meta( $post_id, '_geocoded_location', $location );
+
+	// ── Geocode location 2 if provided and changed ──
+	$location2 = get_post_meta( $post_id, '_project_location_2', true );
+	if ( $location2 ) {
+		$cached2 = get_post_meta( $post_id, '_geocoded_location_2', true );
+		$lat2    = get_post_meta( $post_id, '_project_lat_2', true );
+		$lng2    = get_post_meta( $post_id, '_project_lng_2', true );
+
+		if ( ! $lat2 || ! $lng2 || $cached2 !== $location2 ) {
+			$url2 = add_query_arg( [
+				'q'            => $location2 . ', Philippines',
+				'format'       => 'json',
+				'limit'        => 1,
+				'countrycodes' => 'ph',
+			], 'https://nominatim.openstreetmap.org/search' );
+
+			$response2 = wp_remote_get( $url2, [
+				'timeout' => 8,
+				'headers' => [ 'User-Agent' => 'EnergyNet-Theme/1.0' ],
+			] );
+
+			if ( ! is_wp_error( $response2 ) ) {
+				$data2 = json_decode( wp_remote_retrieve_body( $response2 ), true );
+				if ( ! empty( $data2[0]['lat'] ) ) {
+					update_post_meta( $post_id, '_project_lat_2', (float) $data2[0]['lat'] );
+					update_post_meta( $post_id, '_project_lng_2', (float) $data2[0]['lon'] );
+					update_post_meta( $post_id, '_geocoded_location_2', $location2 );
+				}
+			}
+		}
+	}
 }
 add_action( 'save_post_project', 'energynet_geocode_project_location', 20 );
