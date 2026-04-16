@@ -732,6 +732,9 @@ document.addEventListener('keydown', (e) => {
           openDrawer('drawer-completed');
           showDetail(idx);
         };
+        window.openProjectsDrawer = function () {
+          openDrawer('drawer-completed');
+        };
       }
     }
 
