@@ -124,7 +124,7 @@ $all_projects       = array_merge( $completed_projects, $ongoing_projects );
 			<div class="projects-drawer__header">
 				<p class="projects-drawer__title"><?php esc_html_e( 'PROJECTS', 'energynet' ); ?></p>
 				<button class="projects-drawer__close" data-drawer-close aria-label="<?php esc_attr_e( 'Close', 'energynet' ); ?>">
-					<iconify-icon icon="mdi:close" width="20" height="20"></iconify-icon>
+					<iconify-icon icon="material-symbols:close-rounded" width="36" height="36"></iconify-icon>
 				</button>
 			</div>
 

@@ -3,12 +3,14 @@
 // ─── Map marker & popup ────────────────────────────────────────────────────────
 
 .map-pin {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: $color-white;
-  border: 2.5px solid #444444;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  width: 13px;
+  height: 18px;
+  cursor: pointer;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .map-popup .leaflet-popup-content-wrapper {
@@ -137,12 +139,11 @@
 
 .projects-map {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   width: 319px;
   max-width: 100%;
   height: 380px;
   margin-inline: auto;
-  border-radius: 8px;
   background: #111111; // dark fallback while tiles load
 
   @media (min-width: $bp-lg) {
@@ -156,6 +157,8 @@
 #projects-map-canvas {
   width: 100%;
   height: 380px;
+  border-radius: 8px;
+  overflow: hidden;
 
   @media (min-width: $bp-lg) {
     height: 692px;
@@ -330,15 +333,16 @@
   background: none;
   border: none;
   color: $color-white;
-  font-size: 24px;
+  font-size: 36px;
+  font-weight: 700;
   line-height: 1;
   cursor: pointer;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
 
   @media (min-width: $bp-lg) {
     color: $color-primary;

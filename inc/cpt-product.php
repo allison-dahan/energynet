@@ -96,21 +96,34 @@ add_action( 'add_meta_boxes', 'energynet_register_product_meta_box' );
 function energynet_render_product_meta_box( $post ) {
 	wp_nonce_field( 'energynet_save_product_meta', 'energynet_product_nonce' );
 
-	$brochure    = get_post_meta( $post->ID, '_tech_brochure',    true );
-	$certificate = get_post_meta( $post->ID, '_tech_certificate', true );
-	$data_sheet  = get_post_meta( $post->ID, '_tech_data_sheet',  true );
-	$video       = get_post_meta( $post->ID, '_tech_video',       true );
+	$brochure_name = get_post_meta( $post->ID, '_tech_brochure_name', true );
+	$brochure_url  = get_post_meta( $post->ID, '_tech_brochure_url',  true );
+	$certificate   = get_post_meta( $post->ID, '_tech_certificate',   true );
+	$data_sheet    = get_post_meta( $post->ID, '_tech_data_sheet',    true );
+	$video         = get_post_meta( $post->ID, '_tech_video',         true );
 	?>
 	<style>
 		.en-product-meta-table { width: 100%; border-collapse: collapse; }
 		.en-product-meta-table th { text-align: left; padding: 8px 12px 8px 0; width: 140px; font-weight: 600; vertical-align: middle; }
 		.en-product-meta-table td { padding: 6px 0; vertical-align: middle; }
-		.en-product-meta-table input[type="url"] { width: 100%; }
+		.en-product-meta-table input[type="url"],
+		.en-product-meta-table input[type="text"] { width: 100%; }
+		.en-product-meta-table .description { color: #666; font-size: 12px; margin-top: 3px; display: block; }
 	</style>
 	<table class="en-product-meta-table">
 		<tr>
-			<th><label for="_tech_brochure"><?php esc_html_e( 'Brochure', 'energynet' ); ?></label></th>
-			<td><input type="url" id="_tech_brochure" name="_tech_brochure" value="<?php echo esc_attr( $brochure ); ?>" placeholder="https://"></td>
+			<th><?php esc_html_e( 'Brochure', 'energynet' ); ?></th>
+			<td>
+				<input type="hidden" id="_tech_brochure_url" name="_tech_brochure_url" value="<?php echo esc_attr( $brochure_url ); ?>">
+				<input type="text"   id="_tech_brochure_name" name="_tech_brochure_name" value="<?php echo esc_attr( $brochure_name ); ?>" placeholder="<?php esc_attr_e( 'File name', 'energynet' ); ?>" style="width:100%;margin-bottom:6px;">
+				<button type="button" id="en-brochure-btn" class="button"><?php esc_html_e( $brochure_url ? 'Change File' : 'Upload / Select File', 'energynet' ); ?></button>
+				<?php if ( $brochure_url ) : ?>
+					<button type="button" id="en-brochure-remove" class="button" style="margin-left:4px;"><?php esc_html_e( 'Remove', 'energynet' ); ?></button>
+				<?php else : ?>
+					<button type="button" id="en-brochure-remove" class="button" style="margin-left:4px;display:none;"><?php esc_html_e( 'Remove', 'energynet' ); ?></button>
+				<?php endif; ?>
+				<span class="description" style="display:block;margin-top:4px;"><?php echo $brochure_url ? esc_html( $brochure_url ) : ''; ?></span>
+			</td>
 		</tr>
 		<tr>
 			<th><label for="_tech_certificate"><?php esc_html_e( 'Certificate', 'energynet' ); ?></label></th>
@@ -125,6 +138,45 @@ function energynet_render_product_meta_box( $post ) {
 			<td><input type="url" id="_tech_video" name="_tech_video" value="<?php echo esc_attr( $video ); ?>" placeholder="https://"></td>
 		</tr>
 	</table>
+
+	<script>
+	(function($){
+		var frame;
+		var $url    = $('#_tech_brochure_url');
+		var $name   = $('#_tech_brochure_name');
+		var $btn    = $('#en-brochure-btn');
+		var $remove = $('#en-brochure-remove');
+		var $desc   = $btn.siblings('.description');
+
+		$btn.on('click', function(e){
+			e.preventDefault();
+			if (frame) { frame.open(); return; }
+			frame = wp.media({
+				title:    '<?php echo esc_js( __( 'Select Brochure File', 'energynet' ) ); ?>',
+				button:   { text: '<?php echo esc_js( __( 'Use this file', 'energynet' ) ); ?>' },
+				multiple: false
+			});
+			frame.on('select', function(){
+				var attachment = frame.state().get('selection').first().toJSON();
+				$url.val(attachment.url);
+				if (!$name.val()) $name.val(attachment.filename || attachment.title || '');
+				$btn.text('<?php echo esc_js( __( 'Change File', 'energynet' ) ); ?>');
+				$desc.text(attachment.url);
+				$remove.show();
+			});
+			frame.open();
+		});
+
+		$remove.on('click', function(e){
+			e.preventDefault();
+			$url.val('');
+			$name.val('');
+			$btn.text('<?php echo esc_js( __( 'Upload / Select File', 'energynet' ) ); ?>');
+			$desc.text('');
+			$remove.hide();
+		});
+	}(jQuery));
+	</script>
 	<?php
 }
 
@@ -136,7 +188,13 @@ function energynet_save_product_meta( $post_id ) {
 	if ( wp_is_post_revision( $post_id ) ) return;
 	if ( ! current_user_can( 'edit_post', $post_id ) ) return;
 
-	$url_fields = [ '_tech_brochure', '_tech_certificate', '_tech_data_sheet', '_tech_video' ];
+	// Brochure: filename (text) + URL (url)
+	$brochure_name = isset( $_POST['_tech_brochure_name'] ) ? sanitize_text_field( wp_unslash( $_POST['_tech_brochure_name'] ) ) : '';
+	$brochure_url  = isset( $_POST['_tech_brochure_url'] )  ? esc_url_raw( wp_unslash( $_POST['_tech_brochure_url'] ) )          : '';
+	update_post_meta( $post_id, '_tech_brochure_name', $brochure_name );
+	update_post_meta( $post_id, '_tech_brochure_url',  $brochure_url );
+
+	$url_fields = [ '_tech_certificate', '_tech_data_sheet', '_tech_video' ];
 	foreach ( $url_fields as $field ) {
 		$value = isset( $_POST[ $field ] ) ? esc_url_raw( wp_unslash( $_POST[ $field ] ) ) : '';
 		update_post_meta( $post_id, $field, $value );
@@ -147,7 +205,13 @@ add_action( 'save_post_product', 'energynet_save_product_meta', 10 );
 // ─── Brand Logo: enqueue media on taxonomy edit pages ─────────────────────────
 
 function energynet_brand_admin_enqueue( $hook ) {
-	global $pagenow;
+	global $pagenow, $post;
+
+	// Enqueue media on product edit screen for brochure upload
+	if ( ( $hook === 'post.php' || $hook === 'post-new.php' ) && isset( $post ) && $post->post_type === 'product' ) {
+		wp_enqueue_media();
+	}
+
 	if ( ( $pagenow === 'term.php' || $pagenow === 'edit-tags.php' ) && isset( $_GET['taxonomy'] ) && $_GET['taxonomy'] === 'product_brand' ) {
 		wp_enqueue_media();
 		wp_add_inline_script( 'jquery-core', energynet_brand_logo_inline_js() );

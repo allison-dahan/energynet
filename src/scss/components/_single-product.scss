@@ -162,9 +162,10 @@
   align-items: center;
   justify-content: center;
   align-self: flex-start;
-  width: 261px;
+  width: max-content;
   max-width: 100%;
   padding: 11px $space-8;
+  white-space: nowrap;
   background: $color-button-dark; // Figma dark brown button
   border-radius: 12px;
   font-size: 10px;
