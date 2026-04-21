@@ -98,7 +98,8 @@ function energynet_render_product_meta_box( $post ) {
 
 	$brochure_name = get_post_meta( $post->ID, '_tech_brochure_name', true );
 	$brochure_url  = get_post_meta( $post->ID, '_tech_brochure_url',  true );
-	$certificate   = get_post_meta( $post->ID, '_tech_certificate',   true );
+	$certificate_name = get_post_meta( $post->ID, '_tech_certificate_name', true );
+	$certificate      = get_post_meta( $post->ID, '_tech_certificate',      true );
 	$data_sheet    = get_post_meta( $post->ID, '_tech_data_sheet',    true );
 	$video         = get_post_meta( $post->ID, '_tech_video',         true );
 	?>
@@ -114,20 +115,22 @@ function energynet_render_product_meta_box( $post ) {
 		<tr>
 			<th><?php esc_html_e( 'Brochure', 'energynet' ); ?></th>
 			<td>
-				<input type="hidden" id="_tech_brochure_url" name="_tech_brochure_url" value="<?php echo esc_attr( $brochure_url ); ?>">
-				<input type="text"   id="_tech_brochure_name" name="_tech_brochure_name" value="<?php echo esc_attr( $brochure_name ); ?>" placeholder="<?php esc_attr_e( 'File name', 'energynet' ); ?>" style="width:100%;margin-bottom:6px;">
-				<button type="button" id="en-brochure-btn" class="button"><?php esc_html_e( $brochure_url ? 'Change File' : 'Upload / Select File', 'energynet' ); ?></button>
-				<?php if ( $brochure_url ) : ?>
-					<button type="button" id="en-brochure-remove" class="button" style="margin-left:4px;"><?php esc_html_e( 'Remove', 'energynet' ); ?></button>
-				<?php else : ?>
-					<button type="button" id="en-brochure-remove" class="button" style="margin-left:4px;display:none;"><?php esc_html_e( 'Remove', 'energynet' ); ?></button>
-				<?php endif; ?>
-				<span class="description" style="display:block;margin-top:4px;"><?php echo $brochure_url ? esc_html( $brochure_url ) : ''; ?></span>
+				<input type="text" id="_tech_brochure_name" name="_tech_brochure_name" value="<?php echo esc_attr( $brochure_name ); ?>" placeholder="<?php esc_attr_e( 'Display name (optional)', 'energynet' ); ?>" style="width:100%;margin-bottom:6px;">
+				<input type="url"  id="_tech_brochure_url"  name="_tech_brochure_url"  value="<?php echo esc_attr( $brochure_url ); ?>"  placeholder="https://" style="width:100%;margin-bottom:6px;">
+				<button type="button" id="en-brochure-btn" class="button"><?php esc_html_e( 'Upload / Select File', 'energynet' ); ?></button>
+				<button type="button" id="en-brochure-remove" class="button" style="margin-left:4px;<?php echo $brochure_url ? '' : 'display:none;'; ?>"><?php esc_html_e( 'Remove', 'energynet' ); ?></button>
+				<span class="description"><?php esc_html_e( 'Upload a file or paste a URL link above.', 'energynet' ); ?></span>
 			</td>
 		</tr>
 		<tr>
-			<th><label for="_tech_certificate"><?php esc_html_e( 'Certificate', 'energynet' ); ?></label></th>
-			<td><input type="url" id="_tech_certificate" name="_tech_certificate" value="<?php echo esc_attr( $certificate ); ?>" placeholder="https://"></td>
+			<th><?php esc_html_e( 'Certificate', 'energynet' ); ?></th>
+			<td>
+				<input type="text" id="_tech_certificate_name" name="_tech_certificate_name" value="<?php echo esc_attr( $certificate_name ); ?>" placeholder="<?php esc_attr_e( 'Display name (optional)', 'energynet' ); ?>" style="width:100%;margin-bottom:6px;">
+				<input type="url"  id="_tech_certificate"      name="_tech_certificate"      value="<?php echo esc_attr( $certificate ); ?>"      placeholder="https://" style="width:100%;margin-bottom:6px;">
+				<button type="button" id="en-certificate-btn" class="button"><?php esc_html_e( 'Upload / Select File', 'energynet' ); ?></button>
+				<button type="button" id="en-certificate-remove" class="button" style="margin-left:4px;<?php echo $certificate ? '' : 'display:none;'; ?>"><?php esc_html_e( 'Remove', 'energynet' ); ?></button>
+				<span class="description"><?php esc_html_e( 'Upload a file or paste a URL link above.', 'energynet' ); ?></span>
+			</td>
 		</tr>
 		<tr>
 			<th><label for="_tech_data_sheet"><?php esc_html_e( 'Data Sheet', 'energynet' ); ?></label></th>
@@ -141,12 +144,12 @@ function energynet_render_product_meta_box( $post ) {
 
 	<script>
 	(function($){
+		// ── Brochure picker ──
 		var frame;
 		var $url    = $('#_tech_brochure_url');
 		var $name   = $('#_tech_brochure_name');
 		var $btn    = $('#en-brochure-btn');
 		var $remove = $('#en-brochure-remove');
-		var $desc   = $btn.siblings('.description');
 
 		$btn.on('click', function(e){
 			e.preventDefault();
@@ -160,8 +163,6 @@ function energynet_render_product_meta_box( $post ) {
 				var attachment = frame.state().get('selection').first().toJSON();
 				$url.val(attachment.url);
 				if (!$name.val()) $name.val(attachment.filename || attachment.title || '');
-				$btn.text('<?php echo esc_js( __( 'Change File', 'energynet' ) ); ?>');
-				$desc.text(attachment.url);
 				$remove.show();
 			});
 			frame.open();
@@ -171,9 +172,48 @@ function energynet_render_product_meta_box( $post ) {
 			e.preventDefault();
 			$url.val('');
 			$name.val('');
-			$btn.text('<?php echo esc_js( __( 'Upload / Select File', 'energynet' ) ); ?>');
-			$desc.text('');
 			$remove.hide();
+		});
+
+		// Show remove button whenever URL is manually typed
+		$url.on('input', function(){
+			if ($(this).val()) $remove.show(); else $remove.hide();
+		});
+
+		// ── Certificate picker ──
+		var certFrame;
+		var $certUrl    = $('#_tech_certificate');
+		var $certName   = $('#_tech_certificate_name');
+		var $certBtn    = $('#en-certificate-btn');
+		var $certRemove = $('#en-certificate-remove');
+
+		$certBtn.on('click', function(e){
+			e.preventDefault();
+			if (certFrame) { certFrame.open(); return; }
+			certFrame = wp.media({
+				title:    '<?php echo esc_js( __( 'Select Certificate File', 'energynet' ) ); ?>',
+				button:   { text: '<?php echo esc_js( __( 'Use this file', 'energynet' ) ); ?>' },
+				multiple: false
+			});
+			certFrame.on('select', function(){
+				var attachment = certFrame.state().get('selection').first().toJSON();
+				$certUrl.val(attachment.url);
+				if (!$certName.val()) $certName.val(attachment.filename || attachment.title || '');
+				$certRemove.show();
+			});
+			certFrame.open();
+		});
+
+		$certRemove.on('click', function(e){
+			e.preventDefault();
+			$certUrl.val('');
+			$certName.val('');
+			$certRemove.hide();
+		});
+
+		// Show remove button whenever URL is manually typed
+		$certUrl.on('input', function(){
+			if ($(this).val()) $certRemove.show(); else $certRemove.hide();
 		});
 	}(jQuery));
 	</script>
@@ -188,11 +228,15 @@ function energynet_save_product_meta( $post_id ) {
 	if ( wp_is_post_revision( $post_id ) ) return;
 	if ( ! current_user_can( 'edit_post', $post_id ) ) return;
 
-	// Brochure: filename (text) + URL (url)
+	// Brochure: filename + URL
 	$brochure_name = isset( $_POST['_tech_brochure_name'] ) ? sanitize_text_field( wp_unslash( $_POST['_tech_brochure_name'] ) ) : '';
 	$brochure_url  = isset( $_POST['_tech_brochure_url'] )  ? esc_url_raw( wp_unslash( $_POST['_tech_brochure_url'] ) )          : '';
 	update_post_meta( $post_id, '_tech_brochure_name', $brochure_name );
 	update_post_meta( $post_id, '_tech_brochure_url',  $brochure_url );
+
+	// Certificate: filename + URL
+	$certificate_name = isset( $_POST['_tech_certificate_name'] ) ? sanitize_text_field( wp_unslash( $_POST['_tech_certificate_name'] ) ) : '';
+	update_post_meta( $post_id, '_tech_certificate_name', $certificate_name );
 
 	$url_fields = [ '_tech_certificate', '_tech_data_sheet', '_tech_video' ];
 	foreach ( $url_fields as $field ) {

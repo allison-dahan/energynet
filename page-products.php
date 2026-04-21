@@ -19,6 +19,17 @@ $products_query = new WP_Query( [
 $brand_terms = get_terms( [ 'taxonomy' => 'product_brand',    'hide_empty' => true ] );
 $cat_terms   = get_terms( [ 'taxonomy' => 'product_category', 'hide_empty' => true, 'parent' => 0 ] );
 
+// Pre-fetch child terms per parent category.
+$cat_children = [];
+if ( $cat_terms && ! is_wp_error( $cat_terms ) ) {
+	foreach ( $cat_terms as $parent_term ) {
+		$children = get_terms( [ 'taxonomy' => 'product_category', 'hide_empty' => true, 'parent' => $parent_term->term_id ] );
+		if ( $children && ! is_wp_error( $children ) ) {
+			$cat_children[ $parent_term->term_id ] = $children;
+		}
+	}
+}
+
 $has_filters = ( $brand_terms && ! is_wp_error( $brand_terms ) ) || ( $cat_terms && ! is_wp_error( $cat_terms ) );
 
 // Pre-fetch brand logos for reuse in sidebar + overlay.
@@ -93,6 +104,17 @@ if ( $brand_terms && ! is_wp_error( $brand_terms ) ) {
 							<button class="products-sidebar__item" data-filter="category" data-value="<?php echo esc_attr( $term->slug ); ?>">
 								<?php echo esc_html( $term->name ); ?>
 							</button>
+							<?php if ( ! empty( $cat_children[ $term->term_id ] ) ) : ?>
+							<ul class="products-sidebar__sublist">
+								<?php foreach ( $cat_children[ $term->term_id ] as $child ) : ?>
+								<li>
+									<button class="products-sidebar__item products-sidebar__item--sub" data-filter="category" data-value="<?php echo esc_attr( $child->slug ); ?>">
+										<?php echo esc_html( $child->name ); ?>
+									</button>
+								</li>
+								<?php endforeach; ?>
+							</ul>
+							<?php endif; ?>
 						</li>
 						<?php endforeach; ?>
 					</ul>
@@ -184,6 +206,17 @@ if ( $brand_terms && ! is_wp_error( $brand_terms ) ) {
 							<button class="filter-overlay__item" data-filter="category" data-value="<?php echo esc_attr( $term->slug ); ?>">
 								<?php echo esc_html( $term->name ); ?>
 							</button>
+							<?php if ( ! empty( $cat_children[ $term->term_id ] ) ) : ?>
+							<ul class="filter-overlay__sublist">
+								<?php foreach ( $cat_children[ $term->term_id ] as $child ) : ?>
+								<li>
+									<button class="filter-overlay__item filter-overlay__item--sub" data-filter="category" data-value="<?php echo esc_attr( $child->slug ); ?>">
+										<?php echo esc_html( $child->name ); ?>
+									</button>
+								</li>
+								<?php endforeach; ?>
+							</ul>
+							<?php endif; ?>
 						</li>
 						<?php endforeach; ?>
 					</ul>

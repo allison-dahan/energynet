@@ -19,12 +19,21 @@ $brand       = ( $brand_terms && ! is_wp_error( $brand_terms ) ) ? $brand_terms[
 
 // Tech files
 $tech_fields = array_filter( [
-	'Brochure'    => get_post_meta( $post_id, '_tech_brochure',    true ),
-	'Certificate' => get_post_meta( $post_id, '_tech_certificate', true ),
-	'Data Sheet'  => get_post_meta( $post_id, '_tech_data_sheet',  true ),
+	'Brochure'    => get_post_meta( $post_id, '_tech_brochure_url', true ),
+	'Certificate' => get_post_meta( $post_id, '_tech_certificate',  true ),
+	'Data Sheet'  => get_post_meta( $post_id, '_tech_data_sheet',   true ),
 ] );
 
 $video_url = get_post_meta( $post_id, '_tech_video', true );
+
+// Convert YouTube watch/short URLs to embed URLs for iframe use.
+if ( $video_url ) {
+	if ( preg_match( '#youtu\.be/([a-zA-Z0-9_-]+)#', $video_url, $m ) ) {
+		$video_url = 'https://www.youtube.com/embed/' . $m[1];
+	} elseif ( preg_match( '#[?&]v=([a-zA-Z0-9_-]+)#', $video_url, $m ) ) {
+		$video_url = 'https://www.youtube.com/embed/' . $m[1];
+	}
+}
 
 $tech_icons = [
 	'Brochure'    => 'ph:file-text-thin',

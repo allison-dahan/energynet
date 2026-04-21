@@ -18,22 +18,18 @@ if ( $brand_terms && ! is_wp_error( $brand_terms ) ) {
 	$brand_slugs = wp_list_pluck( $brand_terms, 'slug' );
 }
 
-// Category slug — used for JS filter data attribute only.
-$category_slug = '';
-$cat_terms     = get_the_terms( $post_id, 'product_category' );
+// Category slugs — all assigned terms (parent + child) for JS filter matching.
+$category_slugs = [];
+$cat_terms      = get_the_terms( $post_id, 'product_category' );
 if ( $cat_terms && ! is_wp_error( $cat_terms ) ) {
-	foreach ( $cat_terms as $term ) {
-		if ( $term->parent === 0 ) {
-			$category_slug = $term->slug;
-		}
-	}
+	$category_slugs = wp_list_pluck( $cat_terms, 'slug' );
 }
 ?>
 
 <article
 	class="product-card"
 	data-brands="<?php echo esc_attr( implode( ',', $brand_slugs ) ); ?>"
-	data-categories="<?php echo esc_attr( $category_slug ); ?>"
+	data-categories="<?php echo esc_attr( implode( ',', $category_slugs ) ); ?>"
 >
 
 	<a class="product-card__link" href="<?php echo esc_url( $link_url ); ?>">
