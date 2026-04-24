@@ -44,7 +44,7 @@
   }
 }
 
-// ─── Individual event ─────────────────────────────────────────────────────────
+// ─── Individual event (mobile: centered column) ───────────────────────────────
 
 .event-item {
   display: flex;
@@ -55,8 +55,80 @@
 
   @media (min-width: $bp-lg) {
     padding-block: $space-12;
+    gap: 60px;
   }
 }
+
+.event-item__content {
+  display: contents; // transparent on mobile — children flow as direct flex children
+
+  @media (min-width: $bp-lg) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+// ─── Layout variants (desktop only) ──────────────────────────────────────────
+
+// Event 1: text left, image right
+.event-item--text-image {
+  @media (min-width: $bp-lg) {
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+
+    .event-item__content {
+      align-items: flex-start;
+    }
+
+    .event-item__title {
+      max-width: none;
+    }
+
+    .event-item__desc,
+    .event-item__speaker {
+      max-width: none;
+    }
+
+    .event-item__photos {
+      flex-shrink: 0;
+    }
+  }
+}
+
+// Event 2: centered header, images side by side (column layout, same as mobile)
+.event-item--centered {
+  @media (min-width: $bp-lg) {
+    flex-direction: column;
+    align-items: center;
+
+    .event-item__content {
+      align-items: center;
+    }
+  }
+}
+
+// Event 3: image left, text right-aligned
+.event-item--image-text {
+  @media (min-width: $bp-lg) {
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: right;
+
+    .event-item__content {
+      align-items: flex-end;
+    }
+
+    .event-item__title {
+      max-width: none;
+    }
+  }
+}
+
+// ─── Text elements ────────────────────────────────────────────────────────────
 
 .event-item__title {
   font-family: $font-body;
@@ -72,6 +144,12 @@
     font-size: 0.65em;
     vertical-align: super;
   }
+
+  @media (min-width: $bp-lg) {
+    font-size: 36px;
+    line-height: 60px;
+    max-width: none;
+  }
 }
 
 .event-item__date {
@@ -82,6 +160,11 @@
   letter-spacing: 0.05em;
   color: $color-primary;
   margin: 0 0 $space-3;
+
+  @media (min-width: $bp-lg) {
+    font-size: 29px;
+    line-height: 36px;
+  }
 }
 
 .event-item__venue {
@@ -92,6 +175,27 @@
   letter-spacing: 0.05em;
   color: $color-primary;
   margin: 0 0 $space-6;
+
+  @media (min-width: $bp-lg) {
+    font-size: 24px;
+    line-height: 60px;
+    margin-bottom: 0;
+  }
+}
+
+.event-item__org {
+  font-family: $font-body;
+  font-weight: $fw-regular;
+  font-size: $fs-body;
+  line-height: 20px;
+  letter-spacing: 0.05em;
+  color: $color-primary;
+  margin: 0 0 $space-3;
+
+  @media (min-width: $bp-lg) {
+    font-size: 24px;
+    line-height: 30px;
+  }
 }
 
 .event-item__desc {
@@ -103,6 +207,12 @@
   color: $color-secondary;
   margin: 0 0 $space-2;
   max-width: 309px;
+
+  @media (min-width: $bp-lg) {
+    font-size: 32px;
+    line-height: 40px;
+    max-width: none;
+  }
 }
 
 .event-item__speaker {
@@ -114,6 +224,13 @@
   color: $color-secondary;
   margin: 0 0 $space-6;
   max-width: 312px;
+
+  @media (min-width: $bp-lg) {
+    font-size: 24px;
+    line-height: 30px;
+    max-width: none;
+    margin-bottom: 0;
+  }
 }
 
 // ─── Photo grid ───────────────────────────────────────────────────────────────
@@ -149,17 +266,33 @@
 .event-item__photo--portrait {
   width: 230px;
   height: 326px;
+
+  @media (min-width: $bp-lg) {
+    width: 360px;
+    height: 508px;
+  }
 }
 
 .event-item__photo--square {
   width: 280px;
   height: 280px;
   object-fit: contain;
+
+  @media (min-width: $bp-lg) {
+    width: 484px;
+    height: 484px;
+  }
 }
 
 .event-item__photo--landscape {
   width: 309px;
   height: 194px;
+
+  @media (min-width: $bp-lg) {
+    width: 593px;
+    height: 372px;
+    flex-shrink: 0;
+  }
 }
 
 // ─── Divider ──────────────────────────────────────────────────────────────────
@@ -171,6 +304,11 @@
   border: none;
   border-top: 3px solid $color-accent;
   margin: 0 auto;
+
+  @media (min-width: $bp-lg) {
+    width: 100%;
+    border-top-width: 5px;
+  }
 }
 
 // ─── Lightbox overlay ─────────────────────────────────────────────────────────

@@ -29,12 +29,14 @@ get_header();
 	<section class="events-list">
 		<div class="container">
 
-			<!-- ── Event 1: 2026 Metro Central Conference ── -->
-			<article class="event-item">
-				<h2 class="event-item__title">2026 METRO CENTRAL CONFERENCE</h2>
-				<p class="event-item__date">APRIL 30, 2026 via ZOOM</p>
-				<p class="event-item__desc">Risk Assessment Analysis of Lightning Protection System NFPA 780</p>
-				<p class="event-item__speaker">ENGR. IVAN BOSCH MENDOZA, Energynet Inc., Engineering Manager</p>
+			<!-- ── Event 1: text left / image right ── -->
+			<article class="event-item event-item--text-image">
+				<div class="event-item__content">
+					<h2 class="event-item__title">2026 METRO CENTRAL CONFERENCE</h2>
+					<p class="event-item__date">APRIL 30, 2026 via ZOOM</p>
+					<p class="event-item__desc">Risk Assessment Analysis of Lightning Protection System NFPA 780</p>
+					<p class="event-item__speaker">ENGR. IVAN BOSCH MENDOZA, Energynet Inc., Engineering Manager</p>
+				</div>
 				<div class="event-item__photos">
 					<a
 						href="<?php echo esc_url( get_template_directory_uri() . '/dist/images/events/metro-central-conference.jpg' ); ?>"
@@ -53,11 +55,13 @@ get_header();
 
 			<hr class="events-divider" aria-hidden="true">
 
-			<!-- ── Event 2: Solar & Storage Live Philippines 2026 ── -->
-			<article class="event-item">
-				<h2 class="event-item__title">SOLAR &amp; STORAGE LIVE PHILIPPINES 2026</h2>
-				<p class="event-item__date">MAY 19-20, 2026</p>
-				<p class="event-item__venue">SMX CONVENTION CENTER MANILA</p>
+			<!-- ── Event 2: centered header / images side by side ── -->
+			<article class="event-item event-item--centered">
+				<div class="event-item__content">
+					<h2 class="event-item__title">SOLAR &amp; STORAGE LIVE PHILIPPINES 2026</h2>
+					<p class="event-item__date">MAY 19-20, 2026</p>
+					<p class="event-item__venue">SMX CONVENTION CENTER MANILA</p>
+				</div>
 				<div class="event-item__photos">
 					<a
 						href="<?php echo esc_url( get_template_directory_uri() . '/dist/images/events/solar-storage-p1.jpg' ); ?>"
@@ -88,11 +92,8 @@ get_header();
 
 			<hr class="events-divider" aria-hidden="true">
 
-			<!-- ── Event 3: 51st Annual National Convention 2026 ── -->
-			<article class="event-item">
-				<h2 class="event-item__title">51<sup>st</sup> Annual National Convention 2026</h2>
-				<p class="event-item__date">NOV 22-28, 2026</p>
-				<p class="event-item__venue">SMX CONVENTION CENTER MANILA</p>
+			<!-- ── Event 3: image left / text right ── -->
+			<article class="event-item event-item--image-text">
 				<div class="event-item__photos">
 					<a
 						href="<?php echo esc_url( get_template_directory_uri() . '/dist/images/events/iiee-convention.jpg' ); ?>"
@@ -106,6 +107,12 @@ get_header();
 							class="event-item__photo event-item__photo--landscape"
 						>
 					</a>
+				</div>
+				<div class="event-item__content">
+					<h2 class="event-item__title">51<sup>st</sup> Annual National Convention 2026</h2>
+					<p class="event-item__org">Institute of Integrated Electrical Engineers of the Philippines, Inc.</p>
+					<p class="event-item__date">NOVEMBER 22-28, 2026</p>
+					<p class="event-item__venue">SMX CONVENTION CENTER MANILA</p>
 				</div>
 			</article>
 
