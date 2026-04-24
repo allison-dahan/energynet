@@ -1,0 +1,224 @@
+@use "../partials/variables" as *;
+
+// ─── Page intro ───────────────────────────────────────────────────────────────
+
+.events-intro {
+  padding-top: 86px; // clear fixed mobile header
+
+  @media (min-width: $bp-lg) {
+    padding-top: 140px;
+  }
+
+  .section-heading {
+    margin-bottom: $space-1;
+  }
+}
+
+// ─── Hero image ───────────────────────────────────────────────────────────────
+
+.events-hero {
+  width: 100%;
+  overflow: hidden;
+  max-height: 320px;
+
+  @media (min-width: $bp-lg) {
+    max-height: 480px;
+  }
+}
+
+.events-hero__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+// ─── Events list section ──────────────────────────────────────────────────────
+
+.events-list {
+  padding-bottom: $space-12;
+
+  @media (min-width: $bp-lg) {
+    padding-top: $space-4;
+    padding-bottom: $space-16;
+  }
+}
+
+// ─── Individual event ─────────────────────────────────────────────────────────
+
+.event-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-block: $space-8;
+
+  @media (min-width: $bp-lg) {
+    padding-block: $space-12;
+  }
+}
+
+.event-item__title {
+  font-family: $font-body;
+  font-weight: $fw-medium;
+  font-size: 24px;
+  line-height: 30px;
+  letter-spacing: 0.05em;
+  color: $color-primary;
+  margin: 0 0 $space-2;
+  max-width: 417px;
+
+  sup {
+    font-size: 0.65em;
+    vertical-align: super;
+  }
+}
+
+.event-item__date {
+  font-family: $font-body;
+  font-weight: $fw-regular;
+  font-size: 20px;
+  line-height: 25px;
+  letter-spacing: 0.05em;
+  color: $color-primary;
+  margin: 0 0 $space-3;
+}
+
+.event-item__venue {
+  font-family: $font-body;
+  font-weight: $fw-regular;
+  font-size: $fs-body;
+  line-height: 20px;
+  letter-spacing: 0.05em;
+  color: $color-primary;
+  margin: 0 0 $space-6;
+}
+
+.event-item__desc {
+  font-family: $font-body;
+  font-weight: $fw-medium;
+  font-size: $fs-body;
+  line-height: 20px;
+  letter-spacing: 0.05em;
+  color: $color-secondary;
+  margin: 0 0 $space-2;
+  max-width: 309px;
+}
+
+.event-item__speaker {
+  font-family: $font-body;
+  font-weight: $fw-medium;
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: 0.05em;
+  color: $color-secondary;
+  margin: 0 0 $space-6;
+  max-width: 312px;
+}
+
+// ─── Photo grid ───────────────────────────────────────────────────────────────
+
+.event-item__photos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-6;
+
+  @media (min-width: $bp-md) {
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+.event-item__photo-link {
+  display: block;
+  cursor: zoom-in;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.85;
+  }
+}
+
+.event-item__photo {
+  display: block;
+  object-fit: cover;
+}
+
+.event-item__photo--portrait {
+  width: 230px;
+  height: 326px;
+}
+
+.event-item__photo--square {
+  width: 280px;
+  height: 280px;
+  object-fit: contain;
+}
+
+.event-item__photo--landscape {
+  width: 309px;
+  height: 194px;
+}
+
+// ─── Divider ──────────────────────────────────────────────────────────────────
+
+.events-divider {
+  width: 353px;
+  max-width: 100%;
+  height: 0;
+  border: none;
+  border-top: 3px solid $color-accent;
+  margin: 0 auto;
+}
+
+// ─── Lightbox overlay ─────────────────────────────────────────────────────────
+
+.events-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: rgba(0, 0, 0, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-8;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+
+  &.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.events-lightbox__img {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+  display: block;
+  border-radius: $radius-sm;
+}
+
+.events-lightbox__close {
+  position: absolute;
+  top: $space-4;
+  right: $space-4;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: 50%;
+  color: $color-white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+}

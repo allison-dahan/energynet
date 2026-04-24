@@ -485,6 +485,45 @@ document.addEventListener('keydown', (e) => {
   observer.observe(el);
 })();
 
+// ─── Events lightbox ──────────────────────────────────────────────────────────
+
+(function () {
+  const lightbox  = document.getElementById('events-lightbox');
+  if (!lightbox) return;
+
+  const lightboxImg = lightbox.querySelector('.events-lightbox__img');
+  const closeBtn    = lightbox.querySelector('.events-lightbox__close');
+
+  function open(src, alt) {
+    lightboxImg.src = src;
+    lightboxImg.alt = alt || '';
+    lightbox.classList.add('is-open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+  }
+
+  function close() {
+    lightbox.classList.remove('is-open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('click', e => {
+    const link = e.target.closest('[data-lightbox]');
+    if (!link) return;
+    e.preventDefault();
+    const img = link.querySelector('img');
+    open(link.href, img ? img.alt : '');
+  });
+
+  closeBtn.addEventListener('click', close);
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) close(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && lightbox.classList.contains('is-open')) close();
+  });
+})();
+
 // ─── Projects drawers ─────────────────────────────────────────────────────────
 
 (function () {

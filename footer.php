@@ -13,7 +13,7 @@
 			<!-- Col 1a: Brand (name + tagline) — mobile order 1 -->
 			<div class="footer__brand">
 				<p class="footer__logo"><?php bloginfo( 'name' ); ?>, Inc.</p>
-				<p class="footer__tagline"><?php esc_html_e( 'Body text here.', 'Energynet' ); ?></p>
+				<!-- <p class="footer__tagline"><?php esc_html_e( 'Body text here.', 'Energynet' ); ?></p> -->
 			</div>
 
 			<!-- Col 2: Contact — mobile order 2 -->
