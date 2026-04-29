@@ -14,7 +14,7 @@ get_header();
 	<!-- ─── About Us ──────────────────────────────────────────────────────────── -->
 	<section class="about-intro">
 		<div class="container">
-			<h1 class="section-heading">ABOUT US</h1>
+			<h1 class="section-heading about-intro__title">ABOUT US</h1>
 		</div>
 
 		<!-- Full-bleed image carousel -->

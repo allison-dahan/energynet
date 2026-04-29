@@ -116,6 +116,28 @@
   }
 }
 
+.contact-form__notice {
+  font-size: $fs-body;
+  font-weight: $fw-medium;
+  letter-spacing: 0.05em;
+  line-height: 1.4;
+  text-align: center;
+  padding: $space-3 $space-4;
+  border-radius: $radius-sm;
+  margin: 0 auto $space-6;
+  max-width: 500px;
+
+  &--success {
+    background: #e6f4ea;
+    color: #2d6a3f;
+  }
+
+  &--error {
+    background: #fdecea;
+    color: $color-error;
+  }
+}
+
 // ─── Two-column layout (desktop) ──────────────────────────────────────────────
 
 .contact-content {
@@ -311,10 +333,14 @@
 
 .contact-info__text {
   font-size: 18px;
-  font-weight: $fw-bold;
+  font-weight: $fw-regular;
   color: $color-primary;
   line-height: 1.3;
   margin: 0;
+
+  strong {
+    font-weight: $fw-bold;
+  }
 
   &--gap {
     margin-top: $space-3;

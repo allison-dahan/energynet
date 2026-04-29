@@ -8,6 +8,38 @@
 
 get_header();
 
+// ─── Form submission handling ─────────────────────────────────────────────────
+$form_sent  = false;
+$form_error = '';
+
+if ( 'POST' === $_SERVER['REQUEST_METHOD'] && isset( $_POST['contact_nonce'] ) ) {
+	if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['contact_nonce'] ) ), 'contact_form_submit' ) ) {
+		$form_error = 'Security check failed. Please refresh and try again.';
+	} elseif ( empty( $_POST['g-recaptcha-response'] ) || ! energynet_verify_recaptcha( sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) ) ) {
+		$form_error = 'Please complete the reCAPTCHA verification.';
+	} else {
+		$name    = sanitize_text_field( wp_unslash( $_POST['cf_name']    ?? '' ) );
+		$phone   = sanitize_text_field( wp_unslash( $_POST['cf_phone']   ?? '' ) );
+		$email   = sanitize_email( wp_unslash( $_POST['cf_email']        ?? '' ) );
+		$company = sanitize_text_field( wp_unslash( $_POST['cf_company'] ?? '' ) );
+		$subject = sanitize_text_field( wp_unslash( $_POST['cf_subject'] ?? '' ) );
+		$message = sanitize_textarea_field( wp_unslash( $_POST['cf_message'] ?? '' ) );
+
+		$to      = get_option( 'admin_email' );
+		$headers = array(
+			'Content-Type: text/plain; charset=UTF-8',
+			'Reply-To: ' . $name . ' <' . $email . '>',
+		);
+		$body = "Name: $name\nPhone: $phone\nEmail: $email\nCompany: $company\n\n$message";
+
+		if ( wp_mail( $to, $subject, $body, $headers ) ) {
+			$form_sent = true;
+		} else {
+			$form_error = 'Something went wrong. Please try again or email us directly.';
+		}
+	}
+}
+
 // Hero image: use the page's featured image if set.
 $hero_img = get_the_post_thumbnail_url( get_the_ID(), 'full' );
 ?>
@@ -42,6 +74,12 @@ $hero_img = get_the_post_thumbnail_url( get_the_ID(), 'full' );
 
 			<h1 class="contact-form__title"><?php esc_html_e( 'CONTACT US', 'energynet' ); ?></h1>
 			<p class="contact-form__subtitle"><?php esc_html_e( "Got an inquiry? Get in touch with us! Fill up the form and we'll get back to you shortly.", 'energynet' ); ?></p>
+
+			<?php if ( $form_sent ) : ?>
+				<p class="contact-form__notice contact-form__notice--success"><?php esc_html_e( 'Your message has been sent. We\'ll get back to you shortly!', 'energynet' ); ?></p>
+			<?php elseif ( $form_error ) : ?>
+				<p class="contact-form__notice contact-form__notice--error"><?php echo esc_html( $form_error ); ?></p>
+			<?php endif; ?>
 
 			<div class="contact-content">
 
@@ -118,9 +156,8 @@ $hero_img = get_the_post_thumbnail_url( get_the_ID(), 'full' );
 							></textarea>
 						</div>
 
-						<?php /* Add your preferred captcha solution here (e.g. reCAPTCHA, CF7 captcha). */ ?>
 						<div class="contact-form__captcha">
-							<!-- captcha placeholder -->
+							<div class="g-recaptcha" data-sitekey="<?php echo esc_attr( ENERGYNET_RECAPTCHA_SITE_KEY ); ?>"></div>
 						</div>
 
 						<div class="contact-form__submit-wrap">
@@ -145,11 +182,11 @@ $hero_img = get_the_post_thumbnail_url( get_the_ID(), 'full' );
 							</div>
 							<div class="contact-info__content">
 								<p class="contact-info__text">
-									<?php esc_html_e( 'OFFICE', 'energynet' ); ?><br>
+									<strong><?php esc_html_e( 'OFFICE', 'energynet' ); ?></strong><br>
 									<?php esc_html_e( '112 San Miguel Street corner San Rafael Street, Plainview, Mandaluyong City, Metro Manila, Philippines 1550', 'energynet' ); ?>
 								</p>
 								<p class="contact-info__text contact-info__text--gap">
-									<?php esc_html_e( 'WAREHOUSE', 'energynet' ); ?><br>
+									<strong><?php esc_html_e( 'WAREHOUSE', 'energynet' ); ?></strong><br>
 									<?php esc_html_e( '112 San Miguel St., Brgy Plainview, Mandaluyong City', 'energynet' ); ?>
 								</p>
 							</div>
@@ -161,7 +198,7 @@ $hero_img = get_the_post_thumbnail_url( get_the_ID(), 'full' );
 							</div>
 							<div class="contact-info__content">
 								<p class="contact-info__text">
-									<?php esc_html_e( 'Tel. +632 8640 9997, +632 7358 3740, +632 8398 2887', 'energynet' ); ?>
+									<strong><?php esc_html_e( 'Tel.', 'energynet' ); ?></strong> <?php esc_html_e( '+632 8640 9997, +632 7358 3740, +632 8398 2887', 'energynet' ); ?>
 								</p>
 							</div>
 						</div>
@@ -178,10 +215,17 @@ $hero_img = get_the_post_thumbnail_url( get_the_ID(), 'full' );
 					</div><!-- .contact-info__items -->
 
 					<div class="contact-map">
-						<?php /* Replace .contact-map__placeholder with a Google Maps iframe when ready. */ ?>
-						<div class="contact-map__placeholder">
-							<span><?php esc_html_e( 'MAP', 'energynet' ); ?></span>
-						</div>
+						<iframe
+							class="contact-map__iframe"
+							src="https://maps.google.com/maps?q=112+San+Miguel+Street,+Plainview,+Mandaluyong+City,+Metro+Manila&output=embed&z=16"
+							width="100%"
+							height="100%"
+							style="border:0;"
+							allowfullscreen=""
+							loading="lazy"
+							referrerpolicy="no-referrer-when-downgrade"
+							title="<?php esc_attr_e( 'Energynet Inc. office location', 'energynet' ); ?>"
+						></iframe>
 					</div>
 				</div><!-- .contact-content__sidebar -->
 

@@ -226,8 +226,8 @@ function buildPanelHtml(regionName, projects) {
     </div>
     <div style="background:#FFFFFF;padding:16px;max-height:260px;overflow-y:auto;">
       ${bodyContent}
-      <div style="margin-top:8px;">
-        <button class="map-panel-details" style="width:80px;height:35px;background:#392D27;border:none;border-radius:8px;padding:0;font-family:'Acre',sans-serif;font-weight:500;font-size:15px;letter-spacing:0.05em;color:#FFFFFF;cursor:pointer;display:block;">DETAILS</button>
+      <div style="margin-top:8px;position:relative;">
+        <button class="map-panel-details" style="position:absolute;left:0%;right:-113.15%;top:0%;bottom:-113.15%;background:#392D27;border:none;border-radius:8.51792px;padding:0;font-family:'Acre',sans-serif;font-weight:500;font-size:15px;letter-spacing:0.05em;color:#FFFFFF;cursor:pointer;">DETAILS</button>
       </div>
     </div>`;
 }

@@ -271,3 +271,54 @@ function energynet_enqueue_assets() {
 }
 add_action( 'wp_enqueue_scripts', 'energynet_enqueue_assets' );
 
+// ─── Load .env into PHP ───────────────────────────────────────────────────────
+$env_file = get_template_directory() . '/.env';
+if ( file_exists( $env_file ) ) {
+	foreach ( file( $env_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES ) as $line ) {
+		if ( str_starts_with( trim( $line ), '#' ) ) continue;
+		if ( ! str_contains( $line, '=' ) ) continue;
+		[ $key, $value ] = explode( '=', $line, 2 );
+		$key   = trim( $key );
+		$value = trim( $value );
+		if ( ! getenv( $key ) ) {
+			putenv( "$key=$value" );
+		}
+	}
+}
+
+define( 'ENERGYNET_RECAPTCHA_SITE_KEY',   getenv( 'RECAPTCHA_SITE_KEY' )   ?: '' );
+define( 'ENERGYNET_RECAPTCHA_SECRET_KEY', getenv( 'RECAPTCHA_SECRET_KEY' ) ?: '' );
+
+// ─── reCAPTCHA script (contact page only) ────────────────────────────────────
+function energynet_enqueue_recaptcha() {
+	if ( ! is_page( 'contact' ) ) {
+		return;
+	}
+	wp_enqueue_script(
+		'google-recaptcha',
+		'https://www.google.com/recaptcha/api.js',
+		array(),
+		null,
+		true
+	);
+}
+add_action( 'wp_enqueue_scripts', 'energynet_enqueue_recaptcha' );
+
+// ─── reCAPTCHA server-side verification ──────────────────────────────────────
+function energynet_verify_recaptcha( $token ) {
+	$response = wp_remote_post( 'https://www.google.com/recaptcha/api/siteverify', array(
+		'body' => array(
+			'secret'   => ENERGYNET_RECAPTCHA_SECRET_KEY,
+			'response' => $token,
+			'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '',
+		),
+	) );
+
+	if ( is_wp_error( $response ) ) {
+		return false;
+	}
+
+	$body = json_decode( wp_remote_retrieve_body( $response ), true );
+	return ! empty( $body['success'] );
+}
+

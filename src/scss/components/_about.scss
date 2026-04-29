@@ -5,7 +5,7 @@
 .section-heading {
   font-family: $font-body;
   font-weight: $fw-medium;
-  font-size: $fs-h4; // 32px
+  font-size: $fs-h3; // 32px
   line-height: 40px;
   letter-spacing: 0.05em;
   color: $color-primary;
@@ -53,11 +53,18 @@
 
 // ─── About intro ──────────────────────────────────────────────────────────────
 
+.about-intro__title {
+  @media (min-width: $bp-lg) {
+    font-size: $fs-h1; // 72px — larger than other section headings
+    line-height: 80px;
+  }
+}
+
 .about-intro {
   padding-top: 86px; // clear fixed mobile header + small gap
 
   @media (min-width: $bp-lg) {
-    padding-top: 140px; // clear taller desktop header
+    padding-top: 180px;
   }
 }
 
