@@ -104,7 +104,7 @@ const panel = document.createElement('div');
 panel.style.cssText = [
   'position:absolute',
   'z-index:20',
-  'width:220px',
+  'width:max-content',
   'max-width:calc(100% - 20px)',
   'display:none',
   'box-shadow:0 4px 16px rgba(0,0,0,0.18)',
@@ -210,7 +210,7 @@ function getRegionForProvince(provinceName) {
 }
 
 function buildPanelHtml(regionName, projects) {
-  const oneLine = 'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+  const oneLine = 'white-space:nowrap;';
   let bodyContent = '';
   projects.forEach(p => {
     bodyContent += `
@@ -222,7 +222,7 @@ function buildPanelHtml(regionName, projects) {
 
   return `
     <div style="background:#917B52;border-radius:8px 8px 0 0;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;gap:16px;min-width:0;">
-      <span style="font-family:'Acre',sans-serif;font-weight:700;font-size:18px;letter-spacing:0.05em;color:#FFFFFF;text-transform:uppercase;line-height:1.3;flex:1;min-width:0;${oneLine}">${regionName}</span>
+      <span style="font-family:'Acre',sans-serif;font-weight:700;font-size:18px;letter-spacing:0.05em;color:#FFFFFF;text-transform:uppercase;line-height:1.3;${oneLine}">${regionName}</span>
       <button class="map-panel-close" style="background:none;border:none;color:#FFFFFF;font-size:33.78px;cursor:pointer;padding:0;line-height:1;flex-shrink:0;">&times;</button>
     </div>
     <div style="background:#FFFFFF;padding:20px 16px 0px;max-height:260px;overflow-y:auto;overflow-x:hidden;">
