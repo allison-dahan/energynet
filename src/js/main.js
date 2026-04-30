@@ -641,7 +641,10 @@ document.addEventListener('keydown', (e) => {
         if (!mainImgEl) return;
         mainImgEl.querySelectorAll('img, video, iframe').forEach(el => el.remove());
 
-        if (!item) return;
+        if (!item) {
+          if (playBtn) playBtn.hidden = true;
+          return;
+        }
 
         if (item.type === 'video') {
           const vid = document.createElement('video');
@@ -657,7 +660,8 @@ document.addEventListener('keydown', (e) => {
           img.alt = '';
           img.className = 'project-card__img';
           mainImgEl.appendChild(img);
-          if (playBtn) playBtn.hidden = !projects[current]?.video;
+          const hasVideo = buildMedia(projects[current] || {}).some(m => m.type === 'video');
+          if (playBtn) playBtn.hidden = !hasVideo;
         }
       }
 
@@ -751,6 +755,33 @@ document.addEventListener('keydown', (e) => {
         activeMedia = vidIdx;
         renderMainMedia(mediaItems[vidIdx]);
         renderThumbs(mediaItems);
+      });
+
+      // Lightbox for main image fullscreen
+      const lightbox = document.createElement('div');
+      lightbox.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.92);display:none;align-items:center;justify-content:center;cursor:zoom-out;';
+      const lightboxImg = document.createElement('img');
+      lightboxImg.style.cssText = 'max-width:90vw;max-height:90vh;object-fit:contain;display:block;';
+      lightbox.appendChild(lightboxImg);
+      document.body.appendChild(lightbox);
+
+      function openLightbox(src) {
+        lightboxImg.src = src;
+        lightbox.style.display = 'flex';
+        document.addEventListener('keydown', closeLightboxOnEsc);
+      }
+      function closeLightbox() {
+        lightbox.style.display = 'none';
+        document.removeEventListener('keydown', closeLightboxOnEsc);
+      }
+      function closeLightboxOnEsc(e) { if (e.key === 'Escape') closeLightbox(); }
+
+      lightbox.addEventListener('click', closeLightbox);
+
+      if (mainImgEl) mainImgEl.style.cursor = 'zoom-in';
+      mainImgEl?.addEventListener('click', () => {
+        const img = mainImgEl.querySelector('img');
+        if (img) openLightbox(img.src);
       });
 
       cards.forEach((card, i) => {
