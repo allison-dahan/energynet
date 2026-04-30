@@ -104,7 +104,7 @@ const panel = document.createElement('div');
 panel.style.cssText = [
   'position:absolute',
   'z-index:20',
-  'width:max-content',
+  'width:220px',
   'max-width:calc(100% - 20px)',
   'display:none',
   'box-shadow:0 4px 16px rgba(0,0,0,0.18)',
@@ -210,24 +210,25 @@ function getRegionForProvince(provinceName) {
 }
 
 function buildPanelHtml(regionName, projects) {
+  const oneLine = 'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
   let bodyContent = '';
   projects.forEach(p => {
     bodyContent += `
       <div style="margin-bottom:12px;">
-        <div style="font-family:'Acre',sans-serif;font-weight:700;font-size:16px;color:#615237;line-height:1.3;">${p.client || ''}</div>
-        <div style="font-family:'Acre',sans-serif;font-weight:400;font-size:13px;color:#392D27;margin-top:2px;">• ${p.title}</div>
+        <div style="font-family:'Acre',sans-serif;font-weight:700;font-size:16px;color:#615237;line-height:1.3;${oneLine}">${p.client || ''}</div>
+        <div style="font-family:'Acre',sans-serif;font-weight:400;font-size:13px;color:#392D27;margin-top:2px;${oneLine}">• ${p.title}</div>
       </div>`;
   });
 
   return `
-    <div style="background:#917B52;border-radius:8px 8px 0 0;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;gap:16px;">
-      <span style="font-family:'Acre',sans-serif;font-weight:700;font-size:18px;letter-spacing:0.05em;color:#FFFFFF;text-transform:uppercase;line-height:1.3;white-space:nowrap;flex:1;">${regionName}</span>
+    <div style="background:#917B52;border-radius:8px 8px 0 0;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;gap:16px;min-width:0;">
+      <span style="font-family:'Acre',sans-serif;font-weight:700;font-size:18px;letter-spacing:0.05em;color:#FFFFFF;text-transform:uppercase;line-height:1.3;flex:1;min-width:0;${oneLine}">${regionName}</span>
       <button class="map-panel-close" style="background:none;border:none;color:#FFFFFF;font-size:33.78px;cursor:pointer;padding:0;line-height:1;flex-shrink:0;">&times;</button>
     </div>
-    <div style="background:#FFFFFF;padding:16px;max-height:260px;overflow-y:auto;">
+    <div style="background:#FFFFFF;padding:20px 16px 0px;max-height:260px;overflow-y:auto;overflow-x:hidden;">
       ${bodyContent}
-      <div style="margin-top:8px;position:relative;">
-        <button class="map-panel-details" style="position:absolute;left:0%;right:-113.15%;top:0%;bottom:-113.15%;background:#392D27;border:none;border-radius:8.51792px;padding:0;font-family:'Acre',sans-serif;font-weight:500;font-size:15px;letter-spacing:0.05em;color:#FFFFFF;cursor:pointer;">DETAILS</button>
+      <div style="position:relative;height:46px;margin-top:8px;">
+        <button class="map-panel-details" style="position:absolute;left:0%;top:0%;width:76px;height:28px;background:#392D27;border:none;border-radius:8.51792px;font-family:'Acre',sans-serif;font-weight:500;font-size:12px;letter-spacing:0.05em;color:#FFFFFF;cursor:pointer;">DETAILS</button>
       </div>
     </div>`;
 }
