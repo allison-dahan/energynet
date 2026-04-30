@@ -178,6 +178,17 @@ document.addEventListener('keydown', (e) => {
   timer = setInterval(advance, 5000);
 })();
 
+// ─── Category collapsible sublists ────────────────────────────────────────────
+
+document.querySelectorAll('.products-sidebar__toggle, .filter-overlay__toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const li = btn.closest('.products-sidebar__parent, .filter-overlay__parent');
+    if (!li) return;
+    const isOpen = li.classList.toggle('is-open');
+    btn.setAttribute('aria-expanded', String(isOpen));
+  });
+});
+
 // ─── Products filter (sidebar + overlay) ──────────────────────────────────────
 
 (function () {

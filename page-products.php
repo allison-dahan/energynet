@@ -100,10 +100,17 @@ if ( $brand_terms && ! is_wp_error( $brand_terms ) ) {
 							</button>
 						</li>
 						<?php foreach ( $cat_terms as $term ) : ?>
-						<li>
-							<button class="products-sidebar__item" data-filter="category" data-value="<?php echo esc_attr( $term->slug ); ?>">
-								<?php echo esc_html( $term->name ); ?>
-							</button>
+						<li class="<?php echo ! empty( $cat_children[ $term->term_id ] ) ? 'products-sidebar__parent' : ''; ?>">
+							<div class="products-sidebar__parent-row">
+								<button class="products-sidebar__item" data-filter="category" data-value="<?php echo esc_attr( $term->slug ); ?>">
+									<?php echo esc_html( $term->name ); ?>
+								</button>
+								<?php if ( ! empty( $cat_children[ $term->term_id ] ) ) : ?>
+								<button class="products-sidebar__toggle" aria-expanded="false" aria-label="<?php esc_attr_e( 'Toggle subcategories', 'energynet' ); ?>">
+									<iconify-icon icon="ph:caret-down" width="12" height="12"></iconify-icon>
+								</button>
+								<?php endif; ?>
+							</div>
 							<?php if ( ! empty( $cat_children[ $term->term_id ] ) ) : ?>
 							<ul class="products-sidebar__sublist">
 								<?php foreach ( $cat_children[ $term->term_id ] as $child ) : ?>
@@ -202,10 +209,17 @@ if ( $brand_terms && ! is_wp_error( $brand_terms ) ) {
 							</button>
 						</li>
 						<?php foreach ( $cat_terms as $term ) : ?>
-						<li>
-							<button class="filter-overlay__item" data-filter="category" data-value="<?php echo esc_attr( $term->slug ); ?>">
-								<?php echo esc_html( $term->name ); ?>
-							</button>
+						<li class="<?php echo ! empty( $cat_children[ $term->term_id ] ) ? 'filter-overlay__parent' : ''; ?>">
+							<div class="filter-overlay__parent-row">
+								<button class="filter-overlay__item" data-filter="category" data-value="<?php echo esc_attr( $term->slug ); ?>">
+									<?php echo esc_html( $term->name ); ?>
+								</button>
+								<?php if ( ! empty( $cat_children[ $term->term_id ] ) ) : ?>
+								<button class="filter-overlay__toggle" aria-expanded="false" aria-label="<?php esc_attr_e( 'Toggle subcategories', 'energynet' ); ?>">
+									<iconify-icon icon="ph:caret-down" width="12" height="12"></iconify-icon>
+								</button>
+								<?php endif; ?>
+							</div>
 							<?php if ( ! empty( $cat_children[ $term->term_id ] ) ) : ?>
 							<ul class="filter-overlay__sublist">
 								<?php foreach ( $cat_children[ $term->term_id ] as $child ) : ?>
