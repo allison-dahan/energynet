@@ -34,7 +34,7 @@
 					<iconify-icon icon="ri:linkedin-fill" width="28" height="28" aria-hidden="true"></iconify-icon>
 				</a>
 				<a href="#" class="header__social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
-					<iconify-icon icon="line-md:youtube-filled" width="28" height="28" aria-hidden="true"></iconify-icon>
+					<iconify-icon icon="ri:youtube-fill" width="28" height="28" aria-hidden="true"></iconify-icon>
 				</a>
 			</div>
 		</div><!-- .header__social-bar -->
@@ -97,7 +97,7 @@
 					<iconify-icon icon="ri:linkedin-fill" width="18" height="18" aria-hidden="true"></iconify-icon>
 				</a>
 				<a href="#" class="header__social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
-					<iconify-icon icon="line-md:youtube-filled" width="18" height="18" aria-hidden="true"></iconify-icon>
+					<iconify-icon icon="ri:youtube-fill" width="18" height="18" aria-hidden="true"></iconify-icon>
 				</a>
 			</div>
 

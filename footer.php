@@ -70,7 +70,7 @@
 							<iconify-icon icon="uil:facebook" width="28" height="28" aria-hidden="true"></iconify-icon>
 						</a>
 						<a href="#" class="footer__social-link" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
-							<iconify-icon icon="line-md:youtube-filled" width="28" height="28" aria-hidden="true"></iconify-icon>
+							<iconify-icon icon="ri:youtube-fill" width="28" height="28" aria-hidden="true"></iconify-icon>
 						</a>
 						<a href="#" class="footer__social-link" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
 							<iconify-icon icon="ri:linkedin-fill" width="28" height="28" aria-hidden="true"></iconify-icon>
@@ -92,7 +92,7 @@
 						<iconify-icon icon="uil:facebook" width="22" height="22" aria-hidden="true"></iconify-icon>
 					</a>
 					<a href="#" class="footer__social-link footer__social-link--accent" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
-						<iconify-icon icon="line-md:youtube-filled" width="22" height="22" aria-hidden="true"></iconify-icon>
+						<iconify-icon icon="ri:youtube-fill" width="22" height="22" aria-hidden="true"></iconify-icon>
 					</a>
 					<a href="#" class="footer__social-link footer__social-link--accent" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
 						<iconify-icon icon="ri:linkedin-fill" width="22" height="22" aria-hidden="true"></iconify-icon>
