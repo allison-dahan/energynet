@@ -1,5 +1,52 @@
 
 
+// ─── Hero carousel ────────────────────────────────────────────────────────────
+
+(function () {
+  const carousel = document.querySelector('[data-hero-carousel]');
+  if (!carousel) return;
+
+  const slides = carousel.querySelectorAll('.hero__slide');
+  const dots   = carousel.querySelectorAll('.hero__dot');
+  if (slides.length < 2) return;
+
+  let current = 0;
+  let timer;
+
+  function goTo(index) {
+    const prevVid = slides[current].querySelector('video');
+    if (prevVid) prevVid.pause();
+
+    slides[current].classList.remove('is-active');
+    dots[current]?.classList.remove('is-active');
+    dots[current]?.setAttribute('aria-selected', 'false');
+
+    current = index;
+
+    slides[current].classList.add('is-active');
+    dots[current]?.classList.add('is-active');
+    dots[current]?.setAttribute('aria-selected', 'true');
+
+    const nextVid = slides[current].querySelector('video');
+    if (nextVid) nextVid.play();
+  }
+
+  function advance() {
+    goTo((current + 1) % slides.length);
+  }
+
+  function resetTimer() {
+    clearInterval(timer);
+    timer = setInterval(advance, 5000);
+  }
+
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', () => { goTo(i); resetTimer(); });
+  });
+
+  timer = setInterval(advance, 5000);
+})();
+
 const toggle = document.querySelector('.header__toggle');
 const close  = document.querySelector('.header__close');
 const drawer = document.querySelector('.header__drawer');

@@ -44,7 +44,7 @@
 
 			<!-- Col 1b: Legal links — mobile order 3, desktop back in col 1 via grid-area -->
 			<nav class="footer__legal" aria-label="<?php esc_attr_e( 'Legal links', 'Energynet' ); ?>">
-				<a href="#"><?php esc_html_e( 'FAQs', 'Energynet' ); ?></a>
+				<a href="/faqs"><?php esc_html_e( 'FAQs', 'Energynet' ); ?></a>
 				<a href="#"><?php esc_html_e( 'Privacy Policy', 'Energynet' ); ?></a>
 				<a href="#"><?php esc_html_e( 'Terms and Conditions', 'Energynet' ); ?></a>
 			</nav>
@@ -52,11 +52,11 @@
 			<!-- Col 3: CTA (desktop only) -->
 			<div class="footer__cta">
 				<p class="footer__cta-heading"><?php esc_html_e( 'FOR MORE INFORMATION', 'Energynet' ); ?></p>
-				<a href="#" class="footer__btn">
+				<a href="/request-a-quote" class="footer__btn">
 					<iconify-icon icon="mingcute:phone-fill" width="20" height="20" aria-hidden="true"></iconify-icon>
 					<?php esc_html_e( 'REQUEST A QUOTE', 'Energynet' ); ?>
 				</a>
-				<a href="mailto:info@energynet.com.ph" class="footer__btn">
+				<a href="/contact" class="footer__btn">
 					<iconify-icon icon="ic:round-email" width="20" height="20" aria-hidden="true"></iconify-icon>
 					<?php esc_html_e( 'SEND US AN EMAIL', 'Energynet' ); ?>
 				</a>
